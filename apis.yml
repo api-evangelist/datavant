@@ -101,6 +101,8 @@ apis:
   - type: Documentation
     url: https://www.datavant.com/products/insights-and-evidence-generation
 common:
+- type: DomainSecurity
+  url: security/datavant-domain-security.yml
 - type: Website
   url: https://www.datavant.com/
 - type: Blog
@@ -115,6 +117,8 @@ common:
   url: https://github.com/datavant
 - type: LinkedIn
   url: https://www.linkedin.com/company/datavant
+- type: LLMsTxt
+  url: llms/datavant-llms.txt
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
