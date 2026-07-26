@@ -27,29 +27,9 @@ Datavant's integration surface is enterprise and partner/contract gated. An acce
 
 ## APIs
 
-### Datavant Connect - Linkage
 
-Privacy-preserving record linkage that tokenizes health data with Datavant tokens and connects datasets across 350+ real-world data partners while preserving patient privacy. Enterprise/partner-gated; no public API reference or baseURL.
 
-- **Human URL:** [https://www.datavant.com/products/connect-linkage](https://www.datavant.com/products/connect-linkage)
 
-### Datavant Connect - Privacy
-
-De-identification and HIPAA Expert Determination solutions that preserve data privacy and improve the quality, speed, and verifiability of compliance processes. Enterprise/partner-gated; no public API reference or baseURL.
-
-- **Human URL:** [https://www.datavant.com/products/connect-privacy](https://www.datavant.com/products/connect-privacy)
-
-### Datavant Connect - Retrieval
-
-Medical record retrieval and release-of-information services (originating from Ciox Health) for locating, requesting, and exchanging clinical records across Datavant's provider network. Enterprise/partner-gated; no public API reference or baseURL.
-
-- **Human URL:** [https://www.datavant.com/products/connect-retrieval](https://www.datavant.com/products/connect-retrieval)
-
-### Datavant Insights & Evidence Generation
-
-Linked real-world datasets and analytics for generating real-world evidence across the Datavant ecosystem, serving life sciences, health plans, and research. Enterprise/partner-gated; no public API reference or baseURL.
-
-- **Human URL:** [https://www.datavant.com/products/insights-and-evidence-generation](https://www.datavant.com/products/insights-and-evidence-generation)
 
 ## Links
 
