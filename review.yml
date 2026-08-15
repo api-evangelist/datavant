@@ -2,129 +2,182 @@ aid: datavant
 name: Datavant
 review:
   question: Does Datavant publish a self-serve public developer portal, OpenAPI, or FHIR CapabilityStatement?
-  answer: false
-  date: '2026-07-24'
+  answer: partial
+  date: '2026-08-14'
   reviewer: API Evangelist
   homeMarket: United States
+  note: SUPERSEDES the 2026-07-24 review, which recorded "no downloadable OpenAPI". That was wrong. Datavant
+    serves a real OpenAPI 3.1.0 document anonymously at https://developer.datavant.com/openapi.json (HTTP
+    200, 184KB, 36 paths, 54 operations, 104 component schemas, OAuth 2.0 client credentials, servers[]
+    https://api.datavant.io/v2), with a ReDoc rendering at /docs. The first review missed it because the
+    HOST ROOT https://developer.datavant.com/ returns HTTP 404 - only /openapi.json, /docs, /docs/oauth2-redirect
+    and /health answer. There is still no self-serve sign-up and still no FHIR CapabilityStatement.
 findings:
-  summary: |
-    Datavant is a US health-data logistics and connectivity company (formed from the
-    2021 Datavant + Ciox Health merger) whose products - Connect Linkage
-    (tokenization / privacy-preserving record linkage), Connect Privacy
-    (de-identification / HIPAA Expert Determination), Connect Retrieval (medical
-    record retrieval / release of information), and Insights & Evidence Generation -
-    are marketed on www.datavant.com but delivered under enterprise, partner, and
-    contract-gated onboarding. No self-serve public developer portal was found:
-    developer.datavant.com returns 404, and there is no /developers, /api, or /docs
-    page on the marketing site. An API host exists at api.datavant.com but returns
-    HTTP 403 to anonymous callers on every probed path (root, /metadata,
-    /.well-known/smart-configuration, /.well-known/openid-configuration,
-    /openapi.json, /swagger.json, /docs, /v1, /fhir/metadata), indicating a real but
-    access-controlled surface with no publicly documented endpoints. No FHIR
-    CapabilityStatement / metadata document and no SMART-on-FHIR configuration are
-    served anonymously. No downloadable OpenAPI/Swagger specification was found. The
-    datavant GitHub organization exists but publishes 0 public repositories. This is
-    an honest gated-API result: identity and product families are documented, the
-    machine-readable API contract is behind partnership.
+  summary: 'Datavant is a US health-data logistics and connectivity company (2021 Datavant + Ciox Health
+    merger). Its Connect Retrieval product has a genuinely public machine-readable contract: an OpenAPI
+    3.1.0 document at https://developer.datavant.com/openapi.json describing 54 operations over Orders,
+    Order Queries, Prematch, Projects, Visits, Documents and Configuration, based at https://api.datavant.io/v2
+    and protected by OAuth 2.0 client credentials. Datavant also serves live OIDC discovery, RFC 8414
+    authorization-server metadata and a JWKS from its Auth0 custom domain at auth.datavant.com. What it
+    does NOT publish: any OAuth scopes (the scopes map is empty, so a token grants all 54 operations),
+    any rate limits or 429 contract, any idempotency key, any webhook or event surface, any client SDK
+    in any registry, any deprecation or sunset policy, any security.txt, any A2A agent card, and any MCP
+    server. Its published release notes live inside the OpenAPI as a tag and stop at 2023-09-13. Access
+    remains enterprise and contract-gated - no self-serve sign-up, and the only public price anywhere
+    is a $300,000 12-month AWS Marketplace license for the tokenization container. api.datavant.com (403
+    to anonymous callers) is the tokenization control plane, a DIFFERENT host from the REST API base api.datavant.io;
+    conflating the two is what produced the earlier "gated, no spec" finding.'
   developerPortal:
-    url: null
-    confirmed: false
-    note: developer.datavant.com => HTTP 404; no /developers, /api, or /docs page on www.datavant.com.
+    url: https://developer.datavant.com/docs
+    confirmed: true
+    note: ReDoc API reference. The host ROOT returns HTTP 404; only /openapi.json, /docs, /docs/oauth2-redirect
+      and /health answer. No sign-up, no getting-started guide, no prose documentation beyond the rendered
+      spec.
   fhirCapabilityStatement:
     captured: false
     fhirVersion: null
     resources: []
-    note: api.datavant.com/fhir/metadata and /.well-known/smart-configuration both return HTTP 403; no anonymous CapabilityStatement or SMART configuration is served.
+    note: api.datavant.com/fhir/metadata and /.well-known/smart-configuration both return HTTP 403; no
+      anonymous CapabilityStatement or SMART configuration is served.
   downloadableSpecs:
-    count: 0
-    provenance: none
-    note: No OpenAPI/Swagger or FHIR metadata was harvestable; /openapi.json, /swagger.json, and /docs on api.datavant.com all return HTTP 403.
+    count: 1
+    provenance: searched
+    format: OpenAPI 3.1.0
+    url: https://developer.datavant.com/openapi.json
+    http_status: 200
+    note: 'Harvested verbatim to openapi/_original/datavant-openapi.json and converted to openapi/datavant-rest-api-openapi.yml.
+      Ownership confirmed: info.title "Datavant REST API", servers[] https://api.datavant.io/v2, developer
+      contact support@datavant.com.'
   authModel:
-    scheme: gated-partner
-    note: |
-      No public authentication documentation. The api.datavant.com host is
-      access-controlled (uniform HTTP 403 to anonymous requests). Onboarding is
-      enterprise / contact-sales / partner-agreement based. No public SMART-on-FHIR
-      scopes, OAuth client-credentials docs, or API-key self-service were found.
+    scheme: oauth2-client-credentials
+    note: POST grant_type/client_id/client_secret to https://api.datavant.io/v2/oauth2/token; bearer token,
+      expires_in 7200. Scopes map is EMPTY and no operation narrows security[]. Identity is Auth0 (issuer
+      https://datavant.auth0.com/, custom domain auth.datavant.com) with live OIDC and RFC 8414 discovery.
+      Credentials are issued under contract; the Datavant Portal and CLI use a separate 10-year application
+      credential.
   standardsConformance:
     usCore: unknown
     ukCore: false
     auCore: false
     daVinci: unknown
     carinBlueButton: unknown
-    note: |
-      Datavant markets FHIR-based interoperability thought leadership on
+    note: 'Datavant markets FHIR-based interoperability thought leadership on
+
       /interoperability, but publishes no anonymous FHIR CapabilityStatement, so no
+
       implementation-guide conformance (US Core, Da Vinci, CARIN Blue Button) could be
+
       confirmed against a live contract.
-  selfServeVsGated: gated
+
+      '
+  selfServeVsGated: documented-but-gated
   homeMarket: United States
   transports:
-    - protocol: REST
-      scheme: https
-      baseURL: https://api.datavant.com
-      documented: false
-      note: Host resolves and responds but returns HTTP 403 to anonymous callers on every probed path; no public documentation of endpoints.
-    - protocol: FHIR
-      scheme: https
-      documented: false
-      note: No anonymous FHIR base, /metadata CapabilityStatement, or /.well-known/smart-configuration is served (HTTP 403).
-    - protocol: WebSocket
-      scheme: wss
-      documented: false
-      note: No WebSocket endpoint is documented.
+  - protocol: REST
+    scheme: https
+    baseURL: https://api.datavant.io/v2
+    documented: true
+    note: OpenAPI 3.1.0 published; 36 paths / 54 operations.
+  - protocol: FHIR
+    scheme: https
+    documented: false
+    note: No anonymous CapabilityStatement or /.well-known/smart-configuration on any host.
+  - protocol: Webhooks
+    documented: false
+    note: No webhook or event surface; results are delivered by SFTP/S3/email on a schedule.
+  - protocol: MCP
+    documented: false
+    note: mcp.datavant.com and mcp.datavant.io do not resolve.
   probes:
-    - url: https://www.datavant.com/
-      status: 200
-      note: Corporate marketing site (redirects to https://www.datavant.com/).
-    - url: https://developer.datavant.com/
-      status: 404
-      note: No developer portal.
-    - url: https://docs.datavant.com/
-      status: 000
-      note: Does not resolve / no response.
-    - url: https://fhir.datavant.com/
-      status: 000
-      note: Does not resolve / no response.
-    - url: https://api.datavant.com/
-      status: 403
-      note: Access-controlled API host; 403 on root and all probed paths.
-    - url: https://www.datavant.com/interoperability
-      status: 200
-      note: FHIR/TEFCA interoperability thought-leadership content, not an API reference.
-    - url: https://www.datavant.com/products/connect-linkage
-      status: 200
-    - url: https://www.datavant.com/products/connect-privacy
-      status: 200
-    - url: https://www.datavant.com/products/connect-retrieval
-      status: 200
-    - url: https://www.datavant.com/products/insights-and-evidence-generation
-      status: 200
-    - url: https://trust.datavant.com/
-      status: 200
-      note: Trust center (live).
-    - url: https://status.datavant.com/
-      status: 200
-      note: Status page (live).
-    - url: https://github.com/datavant
-      status: 200
-      note: GitHub organization exists but has 0 public repositories.
-sources:
   - url: https://www.datavant.com/
-    type: Website
-    note: Company overview - network of 350+ real-world data partners, 80,000+ hospitals and clinics.
-  - url: https://www.datavant.com/products/connect-linkage
-    type: Documentation
-    note: Tokenization and privacy-preserving record linkage product.
-  - url: https://www.datavant.com/products/connect-privacy
-    type: Documentation
-    note: De-identification and HIPAA Expert Determination product.
-  - url: https://www.datavant.com/products/connect-retrieval
-    type: Documentation
-    note: Medical record retrieval / release of information (ex-Ciox) product.
+    status: 200
+    note: Corporate marketing site (redirects to https://www.datavant.com/).
+  - url: https://docs.datavant.com/
+    status: 0
+    note: Does not resolve / no response.
+  - url: https://fhir.datavant.com/
+    status: 0
+    note: Does not resolve / no response.
+  - url: https://api.datavant.com/
+    status: 403
+    note: Access-controlled API host; 403 on root and all probed paths.
   - url: https://www.datavant.com/interoperability
-    type: Documentation
-    note: FHIR / TEFCA interoperability content; no API reference.
+    status: 200
+    note: FHIR/TEFCA interoperability thought-leadership content, not an API reference.
+  - url: https://www.datavant.com/products/connect-linkage
+    status: 200
+  - url: https://www.datavant.com/products/connect-privacy
+    status: 200
+  - url: https://www.datavant.com/products/connect-retrieval
+    status: 200
+  - url: https://www.datavant.com/products/insights-and-evidence-generation
+    status: 200
+  - url: https://trust.datavant.com/
+    status: 200
+    note: Trust center (live).
+  - url: https://status.datavant.com/
+    status: 200
+    note: Status page (live).
+  - url: https://github.com/datavant
+    status: 200
+    note: GitHub organization exists but has 0 public repositories.
+  - url: https://developer.datavant.com/openapi.json
+    status: 200
+    note: OpenAPI 3.1.0, 184,777 bytes - THE SPEC. Missed by the 2026-07-24 review.
+  - url: https://developer.datavant.com/docs
+    status: 200
+    note: ReDoc rendering of the same document.
+  - url: https://developer.datavant.com/
+    status: 404
+    note: Host ROOT 404s even though /openapi.json and /docs serve.
+  - url: https://api.datavant.io/openapi.json
+    status: 200
+    note: Byte-identical copy of the spec on the API host.
+  - url: https://api.datavant.io/v2/openapi.json
+    status: 401
+    note: Versioned path is auth-gated.
+  - url: https://auth.datavant.com/.well-known/openid-configuration
+    status: 200
+    note: Auth0 OIDC discovery; issuer https://datavant.auth0.com/.
+  - url: https://auth.datavant.com/.well-known/oauth-authorization-server
+    status: 200
+    note: RFC 8414 metadata.
+  - url: https://auth.datavant.com/.well-known/jwks.json
+    status: 200
+  - url: https://portal.datavant.com/
+    status: 302
+    note: 302 to /login?next=/. SPA catch-all returns 200 + login HTML for EVERY path including /.well-known/agent-card.json
+      - all rejected.
+  - url: https://www.datavant.com/report-vulnerabilities
+    status: 200
+    note: security@datavant.com; no bug bounty, no safe harbor.
+  - url: https://www.datavant.com/terms-of-use
+    status: 200
+  - url: https://status.datavant.com/api/v2/summary.json
+    status: 200
+    note: 'Two components: Portal, Datavant CLI. The REST API is not tracked.'
+  - url: https://aws.amazon.com/marketplace/pp/prodview-eolcfagze2ihw
+    status: 200
+    note: $300,000 / 12-month license; container image v5.2.0.
+  - url: https://www.datavant.com/pricing
+    status: 404
+    note: robots.txt also disallows /pricing.
+sources:
+- url: https://www.datavant.com/
+  type: Website
+  note: Company overview - network of 350+ real-world data partners, 80,000+ hospitals and clinics.
+- url: https://www.datavant.com/products/connect-linkage
+  type: Documentation
+  note: Tokenization and privacy-preserving record linkage product.
+- url: https://www.datavant.com/products/connect-privacy
+  type: Documentation
+  note: De-identification and HIPAA Expert Determination product.
+- url: https://www.datavant.com/products/connect-retrieval
+  type: Documentation
+  note: Medical record retrieval / release of information (ex-Ciox) product.
+- url: https://www.datavant.com/interoperability
+  type: Documentation
+  note: FHIR / TEFCA interoperability content; no API reference.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

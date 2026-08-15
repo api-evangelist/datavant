@@ -1,0 +1,91 @@
+generated: '2026-08-14'
+method: probed
+source: openapi/datavant-rest-api-openapi.yml
+docs: https://auth.datavant.com/.well-known/openid-configuration
+note: >-
+  The Datavant REST API declares an oauth2 clientCredentials scheme with an EMPTY scopes map,
+  and no operation narrows security[], so the REST contract publishes ZERO API scopes - a
+  token is all-or-nothing across all 54 operations. The scopes recorded below are the OIDC
+  scopes advertised by Datavant's Auth0 tenant (probed anonymously at
+  auth.datavant.com/.well-known/openid-configuration and captured verbatim to
+  well-known/datavant-openid-configuration.json). They are identity/profile scopes for the
+  Portal login flow, NOT authorization scopes for the record-retrieval API. This distinction
+  is the finding: there is no published least-privilege surface for the REST API.
+schemes:
+  - name: oauth2
+    source: openapi/datavant-rest-api-openapi.yml
+    kind: api
+    flows:
+      - flow: clientCredentials
+        tokenUrl: https://api.datavant.io/v2/oauth2/token
+        refreshUrl: https://api.datavant.io/v2/oauth2/token
+        scopes_declared: 0
+  - name: auth0-oidc
+    source: well-known/datavant-openid-configuration.json
+    kind: identity
+    issuer: https://datavant.auth0.com/
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://datavant.auth0.com/authorize
+        tokenUrl: https://datavant.auth0.com/oauth/token
+        scopes_declared: 14
+api_scopes: []
+api_scope_count: 0
+identity_scopes:
+  - scope: openid
+    description: Request an ID token (OIDC core).
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: profile
+    description: Basic profile claims.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: offline_access
+    description: Issue a refresh token.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: name
+    description: Full name claim.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: given_name
+    description: Given name claim.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: family_name
+    description: Family name claim.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: nickname
+    description: Nickname claim.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: email
+    description: Email address claim.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: email_verified
+    description: Email verification status claim.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: picture
+    description: Profile picture claim.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: created_at
+    description: Account creation timestamp claim.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: identities
+    description: Linked identity providers claim.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: phone
+    description: Phone number claim.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+  - scope: address
+    description: Address claim.
+    flows: [authorizationCode]
+    sources: [well-known/datavant-openid-configuration.json]
+identity_scope_count: 14

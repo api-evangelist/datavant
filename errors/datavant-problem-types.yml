@@ -1,0 +1,215 @@
+generated: '2026-08-14'
+method: derived
+source: openapi/datavant-rest-api-openapi.yml
+format: vendor-envelope
+note: 'Datavant does not use RFC 9457 application/problem+json. Every documented 4xx/5xx response returns
+  application/json shaped as ErrorHTTPResponse: {"errors": [{"code": "<string>", "message": "<human readable>",
+  "params": [...] }]} - an ARRAY of errors, so a single response can carry several. `code` and `message`
+  are required on each error; `params` names the parameters involved. Datavant does not publish a public
+  registry of the `code` values, so the catalog below is keyed on the HTTP status plus the operation-level
+  response description harvested from the specification.'
+envelope:
+  media_type: application/json
+  schema: ErrorHTTPResponse
+  root_field: errors
+  cardinality: array
+  error_fields:
+  - name: code
+    type: string
+    required: true
+    description: Error code specifying type of error
+  - name: message
+    type: string
+    required: true
+    description: Human readable message describing error
+  - name: params
+    type: array
+    required: false
+    description: The parameters involved in the error
+status_codes:
+- status: 400
+  meaning: Bad Request
+  occurrences: 53
+- status: 404
+  meaning: Not Found
+  occurrences: 31
+- status: 409
+  meaning: Conflict - resource with the specified ID already exists
+  occurrences: 3
+- status: 422
+  meaning: Unprocessable Entity - validation or state-machine violation
+  occurrences: 53
+- status: 501
+  meaning: Not Implemented - document lives in an unsupported document store
+  occurrences: 1
+problems:
+- status: 400
+  title: Bad Request
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 52
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#add_query_to_order_orders__order_id__queries_post
+  - openapi/datavant-rest-api-openapi.yml#attach_roster_orders__order_id__roster_post
+  - openapi/datavant-rest-api-openapi.yml#attach_supplemental_data_orders__order_id__supplemental_data_post
+  - openapi/datavant-rest-api-openapi.yml#cancel_order_orders__order_uuid__cancel_post
+  - openapi/datavant-rest-api-openapi.yml#close_order_orders__order_id__close_request_post
+  - openapi/datavant-rest-api-openapi.yml#create_order_orders__post
+- status: 422
+  title: Unprocessable Entity
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 44
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#attach_roster_orders__order_id__roster_post
+  - openapi/datavant-rest-api-openapi.yml#attach_supplemental_data_orders__order_id__supplemental_data_post
+  - openapi/datavant-rest-api-openapi.yml#cancel_order_orders__order_uuid__cancel_post
+  - openapi/datavant-rest-api-openapi.yml#close_order_orders__order_id__close_request_post
+  - openapi/datavant-rest-api-openapi.yml#create_order_orders__post
+  - openapi/datavant-rest-api-openapi.yml#create_prematch_order_orders_prematch_post
+- status: 409
+  title: Order with specified ID already exists
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#create_order_orders__post
+- status: 404
+  title: Not Found
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 15
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#delete_project_projects__project_id__delete
+  - openapi/datavant-rest-api-openapi.yml#get_order_by_specific_id_orders_order_get
+  - openapi/datavant-rest-api-openapi.yml#get_order_errors_and_warnings_orders__order_uuid__error_and_warning_counts_get
+  - openapi/datavant-rest-api-openapi.yml#get_order_orders__order_id__get
+  - openapi/datavant-rest-api-openapi.yml#get_order_retrievals_reporting_data_orders__order_id__reporting_retrievals_get
+  - openapi/datavant-rest-api-openapi.yml#get_order_supplemental_data_validation_report_orders__order_uuid__validation_supplemental_data_report_get
+- status: 422
+  title: Order is not in 'draft' status.
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 5
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#add_query_to_order_orders__order_id__queries_post
+  - openapi/datavant-rest-api-openapi.yml#delete_all_patient_authorizations_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_delete
+  - openapi/datavant-rest-api-openapi.yml#delete_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations__filename__delete
+  - openapi/datavant-rest-api-openapi.yml#delete_query_orders__order_id__queries__query_id__delete
+  - openapi/datavant-rest-api-openapi.yml#update_query_in_order_orders__order_id__queries__query_id__put
+- status: 404
+  title: Order does not exist.
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#add_query_to_order_orders__order_id__queries_post
+- status: 404
+  title: Query does not exist.
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 5
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post
+  - openapi/datavant-rest-api-openapi.yml#delete_all_patient_authorizations_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_delete
+  - openapi/datavant-rest-api-openapi.yml#delete_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations__filename__delete
+  - openapi/datavant-rest-api-openapi.yml#delete_query_orders__order_id__queries__query_id__delete
+  - openapi/datavant-rest-api-openapi.yml#update_query_in_order_orders__order_id__queries__query_id__put
+- status: 422
+  title: Order is not in 'draft' status, or no filename given with the attached Patient Authorization
+    form.
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post
+- status: 409
+  title: Patient Authorization form with the given filename already exists for this query.
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post
+- status: 404
+  title: Patient authorization does not exist with the given filename.
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#get_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations__filename__get
+- status: 400
+  title: Invalid document UUID
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#download_document_documents__document_uuid__get
+- status: 404
+  title: Document does not exist for the tenant.
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#download_document_documents__document_uuid__get
+- status: 501
+  title: Document exists in an unsupported document store. Please contact tech support for assistance.
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#download_document_documents__document_uuid__get
+- status: 404
+  title: Customer configuration does not exist
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 4
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#get_configuration_configuration__get
+  - openapi/datavant-rest-api-openapi.yml#put_configuration_configuration__put
+  - openapi/datavant-rest-api-openapi.yml#update_health_plan_letter_configuration_supporting_documents_health_plan_letter_put
+  - openapi/datavant-rest-api-openapi.yml#update_letter_of_representation_configuration_supporting_documents_letter_of_representation_put
+- status: 404
+  title: Either customer configuration or Letter of Representation does not exist
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#get_letter_of_representation_configuration_supporting_documents_letter_of_representation_get
+- status: 422
+  title: The file is not mime type application/pdf
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 3
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#update_health_plan_letter_configuration_supporting_documents_health_plan_letter_put
+  - openapi/datavant-rest-api-openapi.yml#update_letter_of_representation_configuration_supporting_documents_letter_of_representation_put
+  - openapi/datavant-rest-api-openapi.yml#upload_supporting_document_projects__project_id__supporting_documents__document_type__put
+- status: 404
+  title: Either customer configuration or Health Plan letter does not exist
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#get_health_plan_letter_configuration_supporting_documents_health_plan_letter_get
+- status: 409
+  title: Project with specified ID already exists
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#create_project_projects__post
+- status: 404
+  title: Either Project or document for document type does not exist
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#get_supporting_document_projects__project_id__supporting_documents__document_type__get
+- status: 404
+  title: Project does not exist
+  schema: ErrorHTTPResponse
+  media_type: application/json
+  operation_count: 1
+  source_operations:
+  - openapi/datavant-rest-api-openapi.yml#upload_supporting_document_projects__project_id__supporting_documents__document_type__put
+problem_count: 20

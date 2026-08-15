@@ -1,0 +1,101 @@
+generated: '2026-08-14'
+method: searched
+source: >-
+  registry.npmjs.org, pypi.org, rubygems.org, crates.io, api.nuget.org, packagist.org,
+  hub.docker.com, search.maven.org, github.com/datavant, and
+  https://aws.amazon.com/marketplace/pp/prodview-eolcfagze2ihw
+note: >-
+  Datavant ships NO client SDK in any public language registry. The only first-party
+  software artifact distributed publicly is the tokenization engine itself - a container
+  image sold through AWS Marketplace, plus per-OS CLI/desktop binaries downloadable only
+  from the login-gated Datavant Portal. Both are the PRODUCT, not a client library for the
+  REST API: nothing wraps api.datavant.io/v2 in any language. Because there is no official
+  client library, NO `SDKs` pointer is emitted in apis.yml - the sdk_count checks would
+  otherwise be credited for software that is not an SDK.
+sdk_count: 0
+package_count: 2
+packages:
+  - name: datavant/datavant
+    language: n/a
+    kind: container-image
+    registry: aws-marketplace-ecr
+    registry_note: >-
+      AWS Marketplace ECR registry. There is no anonymous metadata endpoint to query -
+      pulls require an AWS Marketplace subscription and an authenticated ECR login - so
+      the version below is read from the image URI published on the listing page, which
+      is pinned.
+    url: https://aws.amazon.com/marketplace/pp/prodview-eolcfagze2ihw
+    image_uri: 709825985650.dkr.ecr.us-east-1.amazonaws.com/datavant/datavant:v5.2.0
+    install: docker pull 709825985650.dkr.ecr.us-east-1.amazonaws.com/datavant/datavant:v5.2.0
+    version: v5.2.0
+    published: null
+    published_note: >-
+      AWS Marketplace does not publish a release date for the image on the public listing
+      page, and the ECR registry does not answer unauthenticated. Checked; nothing to
+      record.
+    other_versions:
+      - v5.2.0
+      - v4.3.2
+    official: true
+    description: >-
+      Datavant Connect tokenization application - container build of the tokenization
+      engine for Amazon ECS / EKS, with direct S3 read/write and AWS Clean Rooms
+      integration.
+  - name: Datavant CLI
+    language: n/a
+    kind: cli-binary
+    registry: cdn
+    registry_note: >-
+      Distributed as per-OS binaries (Datavant_Mac, Datavant_Win.exe, Datavant_Linux) from
+      the Download page inside the login-gated Datavant Portal. There is no registry, no
+      package manager, no public download URL and no metadata endpoint - a consumer cannot
+      discover the current version without an account.
+    url: https://portal.datavant.com/
+    install: null
+    version: null
+    published: null
+    published_note: >-
+      Distribution is unpinned and gated: no public artifact URL exists to read a version
+      from. Version markers v3.8, v4.1, v4.2 and v4.3 are referenced in Datavant's own
+      user documentation as the releases that introduced particular flags, and the AWS
+      Marketplace container is at v5.2.0, but no dated release record is published.
+    official: true
+    platforms: [macOS 10.15+, Windows 8.1+ / Windows Server 2016+, 'Linux (Ubuntu 18.04+, RHEL 6.9+, CentOS 6.10+)']
+    detail: cli/datavant-cli.yml
+registries_checked:
+  - registry: npm
+    query: datavant
+    result: 0 packages
+    status: 200
+  - registry: pypi
+    query: 'datavant, datavant-sdk, datavant-api, pydatavant'
+    result: all 404
+    status: 404
+  - registry: rubygems
+    query: datavant
+    result: 404
+    status: 404
+  - registry: crates.io
+    query: datavant
+    result: not found
+    status: 403
+  - registry: nuget
+    query: datavant
+    result: totalHits 0
+    status: 200
+  - registry: packagist
+    query: datavant
+    result: no Datavant-owned package (unrelated results only)
+    status: 200
+  - registry: docker hub
+    query: datavant
+    result: 1 unrelated personal tutorial repo; no official Datavant image
+    status: 200
+  - registry: maven central
+    query: datavant
+    result: search endpoint did not answer within 20s on two attempts; no Datavant artifact known
+    status: timeout
+  - registry: github.com/datavant
+    query: org repos
+    result: organization exists, 0 public repositories
+    status: 200

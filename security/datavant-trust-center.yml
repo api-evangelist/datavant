@@ -1,0 +1,75 @@
+generated: '2026-08-14'
+method: searched
+probe: true
+url: https://trust.datavant.com/
+platform: TrustShare (TrustCloud / Kintent)
+note: >-
+  trust.datavant.com resolves and returns HTTP 200, but the page is a client-rendered
+  single-page app: the HTML shell contains only a loader, and every content path
+  (/home, /api/v1/company, /trustshare/program-content/*) returns the same shell. The
+  underlying TrustShare content API (backend.trustcloud.ai) answers 401 Unauthorized
+  without a token, so the certification list, policy documents and subprocessor register
+  cannot be read anonymously - most TrustShare tenants gate document download behind an
+  NDA click-through. The certifications recorded below are therefore taken from Datavant's
+  OWN first-party public statements rather than from the trust center itself, and each one
+  carries the URL it was read from. This is a real trust center whose contents are not
+  machine-readable.
+certifications:
+  - name: FedRAMP Moderate
+    status: authorized
+    type: Agency ATO
+    sponsor: National Center for Advancing Translational Sciences (NCATS), National Institutes of Health
+    date: '2022-12'
+    detail: 326 controls in place at FedRAMP Moderate.
+    source: https://www.datavant.com/hipaa-privacy/how-our-security-and-compliance-teams-approached-datavants-fedramp-authorization
+  - name: SOC 2 Type 2
+    status: attested
+    detail: >-
+      Named by Datavant as a pre-existing program at the time of the FedRAMP effort
+      ("we went from having programs like SOC 2 - Type 2, where we had 50 security
+      controls in place, to FedRAMP Moderate").
+    source: https://www.datavant.com/hipaa-privacy/how-our-security-and-compliance-teams-approached-datavants-fedramp-authorization
+  - name: HIPAA
+    status: program
+    detail: >-
+      HIPAA Expert Determination de-identification is a productised Datavant capability
+      (Datavant Connect - Privacy), and Datavant maintains a HIPAA privacy content hub.
+    source: https://www.datavant.com/hipaa-privacy
+  - name: FIPS 140-2
+    status: referenced
+    detail: Cited as a cryptographic-module requirement met as part of the FedRAMP authorization.
+    source: https://www.datavant.com/hipaa-privacy/how-our-security-and-compliance-teams-approached-datavants-fedramp-authorization
+security_investment:
+  amount_usd_per_year: 40000000
+  quote: '"invest more than $40 million annually in security and compliance infrastructure"'
+  source: https://www.datavant.com/about/privacy-compliance
+related_pages:
+  - url: https://www.datavant.com/about/privacy-compliance
+    title: Privacy and Compliance
+    http_status: 200
+  - url: https://www.datavant.com/hipaa-privacy
+    title: HIPAA Privacy hub
+    http_status: 200
+  - url: https://www.datavant.com/report-vulnerabilities
+    title: Report Software Vulnerabilities
+    http_status: 200
+  - url: https://www.datavant.com/international-privacy
+    title: International Privacy
+    http_status: 200
+evidence:
+  - source: https://trust.datavant.com/
+    http_status: 200
+    kind: trust-center
+    keywords: [trustshare, trust center]
+    note: JS-rendered shell; no certification text present in the served HTML.
+    fetched: '2026-08-14'
+  - source: https://backend.trustcloud.ai/trustshare/program-content/datavant
+    http_status: 401
+    kind: trust-center-api
+    note: '{"error":"Unauthorized","debug":"Missing authorization token."}'
+    fetched: '2026-08-14'
+  - source: https://www.datavant.com/hipaa-privacy/how-our-security-and-compliance-teams-approached-datavants-fedramp-authorization
+    http_status: 200
+    kind: first-party-blog
+    keywords: [fedramp moderate, agency ato, soc 2 type 2, fips 140-2]
+    fetched: '2026-08-14'

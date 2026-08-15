@@ -1,0 +1,69 @@
+generated: '2026-08-14'
+method: searched
+source: openapi/datavant-rest-api-openapi.yml
+note: >-
+  Datavant publishes a live Atlassian Statuspage and versions the REST API twice (a /v2
+  path segment plus a date-stamped `version-datavant` request header defaulting to
+  2023-04-01), but publishes no deprecation policy, no sunset commitment, and no SLA that
+  can be read anonymously. No operation in the specification is marked `deprecated: true`.
+versioning:
+  scheme: uri-path + date-header
+  current: v2
+  current_date_version: '2023-04-01'
+  header: version-datavant
+  header_default: '2023-04-01'
+  docs: https://developer.datavant.com/docs
+  note: >-
+    servers[] is https://api.datavant.io/v2. Each operation additionally accepts an
+    optional `version-datavant` header described as "Version of the Orders API to use with
+    this call". Datavant does not publish the list of valid date versions, so a client
+    cannot discover which versions besides 2023-04-01 are accepted.
+deprecation:
+  policy_url: null
+  sunset_header: unknown
+  deprecation_header: unknown
+  notice_period: null
+  note: >-
+    No deprecation or sunset policy is published, and no RFC 8594 Sunset / Deprecation
+    header support is documented or declared. NO Deprecation pointer is emitted in
+    apis.yml.
+deprecated_operations: []
+deprecated_operation_count: 0
+sla:
+  url: null
+  uptime_target: null
+  note: No public SLA or uptime commitment is published; terms are contract-gated.
+status_page: https://status.datavant.com/
+status_page_platform: Atlassian Statuspage
+status_page_api: https://status.datavant.com/api/v2/summary.json
+status_page_components:
+  - name: Portal
+    status_at_probe: operational
+    tracked_since: '2021-12-01'
+  - name: Datavant CLI
+    status_at_probe: operational
+    tracked_since: '2022-02-24'
+status_page_note: >-
+  The status page tracks exactly two components - Portal and Datavant CLI. The REST API
+  (api.datavant.io) is NOT a tracked component, so an API consumer has no status signal
+  for the surface they actually call.
+support:
+  email: support@datavant.com
+  developer_contact: support@datavant.com
+  note: >-
+    "Contact the developer" on the API reference resolves to mailto:support@datavant.com.
+    support.datavant.com returns HTTP 403 to anonymous callers (customer-only help center).
+release_notes:
+  in_spec: true
+  location: openapi/datavant-rest-api-openapi.yml#/tags (tag "Release Notes")
+  detail: changelog/datavant-changelog.yml
+evidence:
+  - url: https://status.datavant.com/api/v2/summary.json
+    http_status: 200
+    fetched: '2026-08-14'
+  - url: https://developer.datavant.com/openapi.json
+    http_status: 200
+    fetched: '2026-08-14'
+  - url: https://support.datavant.com/
+    http_status: 403
+    fetched: '2026-08-14'

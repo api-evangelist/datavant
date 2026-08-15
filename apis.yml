@@ -2,19 +2,18 @@ aid: datavant
 url: https://raw.githubusercontent.com/api-evangelist/datavant/refs/heads/main/apis.yml
 name: Datavant
 kind: company
-description: >-
-  Datavant is a United States health-data logistics company, formed from the 2021
-  merger of Datavant and Ciox Health, that connects and de-identifies healthcare data
-  across a "network of networks" spanning 350+ real-world data partners, 80,000+
-  hospitals and clinics, and a majority of the largest US health systems. Its core
-  capabilities are privacy-preserving record linkage using Datavant tokens, HIPAA
-  Expert Determination and de-identification, medical record retrieval / release of
-  information, and real-world evidence generation for life sciences, payers, providers,
-  and government. Datavant's integration surface is enterprise and partner/contract
-  gated - an access-controlled API host exists at api.datavant.com (returns HTTP 403
-  to anonymous callers) but Datavant does not publish a self-serve public developer
-  portal, a downloadable OpenAPI specification, or a FHIR CapabilityStatement. Home
-  market is the United States.
+description: 'Datavant is a United States health-data logistics company, formed from the 2021 merger
+  of Datavant and Ciox Health, that connects and de-identifies healthcare data across a "network
+  of networks" spanning 350+ real-world data partners, 80,000+ hospitals and clinics, and a majority
+  of the largest US health systems. Its core capabilities are privacy-preserving record linkage using
+  Datavant tokens, HIPAA Expert Determination and de-identification, medical record retrieval / release
+  of information, and real-world evidence generation for life sciences, payers, providers, and government.
+  Datavant publishes a real machine-readable contract for the retrieval side of that business: an
+  OpenAPI 3.1.0 document for the Datavant REST API (36 paths, 54 operations, OAuth 2.0 client credentials,
+  base https://api.datavant.io/v2) is served anonymously at https://developer.datavant.com/openapi.json,
+  even though that host''s root returns HTTP 404. Access is still enterprise and contract-gated -
+  there is no self-serve sign-up, no published pricing beyond a single AWS Marketplace listing, no
+  published scopes or rate limits, and no FHIR CapabilityStatement. Home market is the United States.'
 accessModel:
   pricing: enterprise
   onboarding: contact-sales
@@ -24,53 +23,185 @@ accessModel:
   label: Enterprise · Partner onboarding
   confidence: high
   source:
-    - review
-  generated: '2026-07-24'
+  - review
+  - https://developer.datavant.com/openapi.json
+  - https://aws.amazon.com/marketplace/pp/prodview-eolcfagze2ihw
+  generated: '2026-08-14'
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
-  - Healthcare
-  - United States
-  - Interoperability
-  - Health Data
-  - De-Identification
-  - Tokenization
-  - Real-World Data
-  - Record Retrieval
-  - Data Connectivity
-  - Life Sciences
-  - HIPAA
+- Healthcare
+- United States
+- Interoperability
+- Health Data
+- De-Identification
+- Tokenization
+- Real-World Data
+- Record Retrieval
+- Data Connectivity
+- Life Sciences
+- HIPAA
+- Medical Records
+- Release of Information
+- Privacy
+- OAuth 2.0
+- Health Information Exchange
 created: '2026-07-24'
-modified: '2026-07-25'
+modified: '2026-08-14'
 specificationVersion: '0.19'
-apis: []
+apis:
+- name: Datavant REST API
+  description: 'Datavant''s REST API for identified patient medical record retrieval - the programmable
+    side of Datavant Connect Retrieval (the ex-Ciox release-of-information business). Resource-oriented,
+    JSON-encoded, protected by OAuth 2.0 client credentials. 36 paths and 54 operations across seven
+    resources: Configuration (tenant defaults), Projects (order grouping), Orders (the parent container),
+    Order Queries (one per patient), Prematch (population sizing before committing to retrieval),
+    Visits (the retrieval work performed at each clinic) and Documents (the charts that come back).
+    Collections page with limit/offset in a JSON:API-flavoured envelope; versioning is a /v2 path
+    segment plus an optional version-datavant date header defaulting to 2023-04-01. No scopes, no
+    rate limits, no idempotency key and no webhooks are published.'
+  humanURL: https://developer.datavant.com/docs
+  baseURL: https://api.datavant.io/v2
+  tags:
+  - healthcare
+  - medical-records
+  - record-retrieval
+  - release-of-information
+  - health-data
+  - orders
+  - documents
+  - oauth2
+  - united-states
+  - hipaa
+  - life-sciences
+  - payers
+  properties:
+  - type: OpenAPI
+    url: openapi/datavant-rest-api-openapi.yml
+  - type: OpenAPI
+    url: openapi/_original/datavant-openapi.json
+  - type: Documentation
+    url: https://developer.datavant.com/docs
+  - type: APIReference
+    url: https://developer.datavant.com/docs
+  - type: Authentication
+    url: authentication/datavant-authentication.yml
+  - type: OAuthScopes
+    url: scopes/datavant-scopes.yml
+  - type: Conventions
+    url: conventions/datavant-conventions.yml
+  - type: ErrorCatalog
+    url: errors/datavant-problem-types.yml
+  - type: DataModel
+    url: data-model/datavant-data-model.yml
+  - type: Overlay
+    url: overlays/datavant-rest-api-overlay.yaml
+  - type: RateLimits
+    url: rate-limits/datavant-rate-limits.yml
+  - type: ChangeLog
+    url: changelog/datavant-changelog.yml
+  - type: Lifecycle
+    url: lifecycle/datavant-lifecycle.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: AgenticAccess
+    url: agentic-access/datavant-agentic-access.yml
+  - type: MCPServer
+    url: mcp/datavant-mcp.yml
+  - type: Support
+    url: mailto:support@datavant.com
 common:
-  - type: DomainSecurity
-    url: security/datavant-domain-security.yml
-  - type: Website
-    url: https://www.datavant.com/
-  - type: Blog
-    url: https://www.datavant.com/blog
-  - type: TrustCenter
-    url: https://trust.datavant.com/
-  - type: StatusPage
-    url: https://status.datavant.com/
-  - type: PrivacyPolicy
-    url: https://www.datavant.com/privacy-policy
-  - type: GitHubOrganization
-    url: https://github.com/datavant
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/datavant
-  - type: LLMsTxt
-    url: llms/datavant-llms.txt
-  - type: ProductPage
-    url: https://www.datavant.com/products/connect-linkage
-  - type: ProductPage
-    url: https://www.datavant.com/products/connect-privacy
-  - type: ProductPage
-    url: https://www.datavant.com/products/connect-retrieval
-  - type: ProductPage
-    url: https://www.datavant.com/products/insights-and-evidence-generation
+- type: AgenticAccess
+  url: agentic-access/datavant-agentic-access.yml
+- type: OAuthScopes
+  url: scopes/datavant-scopes.yml
+- type: Authentication
+  url: authentication/datavant-authentication.yml
+- type: DomainSecurity
+  url: security/datavant-domain-security.yml
+- type: Website
+  url: https://www.datavant.com/
+- type: Blog
+  url: https://www.datavant.com/blog
+- type: TrustCenter
+  url: https://trust.datavant.com/
+- type: StatusPage
+  url: https://status.datavant.com/
+- type: PrivacyPolicy
+  url: https://www.datavant.com/privacy-policy
+- type: GitHubOrganization
+  url: https://github.com/datavant
+- type: LinkedIn
+  url: https://www.linkedin.com/company/datavant
+- type: LLMsTxt
+  url: llms/datavant-llms.txt
+- type: ProductPage
+  url: https://www.datavant.com/products/connect-linkage
+- type: ProductPage
+  url: https://www.datavant.com/products/connect-privacy
+- type: ProductPage
+  url: https://www.datavant.com/products/connect-retrieval
+- type: ProductPage
+  url: https://www.datavant.com/products/insights-and-evidence-generation
+- type: DeveloperPortal
+  url: https://developer.datavant.com/docs
+- type: Documentation
+  url: https://developer.datavant.com/docs
+- type: APIReference
+  url: https://developer.datavant.com/docs
+- type: OpenAPI
+  url: openapi/datavant-rest-api-openapi.yml
+- type: Support
+  url: mailto:support@datavant.com
+- type: TermsOfService
+  url: https://www.datavant.com/terms-of-use
+- type: Login
+  url: https://portal.datavant.com/
+- type: Conventions
+  url: conventions/datavant-conventions.yml
+- type: ErrorCatalog
+  url: errors/datavant-problem-types.yml
+- type: DataModel
+  url: data-model/datavant-data-model.yml
+- type: Overlay
+  url: overlays/datavant-rest-api-overlay.yaml
+- type: Lifecycle
+  url: lifecycle/datavant-lifecycle.yml
+- type: ChangeLog
+  url: changelog/datavant-changelog.yml
+- type: Conformance
+  url: conformance/datavant-conformance.yml
+- type: Compliance
+  url: https://www.datavant.com/about/privacy-compliance
+- type: WellKnown
+  url: well-known/datavant-well-known.yml
+- type: OpenIDConnect
+  url: https://auth.datavant.com/.well-known/openid-configuration
+- type: VulnerabilityDisclosure
+  url: security/datavant-vulnerability-disclosure.yml
+- type: Security
+  url: https://www.datavant.com/report-vulnerabilities
+- type: TrustCenter
+  url: security/datavant-trust-center.yml
+- type: Packages
+  url: packages/datavant-packages.yml
+- type: CLI
+  url: cli/datavant-cli.yml
+- type: Plans
+  url: plans/datavant-plans-pricing.yml
+- type: Pricing
+  url: https://aws.amazon.com/marketplace/pp/prodview-eolcfagze2ihw
+- type: RateLimits
+  url: rate-limits/datavant-rate-limits.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: MCPServer
+  url: mcp/datavant-mcp.yml
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-08-14'
+  status: enriched
+  artifacts_added: 27
+  pass: local-v1

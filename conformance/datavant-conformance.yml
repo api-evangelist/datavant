@@ -1,0 +1,83 @@
+generated: '2026-08-14'
+method: searched
+source: openapi/datavant-rest-api-openapi.yml
+note: >-
+  Standards assertions for the Datavant REST API, derived from the OpenAPI document and
+  from Datavant's own published compliance statements. Datavant markets FHIR/TEFCA
+  interoperability thought leadership but serves no anonymous FHIR CapabilityStatement or
+  SMART-on-FHIR configuration on any host, so no FHIR conformance can be asserted against
+  a live contract.
+standards:
+  - id: openapi-3.1
+    conforms: true
+    evidence: 'openapi: 3.1.0 document served at https://developer.datavant.com/openapi.json (36 paths, 54 operations, 104 component schemas)'
+  - id: oauth2
+    conforms: true
+    evidence: components.securitySchemes declares oauth2 with a clientCredentials flow (tokenUrl https://api.datavant.io/v2/oauth2/token), applied globally
+  - id: oauth2-rfc8414-metadata
+    conforms: true
+    evidence: https://auth.datavant.com/.well-known/oauth-authorization-server returns 200 with authorization-server metadata (issuer https://datavant.auth0.com/)
+  - id: oidc-discovery
+    conforms: true
+    evidence: https://auth.datavant.com/.well-known/openid-configuration returns 200; 14 scopes_supported, S256 PKCE, jwks_uri published
+  - id: oauth2-scopes
+    conforms: false
+    evidence: the clientCredentials scopes map is empty and no operation narrows security[]; the API publishes zero authorization scopes
+  - id: json-api-1.0
+    conforms: partial
+    evidence: 'collection responses use a JsonApiPage_<T>_ envelope whose own schema description cites JSON:API 1.0 for the `data` key, plus a links object with first/last/self/next/prev - but member objects carry no type/id and there is no top-level errors/meta'
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: 'errors are application/json ErrorHTTPResponse {"errors":[{code,message,params}]}, not application/problem+json'
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: no Sunset or Deprecation header support is declared or documented; no operation is marked deprecated
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt returns 404 on www.datavant.com, auth.datavant.com, developer.datavant.com and api.datavant.io
+  - id: idempotency-key
+    conforms: false
+    evidence: no Idempotency-Key header or parameter anywhere in the specification
+  - id: rate-limit-headers
+    conforms: false
+    evidence: no RateLimit-* / X-RateLimit-* headers or 429 responses are declared in the specification or documented
+  - id: pagination
+    conforms: true
+    evidence: limit/offset query parameters (limit default 50, max 100) with total, unfiltered_total and RFC 8288-style link relations in the response body
+  - id: fhir-r4
+    conforms: false
+    evidence: no anonymous CapabilityStatement; /fhir/metadata returns 403 on api.datavant.com and 404 on api.datavant.io; the REST API is resource-oriented JSON, not FHIR
+  - id: smart-on-fhir
+    conforms: false
+    evidence: /.well-known/smart-configuration returns 404 or 403 on every probed host
+  - id: hl7-tefca
+    conforms: unknown
+    evidence: Datavant publishes TEFCA interoperability content at https://www.datavant.com/interoperability but no QHIN/participant technical conformance surface is served publicly
+  - id: asyncapi
+    conforms: false
+    evidence: no event, streaming or webhook surface is published; results are delivered out-of-band by SFTP/S3/email on a schedule
+  - id: mcp
+    conforms: false
+    evidence: no hosted MCP server; mcp.datavant.com and mcp.datavant.io do not resolve
+  - id: a2a
+    conforms: false
+    evidence: /.well-known/agent-card.json and /.well-known/agent.json return 404 (or 403) on every Datavant host
+compliance:
+  published: true
+  page: https://www.datavant.com/about/privacy-compliance
+  programs:
+    - id: fedramp-moderate
+      status: authorized
+      detail: Agency ATO sponsored by NIH-NCATS, December 2022, 326 controls
+      source: https://www.datavant.com/hipaa-privacy/how-our-security-and-compliance-teams-approached-datavants-fedramp-authorization
+    - id: soc2-type2
+      status: attested
+      source: https://www.datavant.com/hipaa-privacy/how-our-security-and-compliance-teams-approached-datavants-fedramp-authorization
+    - id: hipaa
+      status: program
+      detail: HIPAA Expert Determination de-identification is a productised capability
+      source: https://www.datavant.com/hipaa-privacy
+    - id: fips-140-2
+      status: referenced
+      source: https://www.datavant.com/hipaa-privacy/how-our-security-and-compliance-teams-approached-datavants-fedramp-authorization
+  detail: security/datavant-trust-center.yml

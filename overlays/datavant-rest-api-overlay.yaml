@@ -1,0 +1,38 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Datavant REST API
+  version: 1.0.0
+extends: openapi/datavant-rest-api-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apis.io/provider/datavant
+    x-apievangelist-source: https://developer.datavant.com/openapi.json
+    x-apievangelist-harvested: '2026-08-14'
+    x-apievangelist-note: Spec is served on the API-reference host root; developer.datavant.com/ itself
+      returns 404.
+    contact:
+      name: Datavant Support
+      email: support@datavant.com
+      url: https://developer.datavant.com/docs
+    termsOfService: https://www.datavant.com/terms-of-use
+- target: $.servers
+  update:
+  - url: https://api.datavant.io/v2
+    description: Production - the only server the specification declares.
+- target: $.components.securitySchemes.oauth2
+  update:
+    description: OAuth 2.0 client credentials. POST client_id/client_secret to https://api.datavant.io/v2/oauth2/token;
+      the response carries a bearer access_token valid for 7200 seconds. The scopes map is empty - a token
+      grants every operation.
+- target: $.components.schemas.ErrorHTTPResponse
+  update:
+    x-apievangelist-error-catalog: errors/datavant-problem-types.yml
+    x-apievangelist-format: vendor-envelope (not RFC 9457 application/problem+json)
+- target: $.components.schemas.Links
+  update:
+    x-apievangelist-pagination: limit/offset, limit default 50 maximum 100; see conventions/datavant-conventions.yml
+- target: $.tags[?(@.name=='Release Notes')]
+  update:
+    x-apievangelist-changelog: changelog/datavant-changelog.yml
+    x-apievangelist-note: Newest entry 2023-09-13; info.version still 2023-04-01.

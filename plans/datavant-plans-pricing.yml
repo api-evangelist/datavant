@@ -1,0 +1,61 @@
+generated: '2026-08-14'
+method: searched
+source: https://aws.amazon.com/marketplace/pp/prodview-eolcfagze2ihw
+note: >-
+  Datavant publishes no pricing page of its own - www.datavant.com/pricing returns 404 and
+  the site's robots.txt explicitly disallows /pricing - and every product page routes to a
+  contact-sales form. There is exactly ONE publicly listed price anywhere in Datavant's
+  surface: the Datavant Connect Tokenization Application on AWS Marketplace, sold as a
+  single 12-month contract. That listing is recorded below. The REST API
+  (api.datavant.io/v2) has no published price at all; access is granted under an
+  enterprise agreement.
+plan_count: 1
+currency: USD
+billing_model: annual contract
+self_serve: false
+free_tier: false
+trial: false
+plans:
+  - name: Datavant Connect 12-Month License
+    product: Datavant Connect Tokenization Application
+    channel: AWS Marketplace
+    price: 300000
+    currency: USD
+    billing_period: 12 months
+    billing_type: contract
+    delivery_method: container image (Amazon ECS / Amazon EKS)
+    unit_metric: unspecified
+    unit_note: >-
+      AWS Marketplace shows the offer as unit-based but does not define what one unit is;
+      the listing directs buyers to contact Datavant to establish the unit metric for
+      their workload.
+    included_quota: null
+    overage: null
+    limits: []
+    url: https://aws.amazon.com/marketplace/pp/prodview-eolcfagze2ihw
+    fetched: '2026-08-14'
+    http_status: 200
+unpriced_surfaces:
+  - surface: Datavant REST API (record retrieval)
+    base_url: https://api.datavant.io/v2
+    pricing: contract
+    note: No public price, no self-serve sign-up, no free tier. Onboarding is contact-sales / partner agreement.
+  - surface: Datavant Portal
+    url: https://portal.datavant.com/
+    pricing: contract
+    note: Login-gated; every path 302s to /login?next=/.
+  - surface: Datavant Connect - Linkage / Privacy / Retrieval, Insights & Evidence Generation
+    pricing: contract
+    note: Marketing pages route to /contact/request-demo.
+evidence:
+  - url: https://www.datavant.com/pricing
+    http_status: 404
+    fetched: '2026-08-14'
+  - url: https://www.datavant.com/robots.txt
+    http_status: 200
+    finding: 'contains "Disallow: /pricing"'
+    fetched: '2026-08-14'
+  - url: https://aws.amazon.com/marketplace/pp/prodview-eolcfagze2ihw
+    http_status: 200
+    finding: 'Datavant Connect 12-Month License: $300,000.00'
+    fetched: '2026-08-14'

@@ -1,0 +1,356 @@
+generated: '2026-08-14'
+method: derived
+status: candidate
+source: openapi/datavant-rest-api-openapi.yml
+note: No Datavant MCP server exists. mcp.datavant.com and mcp.datavant.io do not resolve, no MCP server
+  appears in any registry or in Datavant's docs, and the API reference (a ReDoc rendering of the OpenAPI)
+  mentions no agent surface. The tool list below is a CANDIDATE derived one-to-one from the 54 operations
+  of the published OpenAPI so that the shape of an agent surface is on record - it is not a server Datavant
+  ships, and no endpoint is asserted. Each tool inherits its real input contract from the referenced operation's
+  parameters and requestBody in the specification. Note that 28 of the 54 operations are write operations
+  against identified patient medical records, 15 of them classified physical-consequence and 2 safety-critical
+  by agentic-access/ - any real MCP exposure of this API needs the human-in-the-loop and audit contracts
+  recorded there before it is agent-callable.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: derived
+server:
+  name: datavant
+  transport: null
+  url: null
+probes:
+- url: https://mcp.datavant.com/
+  status: '000'
+  note: does not resolve
+- url: https://mcp.datavant.io/
+  status: '000'
+  note: does not resolve
+- url: https://api.datavant.io/.well-known/oauth-protected-resource
+  status: 404
+- url: https://auth.datavant.com/.well-known/oauth-protected-resource
+  status: 404
+tool_count: 53
+tools:
+- name: list_all_orders
+  description: List all orders
+  category: Orders
+  method: GET
+  path: /orders/
+  source_operation: openapi/datavant-rest-api-openapi.yml#list_orders_orders__get
+- name: create_an_order
+  description: Create an order
+  category: Orders
+  method: POST
+  path: /orders/
+  source_operation: openapi/datavant-rest-api-openapi.yml#create_order_orders__post
+- name: get_an_order
+  description: Get an order
+  category: Untagged
+  method: GET
+  path: /orders/order
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_order_by_specific_id_orders_order_get
+- name: get_an_order_2
+  description: Get an order
+  category: Orders
+  method: GET
+  path: /orders/{order_id}
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_order_orders__order_id__get
+- name: update_an_order
+  description: Update an order
+  category: Orders
+  method: PUT
+  path: /orders/{order_id}
+  source_operation: openapi/datavant-rest-api-openapi.yml#update_order_orders__order_id__put
+- name: get_an_order_s_basic_validation_results
+  description: Get an order's basic validation results
+  category: Untagged
+  method: GET
+  path: /orders/order/validation/stats
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_order_validation_results_by_specific_id_orders_order_validation_stats_get
+- name: get_an_order_s_basic_validation_results_2
+  description: Get an order's basic validation results
+  category: Orders
+  method: GET
+  path: /orders/{order_id}/validation/stats
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_order_validation_results_orders__order_id__validation_stats_get
+- name: get_an_order_validation_report
+  description: Get an order validation report
+  category: Orders
+  method: GET
+  path: /orders/{order_uuid}/validation/report
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_order_validation_report_orders__order_uuid__validation_report_get
+- name: get_an_order_supplemental_data_validation_report
+  description: Get an order supplemental data validation report
+  category: Orders
+  method: GET
+  path: /orders/{order_uuid}/validation/supplemental-data-report
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_order_supplemental_data_validation_report_orders__order_uuid__validation_supplemental_data_report_get
+- name: get_grouped_order_validation_errors_and_varnings_with_counts
+  description: Get grouped order validation errors and varnings with counts
+  category: Orders
+  method: GET
+  path: /orders/{order_uuid}/error-and-warning-counts
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_order_errors_and_warnings_orders__order_uuid__error_and_warning_counts_get
+- name: get_reporting_for_order_retrievals
+  description: Get reporting for order retrievals
+  category: Untagged
+  method: GET
+  path: /orders/{order_id}/reporting/retrievals
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_order_retrievals_reporting_data_orders__order_id__reporting_retrievals_get
+- name: cancel_an_order
+  description: Cancel an order
+  category: Orders
+  method: POST
+  path: /orders/{order_uuid}/cancel
+  source_operation: openapi/datavant-rest-api-openapi.yml#cancel_order_orders__order_uuid__cancel_post
+- name: deal_with_an_order_close_request
+  description: Deal with an order close request
+  category: Orders
+  method: POST
+  path: /orders/{order_id}/close-request
+  source_operation: openapi/datavant-rest-api-openapi.yml#close_order_orders__order_id__close_request_post
+- name: attach_a_roster_to_an_order
+  description: Attach a roster to an order
+  category: Orders
+  method: POST
+  path: /orders/{order_id}/roster
+  source_operation: openapi/datavant-rest-api-openapi.yml#attach_roster_orders__order_id__roster_post
+- name: upload_supplemental_data_to_an_order
+  description: Upload supplemental data to an order
+  category: Orders
+  method: POST
+  path: /orders/{order_id}/supplemental-data
+  source_operation: openapi/datavant-rest-api-openapi.yml#attach_supplemental_data_orders__order_id__supplemental_data_post
+- name: dispatch_an_order
+  description: Dispatch an order
+  category: Orders
+  method: POST
+  path: /orders/{order_id}/dispatch
+  source_operation: openapi/datavant-rest-api-openapi.yml#dispatch_order_orders__order_id__dispatch_post
+- name: submit_an_order
+  description: Submit an order
+  category: Orders
+  method: POST
+  path: /orders/{order_id}/submit
+  source_operation: openapi/datavant-rest-api-openapi.yml#submit_order_orders__order_id__submit_post
+- name: list_all_queries_for_an_order
+  description: List all queries for an order
+  category: Order Queries
+  method: GET
+  path: /orders/{order_id}/queries
+  source_operation: openapi/datavant-rest-api-openapi.yml#list_queries_orders__order_id__queries_get
+- name: add_a_query_to_an_order
+  description: Add a query to an order
+  category: Order Queries
+  method: POST
+  path: /orders/{order_id}/queries
+  source_operation: openapi/datavant-rest-api-openapi.yml#add_query_to_order_orders__order_id__queries_post
+- name: get_a_query_from_an_order
+  description: Get a query from an order
+  category: Order Queries
+  method: GET
+  path: /orders/{order_id}/queries/{query_id}
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_query_in_order_orders__order_id__queries__query_id__get
+- name: update_a_query_from_an_order
+  description: Update a query from an order
+  category: Order Queries
+  method: PUT
+  path: /orders/{order_id}/queries/{query_id}
+  source_operation: openapi/datavant-rest-api-openapi.yml#update_query_in_order_orders__order_id__queries__query_id__put
+- name: delete_a_query_from_an_order
+  description: Delete a query from an order
+  category: Order Queries
+  method: DELETE
+  path: /orders/{order_id}/queries/{query_id}
+  source_operation: openapi/datavant-rest-api-openapi.yml#delete_query_orders__order_id__queries__query_id__delete
+- name: list_all_patient_authorizations
+  description: List all Patient Authorizations.
+  category: Order Queries
+  method: GET
+  path: /orders/{order_id}/queries/{query_id}/supporting-documents/patient-authorizations
+  source_operation: openapi/datavant-rest-api-openapi.yml#list_patient_authorization_filenames_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_get
+- name: create_patient_authorization
+  description: Create Patient Authorization
+  category: Order Queries
+  method: POST
+  path: /orders/{order_id}/queries/{query_id}/supporting-documents/patient-authorizations
+  source_operation: openapi/datavant-rest-api-openapi.yml#create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post
+- name: delete_all_patient_authorizations
+  description: Delete All Patient Authorizations
+  category: Order Queries
+  method: DELETE
+  path: /orders/{order_id}/queries/{query_id}/supporting-documents/patient-authorizations
+  source_operation: openapi/datavant-rest-api-openapi.yml#delete_all_patient_authorizations_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_delete
+- name: get_patient_authorization
+  description: Get Patient Authorization
+  category: Order Queries
+  method: GET
+  path: /orders/{order_id}/queries/{query_id}/supporting-documents/patient-authorizations/{filename}
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations__filename__get
+- name: delete_patient_authorization
+  description: Delete Patient Authorization
+  category: Order Queries
+  method: DELETE
+  path: /orders/{order_id}/queries/{query_id}/supporting-documents/patient-authorizations/{filename}
+  source_operation: openapi/datavant-rest-api-openapi.yml#delete_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations__filename__delete
+- name: create_a_prematch_order
+  description: Create a prematch order
+  category: Prematch
+  method: POST
+  path: /orders/prematch
+  source_operation: openapi/datavant-rest-api-openapi.yml#create_prematch_order_orders_prematch_post
+- name: list_prematch_orders
+  description: List Prematch Orders
+  category: Prematch
+  method: GET
+  path: /orders/prematch/all
+  source_operation: openapi/datavant-rest-api-openapi.yml#list_prematch_orders_orders_prematch_all_get
+- name: delete_prematch_order
+  description: Delete prematch order
+  category: Prematch
+  method: DELETE
+  path: /orders/prematch/{order_uuid}
+  source_operation: openapi/datavant-rest-api-openapi.yml#delete_prematch_orders_prematch__order_uuid__delete
+- name: get_prematch_result_counts
+  description: Get prematch result counts
+  category: Prematch
+  method: GET
+  path: /orders/prematch/{order_id}/counts
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_prematch_result_counts_orders_prematch__order_id__counts_get
+- name: begin_dispatching_instructions
+  description: Begin dispatching instructions
+  category: Orders
+  method: PUT
+  path: /orders/{order_id}/start-record-retrieval
+  source_operation: openapi/datavant-rest-api-openapi.yml#dispatch_instructions_orders__order_id__start_record_retrieval_put
+- name: list_all_documents
+  description: List all documents
+  category: Documents
+  method: GET
+  path: /documents
+  source_operation: openapi/datavant-rest-api-openapi.yml#list_documents_documents_get
+- name: download_a_document
+  description: Download a document
+  category: Documents
+  method: GET
+  path: /documents/{document_uuid}
+  source_operation: openapi/datavant-rest-api-openapi.yml#download_document_documents__document_uuid__get
+- name: get_customer_level_configuration
+  description: Get customer-level configuration
+  category: Configuration
+  method: GET
+  path: /configuration/
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_configuration_configuration__get
+- name: update_customer_level_configuration
+  description: Update customer-level configuration
+  category: Configuration
+  method: PUT
+  path: /configuration/
+  source_operation: openapi/datavant-rest-api-openapi.yml#put_configuration_configuration__put
+- name: get_letter_of_representation
+  description: Get Letter Of Representation
+  category: Configuration
+  method: GET
+  path: /configuration/supporting-documents/letter-of-representation
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_letter_of_representation_configuration_supporting_documents_letter_of_representation_get
+- name: update_letter_of_representation
+  description: Update Letter Of Representation
+  category: Configuration
+  method: PUT
+  path: /configuration/supporting-documents/letter-of-representation
+  source_operation: openapi/datavant-rest-api-openapi.yml#update_letter_of_representation_configuration_supporting_documents_letter_of_representation_put
+- name: delete_letter_of_representation
+  description: Delete Letter Of Representation
+  category: Configuration
+  method: DELETE
+  path: /configuration/supporting-documents/letter-of-representation
+  source_operation: openapi/datavant-rest-api-openapi.yml#delete_letter_of_representation_configuration_supporting_documents_letter_of_representation_delete
+- name: get_health_plan_letter
+  description: Get Health Plan Letter
+  category: Configuration
+  method: GET
+  path: /configuration/supporting-documents/health-plan-letter
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_health_plan_letter_configuration_supporting_documents_health_plan_letter_get
+- name: update_health_plan_letter
+  description: Update Health Plan Letter
+  category: Configuration
+  method: PUT
+  path: /configuration/supporting-documents/health-plan-letter
+  source_operation: openapi/datavant-rest-api-openapi.yml#update_health_plan_letter_configuration_supporting_documents_health_plan_letter_put
+- name: delete_health_plan_letter
+  description: Delete Health Plan Letter
+  category: Configuration
+  method: DELETE
+  path: /configuration/supporting-documents/health-plan-letter
+  source_operation: openapi/datavant-rest-api-openapi.yml#delete_health_plan_letter_configuration_supporting_documents_health_plan_letter_delete
+- name: list_all_projects
+  description: List all projects
+  category: Projects
+  method: GET
+  path: /projects/
+  source_operation: openapi/datavant-rest-api-openapi.yml#list_projects_projects__get
+- name: create_a_project
+  description: Create a project
+  category: Projects
+  method: POST
+  path: /projects/
+  source_operation: openapi/datavant-rest-api-openapi.yml#create_project_projects__post
+- name: get_a_project_by_id
+  description: Get a project by ID
+  category: Projects
+  method: GET
+  path: /projects/{project_id}
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_project_by_id_projects__project_id__get
+- name: update_a_project
+  description: Update a project
+  category: Projects
+  method: PUT
+  path: /projects/{project_id}
+  source_operation: openapi/datavant-rest-api-openapi.yml#update_project_projects__project_id__put
+- name: delete_a_project
+  description: Delete a project
+  category: Projects
+  method: DELETE
+  path: /projects/{project_id}
+  source_operation: openapi/datavant-rest-api-openapi.yml#delete_project_projects__project_id__delete
+- name: get_a_project_by_uuid
+  description: Get a project by UUID
+  category: Projects
+  method: GET
+  path: /projects/uuid/{project_uuid}
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_project_by_uuid_projects_uuid__project_uuid__get
+- name: get_supporting_document
+  description: Get Supporting Document
+  category: Projects
+  method: GET
+  path: /projects/{project_id}/supporting-documents/{document_type}
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_supporting_document_projects__project_id__supporting_documents__document_type__get
+- name: upload_supporting_document
+  description: Upload Supporting Document
+  category: Projects
+  method: PUT
+  path: /projects/{project_id}/supporting-documents/{document_type}
+  source_operation: openapi/datavant-rest-api-openapi.yml#upload_supporting_document_projects__project_id__supporting_documents__document_type__put
+- name: delete_request_letter
+  description: Delete Request Letter
+  category: Projects
+  method: DELETE
+  path: /projects/{project_id}/supporting-documents/{document_type}
+  source_operation: openapi/datavant-rest-api-openapi.yml#delete_request_letter_projects__project_id__supporting_documents__document_type__delete
+- name: get_details_about_a_specific_visit_under_the_given_project_and_query
+  description: Get details about a specific visit under the given project and query.
+  category: Visits
+  method: GET
+  path: /projects/{project_id}/queries/{query_id}/visits/{visit_uuid}
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_visit_details_projects__project_id__queries__query_id__visits__visit_uuid__get
+- name: get_all_visits_for_a_particular_patient_identified_by_query_id_across_all_orders_in_the_given_project
+  description: Get all visits for a particular patient (identified by query.id) across all orders in the
+    given project.
+  category: Visits
+  method: GET
+  path: /projects/{project_id}/queries/{query_id}/visits
+  source_operation: openapi/datavant-rest-api-openapi.yml#get_query_visits_projects__project_id__queries__query_id__visits_get

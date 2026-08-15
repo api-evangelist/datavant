@@ -1,0 +1,177 @@
+generated: '2026-08-14'
+method: searched
+source: >-
+  https://status.datavant.com/api/v2/summary.json,
+  https://aws.amazon.com/marketplace/pp/prodview-eolcfagze2ihw,
+  https://datavant-aws-marketplace-files.s3.amazonaws.com/tokenization_user_guide.pdf
+note: >-
+  The Datavant CLI is a first-party command-line tool, tracked as its own component on
+  Datavant's public status page since 2022-02-24. It is NOT a client for the REST API at
+  api.datavant.io - it is the on-premise tokenization engine, run inside the customer's
+  own environment so that PII never leaves it. Only the command surface is captured here.
+  The user guide it was read from is served publicly and unauthenticated from Datavant's
+  own AWS Marketplace S3 bucket, but carries a confidentiality footer, so no prose from it
+  is reproduced; the operations, flags and distribution facts below are corroborated by
+  the AWS Marketplace listing and the status page.
+name: Datavant CLI
+purpose: On-premise / in-VPC tokenization and token transformation for identified health data.
+status_page_component: Datavant CLI
+status_page: https://status.datavant.com/
+install:
+  methods:
+    - method: portal-download
+      url: https://portal.datavant.com/
+      note: >-
+        Download page inside the login-gated Datavant Portal. Per-OS binaries -
+        Datavant_Mac, Datavant_Win.exe, Datavant_Linux. A GUI variant ("Datavant desktop")
+        is offered for macOS and Windows only.
+    - method: container
+      registry: aws-marketplace-ecr
+      image: 709825985650.dkr.ecr.us-east-1.amazonaws.com/datavant/datavant:v5.2.0
+      note: Container build for Amazon ECS / EKS, sold through AWS Marketplace.
+  public_download: false
+  package_manager: null
+platforms:
+  - macOS 10.15 or later
+  - Windows 8.1 or later / Windows Server 2016 or later
+  - Linux - Ubuntu 18.04+, Red Hat 6.9+, CentOS 6.10+
+authentication:
+  mechanism: generated application credential (credentials.txt)
+  delivery:
+    - stdin (the credential file is piped into the binary)
+    - 'environment variable DV_USER_CREDENTIALS (via --environment-credentials)'
+  issued_from: Datavant Portal Download page
+  lifetime: 10 years
+  detail: authentication/datavant-authentication.yml
+network_requirements:
+  outbound_https_hosts:
+    - sec.datavant.com
+    - auth.datavant.com
+    - api.datavant.com
+  port: 443
+  note: >-
+    Direct TLS is required to these hosts (no proxy re-signing) so the engine can reach
+    cryptographic secrets and configuration. All three return HTTP 403 or a 404-on-root to
+    anonymous callers, which is why the earlier profile of this company saw only a closed
+    api.datavant.com - the CLI's control plane is separate from the public REST API.
+commands:
+  - name: tokenize
+    group: token-generation
+    summary: Create site-specific tokens from patient demographics and apply de-identification per the configuration.
+    required_flags: ['-s <site>', '-c <config>', '-i <input>', '-o <output>']
+  - name: transform-tokens --to
+    group: token-sharing
+    summary: Re-encrypt site-specific tokens into a transit key scoped to a named partner, before sending outside the environment.
+    required_flags: ['--to <partner_site>', '-s <site>', '-i <input>', '-o <output>']
+  - name: transform-tokens --from
+    group: token-sharing
+    summary: Re-encrypt transit tokens received from a partner into the local site-specific key.
+    required_flags: ['--from <partner_site>', '-s <site>', '-i <input>', '-o <output>']
+  - name: diagnose
+    group: diagnostics
+    summary: Verify outbound network connectivity to the Datavant control-plane hosts.
+    required_flags: []
+  - name: serve
+    group: modes
+    summary: Run the engine as a local HTTP API for record-by-record processing (server mode).
+    required_flags: []
+  - name: onboard
+    group: data-upload
+    summary: Upload tokenized data to the Datavant Portal for use in Profiles, Overlaps and related products (v4.1+).
+    required_flags: []
+modes:
+  - name: batch
+    description: Process whole files (or groups of files) through the engine on-premise. The default and most common mode.
+  - name: server
+    description: Run locally and accept JSON records over a local API, up to 1000 records per request, for record-by-record processing.
+    local_api: true
+    default_port: 8250
+    default_bind: localhost
+    bind_constraint: '--local-ip-address must be a private address (v3.8+)'
+  - name: streaming
+    description: Stream records in on stdin and out on stdout for continuous processing.
+  - name: desktop
+    description: GUI variant for batch processing flat files (macOS and Windows only).
+  - name: cloud
+    description: Send PII under a BAA to Datavant Cloud Tokenization; output is uploaded to the Datavant Portal.
+flags:
+  - flag: -h, --help
+    description: Print help and exit.
+  - flag: -v, --version
+    description: Print the version number.
+  - flag: --delimiter
+    description: Field delimiter for input data; falls back to the configuration when omitted.
+  - flag: --num-threads
+    description: Number of sub-files processed in parallel; accepts `auto`. Default 1.
+  - flag: --error-codes-suppressed-in-output
+    description: Emit an empty string instead of an error token when a token cannot be generated.
+  - flag: --dev-log-path
+    description: Override the dev log path.
+  - flag: --token-log-path
+    description: Override the token error log path.
+  - flag: --data-quality-log-path
+    description: Override the data quality log path (v4.1+).
+  - flag: --no-logs
+    description: Suppress all log files.
+  - flag: --console-log
+    description: Send runtime exceptions to the console instead of an exception log file.
+  - flag: --silent
+    description: Suppress console output.
+  - flag: --disable-output-reordering
+    description: Preserve input row order (output rows are randomized by default for privacy).
+  - flag: --token-columns
+    description: Explicit 0-indexed, space-separated token columns to transform, overriding auto-detection.
+  - flag: --credits
+    description: Print a URL to the package/license list for the build.
+  - flag: --environment-credentials
+    description: Read the credential from the DV_USER_CREDENTIALS environment variable.
+  - flag: --input-encoding
+    description: 'Input character encoding: UTF-8 (default), iso-8859-1 through iso-8859-16, cp-1252.'
+  - flag: --input-format
+    description: 'Input file format: csv or json.'
+  - flag: --output-format
+    description: 'Output file format: csv or json.'
+  - flag: --local-ip-address
+    description: Private IP to bind when running in server mode (v3.8+).
+  - flag: --port
+    description: Port to bind in server mode; default 8250 (v3.8+).
+  - flag: --dataset
+    description: Target location for data uploaded to the Datavant Portal (v4.1+).
+  - flag: --skip-name-preprocessing
+    description: Skip the first/last-name pre-processing introduced in v4.1 (v4.3+).
+input_formats: [csv, json, ndjson]
+output_formats: [csv, json]
+logs:
+  - name: dev log
+    default_filename: datavant_{YYYYMMDDHHMMSS}.log
+  - name: token error log
+    default_filename: token_errors_{YYYYMMDDTHHMMSS}.log
+    note: >-
+      Records error tokens as "Line N, [ERROR_CODE], [ERROR_NAME]". Error tokens are
+      12-character strings prefixed "XXX -" followed by six characters, one per failing
+      PII element, zero-padded. Datavant publishes the per-character error registry in the
+      same user guide; it is referenced here rather than reproduced.
+  - name: data quality log
+    default_filename: dataquality_{YYYYMMDDTHHMMSS}.log
+    since: v4.1
+    note: Reports token success rates and per-PII-field fill rates, and flags statistically likely filler values.
+versions_referenced: [v3.8, v4.1, v4.2, v4.3, v5.2.0]
+changelog: null
+changelog_note: No dated public changelog is published for the CLI.
+evidence:
+  - url: https://status.datavant.com/api/v2/summary.json
+    http_status: 200
+    finding: 'component "Datavant CLI", operational, tracked since 2022-02-24'
+    fetched: '2026-08-14'
+  - url: https://aws.amazon.com/marketplace/pp/prodview-eolcfagze2ihw
+    http_status: 200
+    finding: container delivery, image URI, v5.2.0 / v4.3.2, support@datavant.com
+    fetched: '2026-08-14'
+  - url: https://datavant-aws-marketplace-files.s3.amazonaws.com/tokenization_user_guide.pdf
+    http_status: 200
+    finding: command surface, flags, modes, platform matrix, log files
+    fetched: '2026-08-14'
+    caveat: >-
+      Served publicly and unauthenticated from Datavant's own S3 bucket and indexed by
+      search engines, but the document carries a confidentiality footer. Only factual
+      command-surface facts are recorded; no prose is reproduced.

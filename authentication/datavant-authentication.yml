@@ -1,0 +1,101 @@
+generated: '2026-08-14'
+method: searched
+source: openapi/datavant-rest-api-openapi.yml
+docs: https://developer.datavant.com/docs
+note: >-
+  Derived from the OpenAPI securitySchemes, then upgraded from two live anonymous probes:
+  the OAuth 2.0 token operation documented in the specification itself (POST /oauth2/token,
+  "Authenticate with Orders API using Client Credentials"), and Datavant's Auth0 discovery
+  documents served at auth.datavant.com. The REST API and the Datavant Portal are two
+  different authentication surfaces backed by the same identity provider tenant
+  (https://datavant.auth0.com/): the REST API uses OAuth 2.0 client credentials against
+  https://api.datavant.io/v2/oauth2/token, while the Portal and the Datavant CLI use a
+  long-lived generated application credential issued from the Portal Download page.
+summary:
+  types:
+    - oauth2
+    - openIdConnect
+  oauth2_flows:
+    - clientCredentials
+  api_key_in: []
+  bearer_token: true
+  identity_provider: Auth0 (tenant https://datavant.auth0.com/, custom domain auth.datavant.com)
+schemes:
+  - name: oauth2
+    type: oauth2
+    applied: global
+    flows:
+      - flow: clientCredentials
+        tokenUrl: https://api.datavant.io/v2/oauth2/token
+        refreshUrl: https://api.datavant.io/v2/oauth2/token
+        scopes: 0
+        note: >-
+          The specification declares an EMPTY scopes map and no operation narrows
+          `security[]`, so every operation carries the same undifferentiated
+          `oauth2: []` requirement. There is no per-operation authorization surface
+          published.
+    sources:
+      - openapi/datavant-rest-api-openapi.yml
+  - name: openIdConnect
+    type: openIdConnect
+    openIdConnectUrl: https://auth.datavant.com/.well-known/openid-configuration
+    issuer: https://datavant.auth0.com/
+    applied: portal
+    note: >-
+      Not declared in the REST API specification. Probed live and captured verbatim to
+      well-known/datavant-openid-configuration.json; it backs the Datavant Portal and the
+      identity layer around the API rather than the REST operations themselves.
+    sources:
+      - well-known/datavant-openid-configuration.json
+token_request:
+  method: POST
+  url: https://api.datavant.io/v2/oauth2/token
+  content_type: application/json
+  body_fields:
+    - grant_type
+    - client_id
+    - client_secret
+  grant_type: client_credentials
+  response_fields:
+    - access_token
+    - token_type
+    - expires_in
+  token_type: bearer
+  expires_in_seconds: 7200
+  source: openapi/datavant-rest-api-openapi.yml#/paths/~1oauth2~1token
+authorization_server_metadata:
+  discovery:
+    openid_configuration: https://auth.datavant.com/.well-known/openid-configuration
+    oauth_authorization_server: https://auth.datavant.com/.well-known/oauth-authorization-server
+    jwks_uri: https://datavant.auth0.com/.well-known/jwks.json
+  grant_types_supported:
+    - client_credentials
+    - authorization_code
+    - refresh_token
+    - password
+    - implicit
+    - 'urn:ietf:params:oauth:grant-type:device_code'
+    - 'urn:ietf:params:oauth:grant-type:token-exchange'
+    - 'urn:ietf:params:oauth:grant-type:jwt-bearer'
+  token_endpoint_auth_methods_supported:
+    - client_secret_basic
+    - client_secret_post
+    - private_key_jwt
+    - none
+  code_challenge_methods_supported:
+    - S256
+    - plain
+  id_token_signing_alg_values_supported_note: RS256 (Auth0 default; see the captured discovery document)
+other_credentials:
+  - surface: Datavant Portal / Datavant CLI
+    mechanism: generated application credential (credentials.txt), piped to the CLI on stdin or supplied via the DV_USER_CREDENTIALS environment variable
+    lifetime: 10 years
+    issued_from: Datavant Portal Download page (login-gated)
+    note: >-
+      This is a separate credential from the REST API OAuth client. It is generated once
+      and cannot be viewed again; account admins are emailed before expiry.
+    source: https://aws.amazon.com/marketplace/pp/prodview-eolcfagze2ihw
+gaps:
+  - No scopes are published for the REST API, so an agent cannot request least privilege.
+  - No mTLS, no API-key scheme, and no DPoP / proof-of-possession is declared.
+  - No token-introspection or revocation endpoint is documented for the REST API token issuer.

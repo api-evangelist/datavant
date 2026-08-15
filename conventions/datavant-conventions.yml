@@ -1,0 +1,150 @@
+generated: '2026-08-14'
+method: derived
+source: openapi/datavant-rest-api-openapi.yml
+docs: https://developer.datavant.com/docs
+note: >-
+  Cross-cutting request/response semantics for the Datavant REST API, derived from the
+  OpenAPI 3.1.0 document served at developer.datavant.com/openapi.json and corroborated
+  against the live Auth0 discovery documents. Datavant publishes no prose API guide, so
+  everything here is read out of the contract itself.
+authentication:
+  style: oauth2-client-credentials
+  header: 'Authorization: Bearer <access_token>'
+  token_url: https://api.datavant.io/v2/oauth2/token
+  token_lifetime_seconds: 7200
+  scopes: none
+  detail: authentication/datavant-authentication.yml
+versioning:
+  scheme: date-header
+  header: version-datavant
+  required: false
+  current: '2023-04-01'
+  default: '2023-04-01'
+  description: >-
+    Every operation accepts an optional `version-datavant` request header carrying a
+    date-stamped API version. When omitted the API pins to 2023-04-01, which is also
+    info.version. There is a second, coarser version marker in the path - the servers[]
+    base is https://api.datavant.io/v2 - so the surface is versioned twice: /v2 in the
+    URL, a date train in the header.
+  detail: lifecycle/datavant-lifecycle.yml
+pagination:
+  style: limit-offset
+  envelope: 'JsonApiPage_<T>_'
+  envelope_note: >-
+    The schema's own description reads "JSON:API 1.0 specification says that result key
+    should be a `data`." The envelope borrows JSON:API's `data` key and a `links` object
+    but is not a conformant JSON:API document (no `type`/`id` member objects, no
+    top-level `errors`/`meta` per the spec).
+  request_params:
+    - name: limit
+      in: query
+      default: 50
+      minimum: 1
+      maximum: 100
+    - name: offset
+      in: query
+      minimum: 0
+  response_fields:
+    - name: data
+      type: array
+      required: true
+    - name: total
+      type: integer
+      required: true
+    - name: limit
+      type: integer
+    - name: offset
+      type: integer
+    - name: unfiltered_total
+      type: integer
+    - name: links
+      type: object
+      required: true
+  link_relations: [first, last, self, next, prev]
+sorting_and_filtering:
+  sort_params: [sort_by, sort_dir]
+  filter_params:
+    - status
+    - order_id
+    - order_uuid
+    - order_name
+    - project_name
+    - query_id
+    - query_uuid
+    - uuid
+    - id
+    - chase_uuid
+    - secondary_reason
+    - breakdown
+    - queries
+    - snowflake
+  note: >-
+    Filtering is per-operation query parameters rather than a general filter grammar;
+    there is no documented operator syntax (no `filter[field][op]=` form).
+identifiers:
+  dual_key: true
+  description: >-
+    Most resources are addressable two ways - a customer-supplied external id
+    (order_id, project_id, query_id) and a Datavant-assigned UUID (order_uuid,
+    project_uuid, query_uuid, visit_uuid, document_uuid). Some operations are only
+    offered on one of the two, e.g. GET /orders/{order_id} takes the external id while
+    GET /orders/{order_uuid}/validation/report takes the UUID.
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    No Idempotency-Key header, parameter or retry-safety contract appears anywhere in the
+    specification, and none is documented. Creates (POST /orders/, POST /projects/) signal
+    collision with HTTP 409 "already exists" against the caller-supplied id, which gives a
+    caller a detectable duplicate but is not an idempotency guarantee - a replay after a
+    timeout cannot be distinguished from a genuine duplicate, and the safe-retry burden
+    stays with the client. NO Idempotency pointer is emitted in apis.yml for this provider.
+request_tracing:
+  request_id_header: null
+  observed_response_header: x-request-id
+  note: >-
+    The edge (the Kong gateway fronting developer.datavant.com) returns an `x-request-id`
+    response header on live responses, but no request-id or correlation header is
+    documented in the specification and none is declared as a parameter.
+error_envelope:
+  media_type: application/json
+  schema: ErrorHTTPResponse
+  shape: '{"errors": [{"code": "...", "message": "...", "params": [...]}]}'
+  rfc9457: false
+  detail: errors/datavant-problem-types.yml
+rate_limiting:
+  documented: false
+  response_headers: []
+  exhaustion_status: null
+  detail: rate-limits/datavant-rate-limits.yml
+content_types:
+  request: [application/json, multipart/form-data]
+  response: [application/json, application/pdf]
+  note: >-
+    Supporting-document uploads (patient authorizations, letter of representation, health
+    plan letter) are multipart/form-data and are validated to MIME type application/pdf -
+    a non-PDF upload returns 422.
+metadata:
+  supported: true
+  field: metadata
+  schema: OrderMetadata
+  note: Orders carry a structured metadata object rather than a free-form key/value bag.
+field_expansion:
+  supported: false
+  note: No expand / include / fields sparse-fieldset parameter is defined.
+async_and_delivery:
+  note: >-
+    Long-running retrieval work is not exposed as a polling job resource; it is driven by
+    order state transitions (draft -> submitted -> dispatched) and results are delivered
+    out-of-band per the order's delivery configuration - SFTP, S3, email or portal
+    download - on a schedule (daily / weekly / biweekly / monthly / due-date /
+    each-document). See the AllDeliveryConfig / BaseDeliveryConfig schemas.
+  state_machine_errors: 'HTTP 422 "Order is not in ''draft'' status." guards state-dependent mutations.'
+cross_links:
+  authentication: authentication/datavant-authentication.yml
+  scopes: scopes/datavant-scopes.yml
+  errors: errors/datavant-problem-types.yml
+  lifecycle: lifecycle/datavant-lifecycle.yml
+  rate_limits: rate-limits/datavant-rate-limits.yml
+  data_model: data-model/datavant-data-model.yml
+  conformance: conformance/datavant-conformance.yml

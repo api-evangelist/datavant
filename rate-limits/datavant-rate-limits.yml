@@ -1,0 +1,43 @@
+generated: '2026-08-14'
+method: searched
+source: https://developer.datavant.com/openapi.json
+docs: https://developer.datavant.com/docs
+limit_count: 0
+note: >-
+  Datavant publishes NO rate limits for the REST API. The OpenAPI document contains no 429
+  response on any of its 54 operations, declares no RateLimit-* / X-RateLimit-* /
+  Retry-After response headers, and the string "rate limit" does not appear anywhere in
+  the specification. There is no prose API guide to check - the ReDoc reference at
+  developer.datavant.com/docs renders this same document and nothing more. An agent
+  calling this API therefore has no runtime signal of remaining quota and no documented
+  backoff contract; the only throughput bound published anywhere is a per-request batch
+  cap on the separate on-premise Datavant CLI in server mode (records are submitted to a
+  local API in batches, not to api.datavant.io), which is not an API rate limit.
+limits: []
+response_headers: []
+exhaustion:
+  status_code: null
+  retry_after: false
+  documented: false
+pagination_caps:
+  - scope: collection endpoints
+    parameter: limit
+    default: 50
+    maximum: 100
+    note: >-
+      A page-size ceiling, not a rate limit. It is the only quantitative throughput
+      constraint the contract publishes, and it is enforced by schema validation
+      (maximum: 100) rather than by a 429.
+evidence:
+  - url: https://developer.datavant.com/openapi.json
+    http_status: 200
+    finding: 'no 429 responses; no RateLimit-*, X-RateLimit-* or Retry-After headers declared'
+    fetched: '2026-08-14'
+  - url: https://developer.datavant.com/docs
+    http_status: 200
+    finding: ReDoc rendering of the same OpenAPI document; no additional rate-limit prose
+    fetched: '2026-08-14'
+gaps:
+  - No published quota, burst, or window for any scope (per-key, per-tenant, per-endpoint).
+  - No 429 contract and no Retry-After, so clients cannot implement correct backoff.
+  - No RateLimit-* headers, so remaining quota is not observable at runtime.

@@ -1,0 +1,87 @@
+generated: '2026-08-14'
+method: searched
+source: 'openapi/datavant-rest-api-openapi.yml#/tags (tag "Release Notes")'
+docs: https://developer.datavant.com/docs
+note: >-
+  Datavant does not host a changelog page. It ships release notes INSIDE the OpenAPI
+  document as a documentation-only tag called "Release Notes", which ReDoc renders as a
+  section of the API reference at developer.datavant.com/docs. Entries are grouped by
+  resource rather than by release and dated M/D/YY with no version number attached. The
+  finding is decay: the newest entry captured is 2023-09-13, while info.version is still
+  2023-04-01 - the published change history has not moved in roughly three years even
+  though the API is live and serving.
+scheme:
+  style: date-stamped notes grouped by resource
+  version_field: info.version
+  current_version: '2023-04-01'
+  version_header: version-datavant
+  granularity: per-resource
+  breaking_change_marking: none
+  machine_readable: false
+coverage:
+  first_entry: '2023-04-19'
+  last_entry: '2023-09-13'
+  entry_count: 10
+  days_since_last_entry_at_capture: 1066
+entries:
+  - date: '2023-09-13'
+    area: Orders
+    type: addition
+    breaking: false
+    highlight: Added `/{order_id}/validation/stats` for high-level validation stats for the given order.
+  - date: '2023-08-22'
+    area: Orders
+    type: addition
+    breaking: false
+    highlight: Added manual QA and coding required configuration options to Orders.
+  - date: '2023-08-21'
+    area: Visits
+    type: addition
+    breaking: false
+    highlight: Added `projects/{project_id}/queries/{query_id}/visits/{visit_uuid}` to return details for a specific visit.
+  - date: '2023-08-21'
+    area: Visits
+    type: addition
+    breaking: false
+    highlight: Added `projects/{project_id}/queries/{query_id}/visits` to return all visits for a specific query.
+  - date: '2023-06-16'
+    area: Documents
+    type: addition
+    breaking: false
+    highlight: Added indicator for when a chart has been downloaded.
+  - date: '2023-05-18'
+    area: Orders
+    type: addition
+    breaking: false
+    highlight: Added `alternate_delivery` configuration to Orders.
+  - date: '2023-05-12'
+    area: Documents
+    type: addition
+    breaking: false
+    highlight: Added `404 - Document does not exist` when Document not found.
+  - date: '2023-05-11'
+    area: Documents
+    type: addition
+    breaking: false
+    highlight: Added `/documents` endpoint to list all documents associated with Order or Order Query.
+  - date: '2023-04-27'
+    area: Configuration
+    type: addition
+    breaking: false
+    highlight: Added `configuration/supporting-documents/health-plan-letter` for managing Health Plan Letters.
+  - date: '2023-04-19'
+    area: Orders
+    type: addition
+    breaking: false
+    highlight: Added `delivery_location` configuration to Orders.
+related:
+  cli_releases:
+    note: >-
+      The Datavant CLI (a separate product from the REST API) does publish version
+      markers - v3.8, v4.1, v4.2, v4.3 and v5.2.0 are all referenced in public
+      distribution and documentation - but there is no public dated CLI changelog either.
+    detail: cli/datavant-cli.yml
+gaps:
+  - No standalone changelog URL; the notes are only reachable by rendering the OpenAPI.
+  - No version numbers, no breaking-change flags, no RSS/Atom feed, no machine-readable feed.
+  - Not updated since 2023-09-13 despite a live, in-production API.

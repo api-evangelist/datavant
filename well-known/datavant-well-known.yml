@@ -1,0 +1,181 @@
+generated: '2026-08-14'
+method: probed
+source: live HTTP probes of every Datavant host named in apis.yml and in the OpenAPI servers[]
+note: >-
+  Probed five hosts. auth.datavant.com is Datavant's Auth0 custom domain and serves a
+  real OIDC discovery document (issuer https://datavant.auth0.com/), the RFC 8414 OAuth
+  authorization-server metadata (byte-identical to the OIDC document), and a live JWKS.
+  No security.txt, api-catalog, ai-plugin.json, agent-card.json, agent.json,
+  oauth-protected-resource or SMART-on-FHIR configuration is served on any host.
+  portal.datavant.com answers HTTP 200 to EVERY /.well-known/* path with the same
+  login-page HTML (302 to /login?next=/) - a single-page-app catch-all, not a document -
+  so every portal.datavant.com result is recorded as a miss.
+hosts:
+  - host: auth.datavant.com
+    role: Auth0 custom domain (identity provider for the Datavant Portal and REST API)
+  - host: api.datavant.io
+    role: OpenAPI servers[] host for the Datavant REST API
+  - host: developer.datavant.com
+    role: API reference / ReDoc host serving the OpenAPI document
+  - host: www.datavant.com
+    role: corporate website
+  - host: portal.datavant.com
+    role: customer portal (login-gated single-page app; catch-all 200s rejected)
+documents:
+  - host: auth.datavant.com
+    path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+    file: datavant-openid-configuration.json
+    note: OIDC discovery; issuer https://datavant.auth0.com/
+  - host: auth.datavant.com
+    path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    file: datavant-oauth-authorization-server.json
+    note: RFC 8414 authorization-server metadata; byte-identical to the OIDC document
+  - host: auth.datavant.com
+    path: /.well-known/jwks.json
+    status: 200
+    content_type: application/json
+    file: datavant-jwks.json
+    note: JSON Web Key Set backing token verification
+  - host: auth.datavant.com
+    path: /.well-known/security.txt
+    status: 404
+  - host: auth.datavant.com
+    path: /.well-known/oauth-protected-resource
+    status: 404
+  - host: auth.datavant.com
+    path: /.well-known/api-catalog
+    status: 404
+  - host: auth.datavant.com
+    path: /.well-known/ai-plugin.json
+    status: 404
+  - host: auth.datavant.com
+    path: /.well-known/agent-card.json
+    status: 404
+  - host: auth.datavant.com
+    path: /.well-known/agent.json
+    status: 404
+  - host: auth.datavant.com
+    path: /.well-known/smart-configuration
+    status: 404
+  - host: api.datavant.io
+    path: /.well-known/security.txt
+    status: 404
+  - host: api.datavant.io
+    path: /.well-known/openid-configuration
+    status: 404
+  - host: api.datavant.io
+    path: /.well-known/oauth-authorization-server
+    status: 404
+  - host: api.datavant.io
+    path: /.well-known/oauth-protected-resource
+    status: 404
+  - host: api.datavant.io
+    path: /.well-known/api-catalog
+    status: 404
+  - host: api.datavant.io
+    path: /.well-known/ai-plugin.json
+    status: 404
+  - host: api.datavant.io
+    path: /.well-known/agent-card.json
+    status: 404
+  - host: api.datavant.io
+    path: /.well-known/agent.json
+    status: 404
+  - host: api.datavant.io
+    path: /.well-known/smart-configuration
+    status: 404
+  - host: developer.datavant.com
+    path: /.well-known/security.txt
+    status: 404
+  - host: developer.datavant.com
+    path: /.well-known/openid-configuration
+    status: 404
+  - host: developer.datavant.com
+    path: /.well-known/oauth-authorization-server
+    status: 404
+  - host: developer.datavant.com
+    path: /.well-known/api-catalog
+    status: 404
+  - host: developer.datavant.com
+    path: /.well-known/ai-plugin.json
+    status: 404
+  - host: developer.datavant.com
+    path: /.well-known/agent-card.json
+    status: 404
+  - host: developer.datavant.com
+    path: /.well-known/agent.json
+    status: 404
+  - host: developer.datavant.com
+    path: /.well-known/smart-configuration
+    status: 404
+  - host: www.datavant.com
+    path: /.well-known/security.txt
+    status: 404
+  - host: www.datavant.com
+    path: /.well-known/openid-configuration
+    status: 404
+  - host: www.datavant.com
+    path: /.well-known/oauth-authorization-server
+    status: 404
+  - host: www.datavant.com
+    path: /.well-known/api-catalog
+    status: 404
+  - host: www.datavant.com
+    path: /.well-known/ai-plugin.json
+    status: 404
+  - host: www.datavant.com
+    path: /.well-known/agent-card.json
+    status: 404
+  - host: www.datavant.com
+    path: /.well-known/agent.json
+    status: 404
+  - host: www.datavant.com
+    path: /.well-known/smart-configuration
+    status: 404
+  - host: api.datavant.com
+    path: /.well-known/security.txt
+    status: 403
+    note: api.datavant.com returns HTTP 403 to anonymous callers on every path
+  - host: api.datavant.com
+    path: /.well-known/openid-configuration
+    status: 403
+  - host: api.datavant.com
+    path: /.well-known/oauth-authorization-server
+    status: 403
+  - host: api.datavant.com
+    path: /.well-known/agent-card.json
+    status: 403
+  - host: api.datavant.com
+    path: /.well-known/agent.json
+    status: 403
+  - host: portal.datavant.com
+    path: /.well-known/openid-configuration
+    status: 200
+    file: null
+    note: >-
+      REJECTED - not a document. portal.datavant.com 302s every request to /login?next=/
+      and returns the same login-page HTML for every path probed, including
+      /.well-known/agent-card.json, /openapi.json and /fhir/metadata. SPA catch-all.
+  - host: portal.datavant.com
+    path: /.well-known/agent-card.json
+    status: 200
+    file: null
+    note: REJECTED - HTML login page, not an AgentCard.
+  - host: portal.datavant.com
+    path: /.well-known/security.txt
+    status: 200
+    file: null
+    note: REJECTED - HTML login page, not RFC 9116 text.
+summary:
+  documents_served: 3
+  hosts_probed: 6
+  security_txt: false
+  api_catalog: false
+  ai_plugin: false
+  agent_card: false
+  openid_configuration: true
+  oauth_authorization_server: true

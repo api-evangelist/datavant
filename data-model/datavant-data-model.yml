@@ -1,0 +1,1211 @@
+generated: '2026-08-14'
+method: derived
+source: openapi/datavant-rest-api-openapi.yml
+note: Entity-relationship graph derived from the components.schemas $ref graph and id-reference field
+  names in the Datavant REST API OpenAPI. The API is organised around four addressable root resources
+  - Configuration (per-tenant account settings), Project (optional grouping), Order (the parent container
+  for record-retrieval requests) and its nested Order Queries - with Visits and Documents as the retrieval
+  outputs. Collections are wrapped in a JsonApiPage_<T>_ envelope (JSON:API 1.0 `data` key plus total/limit/offset/links).
+roots:
+- entity: ConfigurationResponse
+  path: /configuration/
+  key: tenant
+  note: One configuration per tenant/customer; no id in the path.
+- entity: ProjectResponse
+  path: /projects/
+  key: project_id
+  alt_key: project_uuid
+  note: Optional grouping applying consistent configuration to nested orders.
+- entity: OrderResponse
+  path: /orders/
+  key: order_id
+  alt_key: order_uuid
+  note: Parent container for one or more order queries.
+- entity: OrderQueryResponse
+  path: /orders/{order_id}/queries
+  key: query_id
+  alt_key: query_uuid
+  note: A request for records for one patient; belongs_to Order.
+- entity: Visit
+  path: /projects/{project_id}/queries/{query_id}/visits
+  key: visit_uuid
+  note: Actions performed to obtain charts from a clinic for a patient.
+- entity: DocumentResponse
+  path: /documents
+  key: document_uuid
+  note: Documents collected/generated through the retrieval process.
+- entity: PrematchOrderResponse
+  path: /orders/prematch
+  key: order_uuid
+  note: Prematch orders are excluded from the main /orders/ listing.
+pagination_envelopes:
+- JsonApiPage_DocumentResponse_
+- JsonApiPage_FilenameResponse_
+- JsonApiPage_OrderQueryResponse_
+- JsonApiPage_OrderResponse_
+- JsonApiPage_Visit_
+entity_count: 97
+entities:
+- name: Address
+  kind: object
+  field_count: 7
+- name: AllDeliveryConfig
+  kind: object
+  field_count: 5
+  relationships:
+  - field: pdf
+    target: PdfDeliveryConfig
+    cardinality: has_one
+  - field: cda
+    target: BaseDeliveryConfig
+    cardinality: has_one
+  - field: fhir
+    target: BaseDeliveryConfig
+    cardinality: has_one
+  - field: structured_extraction
+    target: StructuredExtractionDeliveryConfig
+    cardinality: has_one
+  - field: chart_detail_extract
+    target: ChartDetailExtractDeliveryConfig
+    cardinality: has_one
+- name: AllowBlockGroup
+  kind: object
+  field_count: 1
+- name: AlternateDelivery
+  kind: object
+  field_count: 2
+  relationships:
+  - field: alternate
+    target: Mail
+    cardinality: has_one
+  - field: alternate
+    target: Sftp
+    cardinality: has_one
+- name: BaseDeliveryConfig
+  kind: object
+  field_count: 5
+  relationships:
+  - field: manifest
+    target: ManifestDeliveryConfig
+    cardinality: has_one
+  - field: file_transfer_config
+    target: S3FileTransferConfig
+    cardinality: has_one
+- name: BirthDate
+  kind: object
+  field_count: 3
+- name: BiweeklyDeliveryOptions
+  kind: object
+  field_count: 2
+  relationships:
+  - field: delivery_frequency_sub_option
+    target: DeliveryFrequencyDay
+    cardinality: has_many
+- name: CDRLocation
+  kind: object
+  field_count: 1
+- name: ChartComponent
+  kind: enum
+  field_count: 0
+  enum_values:
+  - Entire Record
+  - Abstract
+  enum_value_count: 2
+- name: ChartDetailExtractConfiguration
+  kind: object
+  field_count: 4
+  relationships:
+  - field: delivery_schedule_options
+    target: BiweeklyDeliveryOptions
+    cardinality: has_one
+  - field: delivery_schedule_options
+    target: DailyDeliveryOptions
+    cardinality: has_one
+  - field: delivery_schedule_options
+    target: DueDateDeliveryOptions
+    cardinality: has_one
+  - field: delivery_schedule_options
+    target: EachDocumentDeliveryOptions
+    cardinality: has_one
+  - field: delivery_schedule_options
+    target: MonthlyDeliveryOptions
+    cardinality: has_one
+  - field: delivery_schedule_options
+    target: WeeklyDeliveryOptions
+    cardinality: has_one
+- name: ChartDetailExtractDeliveryConfig
+  kind: object
+  field_count: 6
+  relationships:
+  - field: manifest
+    target: ManifestDeliveryConfig
+    cardinality: has_one
+  - field: file_transfer_config
+    target: S3FileTransferConfig
+    cardinality: has_one
+- name: ChartFinderConfiguration
+  kind: object
+  field_count: 7
+- name: ChartPackage
+  kind: enum
+  field_count: 0
+  enum_values:
+  - Default
+  enum_value_count: 1
+- name: ClientFile
+  kind: object
+  field_count: 4
+  relationships:
+  - field: method
+    target: FileRetrievalMethodEnum
+    cardinality: has_one
+  - field: location
+    target: CDRLocation
+    cardinality: has_one
+  - field: location
+    target: FileLocation
+    cardinality: has_one
+- name: ClientInfo
+  kind: object
+  field_count: 2
+- name: CodingConfiguration
+  kind: object
+  field_count: 3
+- name: ConfigOptions
+  kind: object
+  field_count: 40
+  relationships:
+  - field: type
+    target: RequesterType
+    cardinality: has_one
+  - field: primary_reason
+    target: PrimaryReason
+    cardinality: has_one
+  - field: secondary_reason
+    target: SecondaryReason
+    cardinality: has_one
+  - field: retrieval_sources
+    target: RetrievalSources
+    cardinality: has_many
+  - field: retrieval_allow_block_configuration
+    target: RetrievalAllowBlockConfiguration
+    cardinality: has_one
+  - field: metadata
+    target: OrderMetadata
+    cardinality: has_one
+  - field: delivery_frequency
+    target: DeliveryFrequency
+    cardinality: has_one
+  - field: delivery_frequency_sub_option
+    target: DeliveryFrequencyDay
+    cardinality: has_one
+  - field: alternate_delivery
+    target: AlternateDelivery
+    cardinality: has_one
+  - field: delivery_type
+    target: DeliveryType
+    cardinality: has_many
+  - field: delivery_location
+    target: DeliveryLocation
+    cardinality: has_one
+  - field: delivery_format
+    target: DeliveryFormat
+    cardinality: has_one
+  - field: structured_data_file_delivery_format
+    target: DeliveryFormat
+    cardinality: has_one
+  - field: structured_data_extraction_report_configuration
+    target: StructuredDataExtractionReportConfiguration
+    cardinality: has_one
+  - field: client
+    target: ClientInfo
+    cardinality: has_one
+  - field: coding_configuration
+    target: CodingConfiguration
+    cardinality: has_one
+  - field: chart_finder_config
+    target: ChartFinderConfiguration
+    cardinality: has_one
+- name: ConfigurationRequest
+  kind: object
+  field_count: 1
+  relationships:
+  - field: config_options
+    target: OrderOptions
+    cardinality: has_one
+- name: ConfigurationResponse
+  kind: object
+  field_count: 3
+  relationships:
+  - field: config_options
+    target: ConfigOptions
+    cardinality: has_one
+- name: ConnectionCounts
+  kind: object
+  field_count: 2
+- name: ConnectionsReport
+  kind: object
+  field_count: 3
+  relationships:
+  - field: counts
+    target: ConnectionCounts
+    cardinality: has_many
+- name: Contacts
+  kind: object
+  field_count: 2
+  relationships:
+  - field: billing
+    target: LegalEntity
+    cardinality: has_one
+  - field: customer
+    target: LegalEntity
+    cardinality: has_one
+- name: CreateOrderQueryRequest
+  kind: object
+  field_count: 3
+  relationships:
+  - field: patient
+    target: Patient
+    cardinality: has_one
+  - field: encounters
+    target: Encounter
+    cardinality: has_many
+- name: CreateOrderRequest
+  kind: object
+  field_count: 52
+  relationships:
+  - field: delivery_type
+    target: DeliveryType
+    cardinality: has_many
+  - field: delivery_format
+    target: DeliveryFormat
+    cardinality: has_one
+  - field: structured_data_file_delivery_format
+    target: DeliveryFormat
+    cardinality: has_one
+  - field: delivery_frequency
+    target: DeliveryFrequency
+    cardinality: has_one
+  - field: delivery_frequency_sub_option
+    target: DeliveryFrequencyDay
+    cardinality: has_one
+  - field: delivery_timing
+    target: DeliveryTiming
+    cardinality: has_one
+  - field: delivery_location
+    target: DeliveryLocation
+    cardinality: has_one
+  - field: structured_data_extraction_report_configuration
+    target: StructuredDataExtractionReportConfiguration
+    cardinality: has_one
+  - field: chart_detail_extract_report_configuration
+    target: ChartDetailExtractConfiguration
+    cardinality: has_one
+  - field: project_id
+    target: project
+    cardinality: belongs_to
+    via: id-reference
+  - field: type
+    target: RequesterType
+    cardinality: has_one
+  - field: reason
+    target: PrimaryReason
+    cardinality: has_one
+  - field: primary_reason
+    target: PrimaryReason
+    cardinality: has_one
+  - field: secondary_reason
+    target: SecondaryReason
+    cardinality: has_one
+  - field: contacts
+    target: Contacts
+    cardinality: has_one
+  - field: sources
+    target: RetrievalSources
+    cardinality: has_many
+  - field: retrieval_sources
+    target: RetrievalSources
+    cardinality: has_many
+  - field: retrieval_allow_block_configuration
+    target: RetrievalAllowBlockConfiguration
+    cardinality: has_one
+  - field: submission_source
+    target: SubmissionSource
+    cardinality: has_one
+  - field: alternate_delivery
+    target: AlternateDelivery
+    cardinality: has_one
+  - field: file
+    target: ClientFile
+    cardinality: has_one
+  - field: queries
+    target: CreateOrderQueryRequest
+    cardinality: has_many
+  - field: coding_configuration
+    target: CodingConfiguration
+    cardinality: has_one
+  - field: chart_finder_config
+    target: ChartFinderConfiguration
+    cardinality: has_one
+  - field: flow_type
+    target: FlowType
+    cardinality: has_one
+  - field: import_review_status
+    target: ImportReviewStatus
+    cardinality: has_one
+- name: CreateProjectRequest
+  kind: object
+  field_count: 4
+  relationships:
+  - field: config_options
+    target: ConfigOptions
+    cardinality: has_one
+- name: DailyDeliveryOptions
+  kind: object
+  field_count: 2
+- name: DateRange
+  kind: object
+  field_count: 2
+- name: DeliveryFormat
+  kind: enum
+  field_count: 0
+  enum_values:
+  - individual
+  - zipped
+  enum_value_count: 2
+- name: DeliveryFrequency
+  kind: enum
+  field_count: 0
+  enum_values:
+  - continuous
+  - daily
+  - weekly
+  - biweekly
+  - monthly
+  - order_due_date
+  - each_document
+  enum_value_count: 7
+- name: DeliveryFrequencyDay
+  kind: enum
+  field_count: 0
+  enum_values:
+  - '0'
+  - '1'
+  - '2'
+  - '3'
+  - '4'
+  - '5'
+  - '6'
+  enum_value_count: 7
+- name: DeliveryLocation
+  kind: enum
+  field_count: 0
+  enum_values:
+  - api
+  - sftp
+  - s3
+  enum_value_count: 3
+- name: DeliveryTiming
+  kind: enum
+  field_count: 0
+  enum_values:
+  - continuous
+  - scheduled
+  enum_value_count: 2
+- name: DeliveryType
+  kind: enum
+  field_count: 0
+  enum_values:
+  - pdf
+  - xml
+  - json
+  enum_value_count: 3
+- name: DocumentLinks
+  kind: object
+  field_count: 1
+- name: DocumentResponse
+  kind: object
+  field_count: 6
+  relationships:
+  - field: type
+    target: DocumentType
+    cardinality: has_one
+  - field: links
+    target: DocumentLinks
+    cardinality: has_one
+- name: DocumentType
+  kind: enum
+  field_count: 0
+  enum_values:
+  - chart
+  - provider_packet
+  - health_plan_letter
+  - request_letter
+  - letter_of_representation
+  - patient_authorization
+  - request_file
+  - supplemental_data
+  - merge_report
+  - quality_review_guide
+  - provider_packet_additional_document
+  enum_value_count: 11
+- name: DueDateDeliveryOptions
+  kind: object
+  field_count: 2
+- name: EachDocumentDeliveryOptions
+  kind: object
+  field_count: 2
+- name: Encounter
+  kind: object
+  field_count: 6
+  relationships:
+  - field: practitioner
+    target: Practitioner
+    cardinality: has_one
+  - field: facility
+    target: Facility
+    cardinality: has_one
+  - field: service_date_range
+    target: ServiceDates
+    cardinality: has_one
+  - field: chart_components
+    target: ChartComponent
+    cardinality: has_many
+  - field: chart_packages
+    target: ChartPackage
+    cardinality: has_many
+- name: Error
+  kind: object
+  field_count: 3
+- name: ErrorHTTPResponse
+  kind: object
+  field_count: 1
+  relationships:
+  - field: errors
+    target: Error
+    cardinality: has_many
+- name: ExtractionDeliveryConfig
+  kind: object
+  field_count: 4
+- name: Facility
+  kind: object
+  field_count: 8
+  relationships:
+  - field: address
+    target: Address
+    cardinality: has_one
+  - field: type
+    target: FacilityType
+    cardinality: has_one
+- name: FacilityType
+  kind: enum
+  field_count: 0
+  enum_values:
+  - INPATIENT
+  - OUTPATIENT
+  enum_value_count: 2
+- name: FileLocation
+  kind: object
+  field_count: 1
+- name: FileRetrievalMethodEnum
+  kind: enum
+  field_count: 0
+  enum_values:
+  - http
+  - cdr
+  enum_value_count: 2
+- name: FilenameResponse
+  kind: object
+  field_count: 1
+- name: FlowType
+  kind: enum
+  field_count: 0
+  enum_values:
+  - unknown
+  - patient
+  - provider
+  - prematch_provider
+  enum_value_count: 4
+- name: Gender
+  kind: enum
+  field_count: 0
+  enum_values:
+  - M
+  - F
+  - O
+  - U
+  enum_value_count: 4
+- name: ImportReviewStatus
+  kind: object
+  field_count: 1
+- name: Insurance
+  kind: object
+  field_count: 4
+- name: JsonApiPage_DocumentResponse_
+  kind: object
+  field_count: 6
+  relationships:
+  - field: data
+    target: DocumentResponse
+    cardinality: has_many
+  - field: links
+    target: Links
+    cardinality: has_one
+- name: JsonApiPage_FilenameResponse_
+  kind: object
+  field_count: 6
+  relationships:
+  - field: data
+    target: FilenameResponse
+    cardinality: has_many
+  - field: links
+    target: Links
+    cardinality: has_one
+- name: JsonApiPage_OrderQueryResponse_
+  kind: object
+  field_count: 6
+  relationships:
+  - field: data
+    target: OrderQueryResponse
+    cardinality: has_many
+  - field: links
+    target: Links
+    cardinality: has_one
+- name: JsonApiPage_OrderResponse_
+  kind: object
+  field_count: 6
+  relationships:
+  - field: data
+    target: OrderResponse
+    cardinality: has_many
+  - field: links
+    target: Links
+    cardinality: has_one
+- name: JsonApiPage_Visit_
+  kind: object
+  field_count: 6
+  relationships:
+  - field: data
+    target: Visit
+    cardinality: has_many
+  - field: links
+    target: Links
+    cardinality: has_one
+- name: LegalEntity
+  kind: object
+  field_count: 12
+  relationships:
+  - field: order_id
+    target: order
+    cardinality: belongs_to
+    via: id-reference
+  - field: address
+    target: Address
+    cardinality: has_one
+- name: Links
+  kind: object
+  field_count: 5
+- name: Mail
+  kind: object
+  field_count: 2
+  relationships:
+  - field: entity
+    target: LegalEntity
+    cardinality: has_one
+- name: ManifestDeliveryConfig
+  kind: object
+  field_count: 5
+- name: MonthlyDeliveryOptions
+  kind: object
+  field_count: 2
+- name: OrderMetadata
+  kind: object
+  field_count: 4
+  relationships:
+  - field: od_client_id
+    target: od_client
+    cardinality: belongs_to
+    via: id-reference
+- name: OrderOptions
+  kind: object
+  field_count: 40
+  relationships:
+  - field: type
+    target: RequesterType
+    cardinality: has_one
+  - field: primary_reason
+    target: PrimaryReason
+    cardinality: has_one
+  - field: secondary_reason
+    target: SecondaryReason
+    cardinality: has_one
+  - field: retrieval_sources
+    target: RetrievalSources
+    cardinality: has_many
+  - field: retrieval_allow_block_configuration
+    target: RetrievalAllowBlockConfiguration
+    cardinality: has_one
+  - field: metadata
+    target: OrderMetadata
+    cardinality: has_one
+  - field: delivery_frequency
+    target: DeliveryFrequency
+    cardinality: has_one
+  - field: delivery_frequency_sub_option
+    target: DeliveryFrequencyDay
+    cardinality: has_one
+  - field: alternate_delivery
+    target: AlternateDelivery
+    cardinality: has_one
+  - field: delivery_type
+    target: DeliveryType
+    cardinality: has_many
+  - field: delivery_location
+    target: DeliveryLocation
+    cardinality: has_one
+  - field: delivery_format
+    target: DeliveryFormat
+    cardinality: has_one
+  - field: structured_data_file_delivery_format
+    target: DeliveryFormat
+    cardinality: has_one
+  - field: structured_data_extraction_report_configuration
+    target: StructuredDataExtractionReportConfiguration
+    cardinality: has_one
+  - field: client
+    target: ClientInfo
+    cardinality: has_one
+  - field: coding_configuration
+    target: CodingConfiguration
+    cardinality: has_one
+  - field: chart_finder_config
+    target: ChartFinderConfiguration
+    cardinality: has_one
+- name: OrderQueryResponse
+  kind: object
+  field_count: 6
+  relationships:
+  - field: patient
+    target: Patient
+    cardinality: has_one
+  - field: encounters
+    target: Encounter
+    cardinality: has_many
+- name: OrderReportingResponse
+  kind: object
+  field_count: 6
+  relationships:
+  - field: direct_connections_report
+    target: ConnectionsReport
+    cardinality: has_one
+  - field: affiliate_connections_report
+    target: ConnectionsReport
+    cardinality: has_one
+- name: OrderResponse
+  kind: object
+  field_count: 55
+  relationships:
+  - field: delivery_type
+    target: DeliveryType
+    cardinality: has_many
+  - field: delivery_format
+    target: DeliveryFormat
+    cardinality: has_one
+  - field: structured_data_file_delivery_format
+    target: DeliveryFormat
+    cardinality: has_one
+  - field: delivery_frequency
+    target: DeliveryFrequency
+    cardinality: has_one
+  - field: delivery_frequency_sub_option
+    target: DeliveryFrequencyDay
+    cardinality: has_one
+  - field: delivery_timing
+    target: DeliveryTiming
+    cardinality: has_one
+  - field: delivery_location
+    target: DeliveryLocation
+    cardinality: has_one
+  - field: structured_data_extraction_report_configuration
+    target: StructuredDataExtractionReportConfiguration
+    cardinality: has_one
+  - field: chart_detail_extract_report_configuration
+    target: ChartDetailExtractConfiguration
+    cardinality: has_one
+  - field: project_id
+    target: project
+    cardinality: belongs_to
+    via: id-reference
+  - field: project_uuid
+    target: project
+    cardinality: belongs_to
+    via: id-reference
+  - field: type
+    target: RequesterType
+    cardinality: has_one
+  - field: primary_reason
+    target: PrimaryReason
+    cardinality: has_one
+  - field: secondary_reason
+    target: SecondaryReason
+    cardinality: has_one
+  - field: contacts
+    target: Contacts
+    cardinality: has_one
+  - field: retrieval_sources
+    target: RetrievalSources
+    cardinality: has_many
+  - field: retrieval_allow_block_configuration
+    target: RetrievalAllowBlockConfiguration
+    cardinality: has_one
+  - field: submission_source
+    target: SubmissionSource
+    cardinality: has_one
+  - field: status
+    target: OrderStatus
+    cardinality: has_one
+  - field: chart_finder_config
+    target: ChartFinderConfiguration
+    cardinality: has_one
+  - field: delivery_config
+    target: AllDeliveryConfig
+    cardinality: has_one
+  - field: import_review_status
+    target: ImportReviewStatus
+    cardinality: has_one
+- name: OrderStatus
+  kind: enum
+  field_count: 0
+  enum_values:
+  - draft
+  - accepted
+  - rejected
+  - processing
+  - failed
+  - dispatched
+  - canceled
+  - complete
+  - pending_close
+  - close_in_progress
+  - intake_review_required
+  - intake_review_completed
+  enum_value_count: 12
+- name: OrderValidationResponse
+  kind: object
+  field_count: 6
+- name: Patient
+  kind: object
+  field_count: 17
+  relationships:
+  - field: address
+    target: Address
+    cardinality: has_one
+  - field: date_of_birth
+    target: BirthDate
+    cardinality: has_one
+  - field: gender
+    target: Gender
+    cardinality: has_one
+  - field: insurance
+    target: Insurance
+    cardinality: has_one
+  - field: user_defined_text
+    target: UserDefinedText
+    cardinality: has_one
+- name: PdfDeliveryConfig
+  kind: object
+  field_count: 8
+  relationships:
+  - field: manifest
+    target: ManifestDeliveryConfig
+    cardinality: has_one
+  - field: file_transfer_config
+    target: S3FileTransferConfig
+    cardinality: has_one
+  - field: zip
+    target: ZipDeliveryConfig
+    cardinality: has_one
+- name: Practitioner
+  kind: object
+  field_count: 7
+- name: PrematchOrderResponse
+  kind: object
+  field_count: 13
+  relationships:
+  - field: type
+    target: RequesterType
+    cardinality: has_one
+  - field: validation_results
+    target: OrderValidationResponse
+    cardinality: has_one
+- name: PrimaryReason
+  kind: enum
+  field_count: 0
+  enum_values:
+  - attorney
+  - hospital_lien
+  - patient_directive
+  - personal_injury
+  - social_security_disability
+  - subpoena
+  - workers_comp
+  - illinois_industrial_commission_subpoena
+  - florida_statute
+  - veterans_disability
+  - ssa_appeal_representative_form_1696
+  - patient_social_security_appeal
+  - life_sciences
+  - audit_of_claims
+  - clinical_research
+  - disability
+  - insurance
+  - medicare_medicaid
+  - rac
+  - revenue_cycle_management
+  - business_office_copy_risk_management
+  - special_project
+  - drg_payment_integrity
+  - hedis_audit
+  - hix
+  enum_value_count: 58
+- name: ProjectResponse
+  kind: object
+  field_count: 10
+  relationships:
+  - field: config_options
+    target: ConfigOptions
+    cardinality: has_one
+- name: RequesterType
+  kind: enum
+  field_count: 0
+  enum_values:
+  - attorney
+  - datavant
+  - disability
+  - continuing_care
+  - copya
+  - copyi
+  - facility
+  - government
+  - insurance
+  - patient
+  - payd
+  - payi
+  - pro
+  - fac
+  enum_value_count: 14
+- name: RetrievalAllowBlockConfiguration
+  kind: object
+  field_count: 2
+  relationships:
+  - field: allow
+    target: AllowBlockGroup
+    cardinality: has_one
+  - field: block
+    target: AllowBlockGroup
+    cardinality: has_one
+- name: RetrievalSources
+  kind: enum
+  field_count: 0
+  enum_values:
+  - api
+  - embedded_manual
+  - nonembedded_manual
+  - athena
+  - healthjump
+  - mock_retrieval
+  - moxe
+  - office_ally
+  - particle
+  - ses
+  - share_arkansas
+  - sidus
+  - veradigm
+  - vim
+  - iatric
+  - c3hie
+  - ghhc
+  - healow
+  - mdland
+  enum_value_count: 19
+- name: S3FileTransferConfig
+  kind: object
+  field_count: 2
+- name: SecondaryReason
+  kind: enum
+  field_count: 0
+  enum_values:
+  - aca
+  - defense_attorney
+  - defense_subpoena
+  - personal_injury
+  - state_attorney_office
+  - represent_indignant
+  - subpoena_second_request
+  - disability_gov_benefits
+  - ssi_claim_second_request
+  - hospital_per_admission
+  - 'no'
+  - second_request
+  - social_security_appeal
+  - patient_social_security_appeal
+  - social_security_claim_appeal_second_request
+  - forms_completion_by_provider
+  - attorney_rep_pat
+  - appeal_second_request
+  - court_issued
+  - criminal
+  - subpoena
+  - workers_comp_subpoena
+  - subpoena_deposition_trial_testimony_with_records
+  - workers_comp_second_request
+  - workers_comp
+  enum_value_count: 71
+- name: ServiceDates
+  kind: object
+  field_count: 2
+- name: Sftp
+  kind: object
+  field_count: 2
+  relationships:
+  - field: entity
+    target: LegalEntity
+    cardinality: has_one
+- name: StructuredDataExtractionReportConfiguration
+  kind: object
+  field_count: 8
+  relationships:
+  - field: delivery_schedule_options
+    target: BiweeklyDeliveryOptions
+    cardinality: has_one
+  - field: delivery_schedule_options
+    target: DailyDeliveryOptions
+    cardinality: has_one
+  - field: delivery_schedule_options
+    target: DueDateDeliveryOptions
+    cardinality: has_one
+  - field: delivery_schedule_options
+    target: EachDocumentDeliveryOptions
+    cardinality: has_one
+  - field: delivery_schedule_options
+    target: MonthlyDeliveryOptions
+    cardinality: has_one
+  - field: delivery_schedule_options
+    target: WeeklyDeliveryOptions
+    cardinality: has_one
+- name: StructuredExtractionDeliveryConfig
+  kind: object
+  field_count: 7
+  relationships:
+  - field: manifest
+    target: ManifestDeliveryConfig
+    cardinality: has_one
+  - field: file_transfer_config
+    target: S3FileTransferConfig
+    cardinality: has_one
+  - field: report
+    target: ExtractionDeliveryConfig
+    cardinality: has_one
+- name: SubmissionSource
+  kind: enum
+  field_count: 0
+  enum_values:
+  - api
+  - switchboard
+  - sftp
+  - legacy
+  enum_value_count: 4
+- name: UpdateOrderQueryRequest
+  kind: object
+  field_count: 2
+  relationships:
+  - field: patient
+    target: Patient
+    cardinality: has_one
+  - field: encounters
+    target: Encounter
+    cardinality: has_many
+- name: UpdateOrderRequest
+  kind: object
+  field_count: 42
+  relationships:
+  - field: delivery_type
+    target: DeliveryType
+    cardinality: has_many
+  - field: delivery_format
+    target: DeliveryFormat
+    cardinality: has_one
+  - field: structured_data_file_delivery_format
+    target: DeliveryFormat
+    cardinality: has_one
+  - field: delivery_frequency
+    target: DeliveryFrequency
+    cardinality: has_one
+  - field: delivery_frequency_sub_option
+    target: DeliveryFrequencyDay
+    cardinality: has_one
+  - field: delivery_timing
+    target: DeliveryTiming
+    cardinality: has_one
+  - field: delivery_location
+    target: DeliveryLocation
+    cardinality: has_one
+  - field: structured_data_extraction_report_configuration
+    target: StructuredDataExtractionReportConfiguration
+    cardinality: has_one
+  - field: chart_detail_extract_report_configuration
+    target: ChartDetailExtractConfiguration
+    cardinality: has_one
+  - field: project_id
+    target: project
+    cardinality: belongs_to
+    via: id-reference
+  - field: type
+    target: RequesterType
+    cardinality: has_one
+  - field: primary_reason
+    target: PrimaryReason
+    cardinality: has_one
+  - field: secondary_reason
+    target: SecondaryReason
+    cardinality: has_one
+  - field: contacts
+    target: Contacts
+    cardinality: has_one
+  - field: retrieval_sources
+    target: RetrievalSources
+    cardinality: has_many
+  - field: retrieval_allow_block_configuration
+    target: RetrievalAllowBlockConfiguration
+    cardinality: has_one
+  - field: alternate_delivery
+    target: AlternateDelivery
+    cardinality: has_one
+  - field: coding_configuration
+    target: CodingConfiguration
+    cardinality: has_one
+  - field: chart_finder_config
+    target: ChartFinderConfiguration
+    cardinality: has_one
+- name: UpdateProjectRequest
+  kind: object
+  field_count: 3
+  relationships:
+  - field: config_options
+    target: ConfigOptions
+    cardinality: has_one
+- name: UserDefinedText
+  kind: object
+  field_count: 4
+- name: Visit
+  kind: object
+  field_count: 12
+  relationships:
+  - field: date_range
+    target: DateRange
+    cardinality: has_one
+  - field: status
+    target: VisitStatus
+    cardinality: has_one
+  - field: status_details
+    target: VisitStatusDetail
+    cardinality: has_many
+  - field: documents
+    target: VisitDocuments
+    cardinality: has_one
+  - field: history
+    target: VisitHistoryEntry
+    cardinality: has_many
+  - field: patient
+    target: Patient
+    cardinality: has_one
+  - field: encounter
+    target: Encounter
+    cardinality: has_one
+  - field: retrieval_details
+    target: VisitRetrievalDetails
+    cardinality: has_one
+  - field: order_id
+    target: order
+    cardinality: belongs_to
+    via: id-reference
+- name: VisitDocuments
+  kind: object
+  field_count: 5
+- name: VisitHistoryEntry
+  kind: object
+  field_count: 3
+  relationships:
+  - field: status
+    target: VisitStatus
+    cardinality: has_one
+  - field: status_details
+    target: VisitStatusDetail
+    cardinality: has_many
+- name: VisitRetrievalDetails
+  kind: object
+  field_count: 2
+  relationships:
+  - field: type
+    target: VisitType
+    cardinality: has_one
+- name: VisitStatus
+  kind: enum
+  field_count: 0
+  enum_values:
+  - pending
+  - processing
+  - under_investigation
+  - records_ready
+  - action_needed
+  - cancelled
+  enum_value_count: 6
+- name: VisitStatusDetail
+  kind: enum
+  field_count: 0
+  enum_values: []
+  enum_value_count: 0
+- name: VisitType
+  kind: enum
+  field_count: 0
+  enum_values:
+  - in_network
+  - out_of_network
+  enum_value_count: 2
+- name: WeeklyDeliveryOptions
+  kind: object
+  field_count: 2
+  relationships:
+  - field: delivery_frequency_sub_option
+    target: DeliveryFrequencyDay
+    cardinality: has_many
+- name: ZipDeliveryConfig
+  kind: object
+  field_count: 3
+response_schema_usage:
+- schema: ConfigurationResponse
+  returned_by_operations: 1
+- schema: JsonApiPage_DocumentResponse_
+  returned_by_operations: 1
+- schema: JsonApiPage_FilenameResponse_
+  returned_by_operations: 1
+- schema: JsonApiPage_OrderQueryResponse_
+  returned_by_operations: 1
+- schema: JsonApiPage_OrderResponse_
+  returned_by_operations: 1
+- schema: JsonApiPage_Visit_
+  returned_by_operations: 1
+- schema: OrderQueryResponse
+  returned_by_operations: 2
+- schema: OrderReportingResponse
+  returned_by_operations: 1
+- schema: OrderResponse
+  returned_by_operations: 4
+- schema: OrderValidationResponse
+  returned_by_operations: 2
+- schema: PrematchOrderResponse
+  returned_by_operations: 1
+- schema: ProjectResponse
+  returned_by_operations: 4
+- schema: Visit
+  returned_by_operations: 1

@@ -1,31 +1,60 @@
 # Datavant
 
-> Datavant is a United States health-data logistics company (formed from the 2021 merger of Datavant and Ciox Health) that connects and de-identifies healthcare data across a "network of networks" spanning 350+ real-world data partners, 80,000+ hospitals and clinics, and a majority of the largest US health systems. Core capabilities are privacy-preserving record linkage using Datavant tokens, HIPAA Expert Determination and de-identification, medical record retrieval / release of information, and real-world evidence generation. The integration surface is enterprise and partner/contract gated: an access-controlled API host exists at api.datavant.com (HTTP 403 to anonymous callers) but there is no self-serve public developer portal, no downloadable OpenAPI specification, and no anonymous FHIR CapabilityStatement.
+> Datavant is a United States health-data logistics company (formed from the 2021 merger of Datavant and Ciox Health) that connects and de-identifies healthcare data across a "network of networks" spanning 350+ real-world data partners, 80,000+ hospitals and clinics, and a majority of the largest US health systems. Core capabilities are privacy-preserving record linkage using Datavant tokens, HIPAA Expert Determination and de-identification, medical record retrieval / release of information, and real-world evidence generation. Datavant DOES publish a machine-readable API contract: an OpenAPI 3.1.0 document describing the Datavant REST API (identified patient medical record retrieval) is served anonymously at https://developer.datavant.com/openapi.json — 36 paths, 54 operations, 104 schemas, OAuth 2.0 client-credentials. It is easy to miss because the host root (https://developer.datavant.com/) returns HTTP 404; only /openapi.json and /docs answer.
+
+## API
+
+- [Datavant REST API — OpenAPI 3.1.0](https://developer.datavant.com/openapi.json): The machine-readable contract. Base URL https://api.datavant.io/v2. 36 paths, 54 operations across Orders, Order Queries, Prematch, Projects, Visits, Documents and Configuration.
+- [Datavant REST API reference (ReDoc)](https://developer.datavant.com/docs): Human rendering of the same document; there is no other prose API guide.
+- Authentication: OAuth 2.0 client credentials. POST `grant_type`/`client_id`/`client_secret` to https://api.datavant.io/v2/oauth2/token; bearer token valid 7200s. **No scopes are published** — one token grants all 54 operations.
+- Versioning: `/v2` in the path plus an optional `version-datavant` date header, default `2023-04-01`.
+- Pagination: `limit` (default 50, max 100) / `offset`, in a JSON:API-flavoured `JsonApiPage` envelope with `data`, `total`, `unfiltered_total` and `links{first,last,self,next,prev}`.
+- Errors: `application/json` `{"errors": [{"code","message","params"}]}` — an array, not RFC 9457.
+- No rate limits, no 429, no `RateLimit-*` headers, no idempotency key, no webhooks, no event stream.
+
+## Identity discovery
+
+- [OpenID Connect discovery](https://auth.datavant.com/.well-known/openid-configuration): Datavant's Auth0 tenant (issuer https://datavant.auth0.com/) on the custom domain auth.datavant.com.
+- [OAuth 2.0 authorization server metadata (RFC 8414)](https://auth.datavant.com/.well-known/oauth-authorization-server)
+- [JWKS](https://auth.datavant.com/.well-known/jwks.json)
+- No `/.well-known/security.txt`, `api-catalog`, `ai-plugin.json`, `agent-card.json` or SMART-on-FHIR configuration is served on any Datavant host.
+
+## Software
+
+- [Datavant Connect Tokenization Application (AWS Marketplace)](https://aws.amazon.com/marketplace/pp/prodview-eolcfagze2ihw): Container build of the tokenization engine for ECS/EKS. Image `709825985650.dkr.ecr.us-east-1.amazonaws.com/datavant/datavant:v5.2.0`. Publicly listed price: $300,000 for a 12-month license.
+- Datavant CLI: on-premise tokenization engine (`tokenize`, `transform-tokens --to/--from`, `serve`, `diagnose`, `onboard`) for macOS, Windows and Linux, downloaded from the login-gated Datavant Portal. It is the product, not a client library for the REST API.
+- No client SDK exists in any public registry — npm, PyPI, RubyGems, crates.io, NuGet, Packagist and Docker Hub all return nothing first-party, and github.com/datavant has 0 public repositories.
 
 ## Products
 
-- [Datavant Connect - Linkage](https://www.datavant.com/products/connect-linkage): Privacy-preserving record linkage; tokenizes health data with Datavant tokens and connects datasets across 350+ real-world data partners.
-- [Datavant Connect - Privacy](https://www.datavant.com/products/connect-privacy): De-identification and HIPAA Expert Determination to preserve data privacy and the verifiability of compliance processes.
-- [Datavant Connect - Retrieval](https://www.datavant.com/products/connect-retrieval): Medical record retrieval and release-of-information services (originating from Ciox Health).
-- [Datavant Insights & Evidence Generation](https://www.datavant.com/products/insights-and-evidence-generation): Linked real-world datasets and analytics for generating real-world evidence for life sciences, payers, and research.
+- [Datavant Connect — Linkage](https://www.datavant.com/products/connect-linkage): Privacy-preserving record linkage; tokenizes health data with Datavant tokens and connects datasets across 350+ real-world data partners.
+- [Datavant Connect — Privacy](https://www.datavant.com/products/connect-privacy): De-identification and HIPAA Expert Determination.
+- [Datavant Connect — Retrieval](https://www.datavant.com/products/connect-retrieval): Medical record retrieval and release of information (originating from Ciox Health). This is the product the REST API drives.
+- [Datavant Insights & Evidence Generation](https://www.datavant.com/products/insights-and-evidence-generation): Linked real-world datasets and analytics for real-world evidence.
 
 ## Company
 
-- [Website](https://www.datavant.com/): Company overview and product marketing.
-- [Interoperability](https://www.datavant.com/interoperability): FHIR / TEFCA interoperability thought leadership (not an API reference).
-- [Blog](https://www.datavant.com/blog): Company blog.
-- [Trust Center](https://trust.datavant.com/): Security and compliance posture.
-- [Status Page](https://status.datavant.com/): Service status.
-- [Privacy Policy](https://www.datavant.com/privacy-policy)
-- [GitHub Organization](https://github.com/datavant): Public org (currently 0 public repositories).
+- [Website](https://www.datavant.com/)
+- [Interoperability](https://www.datavant.com/interoperability): FHIR / TEFCA thought leadership. Note: no anonymous FHIR CapabilityStatement or SMART configuration is served.
+- [Blog](https://www.datavant.com/blog)
+- [Trust Center](https://trust.datavant.com/): TrustShare instance; JS-rendered and its content API requires a token, so certifications are not machine-readable there.
+- [Status page](https://status.datavant.com/): Tracks two components — Portal and Datavant CLI. The REST API is not a tracked component.
+- [Report vulnerabilities](https://www.datavant.com/report-vulnerabilities): security@datavant.com. No bug bounty, no safe harbor, no security.txt.
+- [Privacy and Compliance](https://www.datavant.com/about/privacy-compliance) · [Privacy Policy](https://www.datavant.com/privacy-policy) · [Terms of Use](https://www.datavant.com/terms-of-use) · [HIPAA Privacy](https://www.datavant.com/hipaa-privacy)
+- Compliance: FedRAMP Moderate Agency ATO (NIH-NCATS sponsor, December 2022, 326 controls) and SOC 2 Type 2, both stated by Datavant in [its own FedRAMP write-up](https://www.datavant.com/hipaa-privacy/how-our-security-and-compliance-teams-approached-datavants-fedramp-authorization).
+- [GitHub Organization](https://github.com/datavant): exists, 0 public repositories.
 - [LinkedIn](https://www.linkedin.com/company/datavant)
+- Support: support@datavant.com. support.datavant.com returns HTTP 403 to anonymous callers (customer-only help center).
 
 ## Access
 
-- Pricing model: enterprise; onboarding is contact-sales / partner-agreement based; no self-serve trial or public sign-up.
-- API host: https://api.datavant.com (access-controlled; returns HTTP 403 to anonymous callers on every probed path; no publicly documented endpoints).
-- No public OpenAPI, Swagger, FHIR CapabilityStatement, or SMART-on-FHIR configuration is served anonymously.
+- Pricing model: enterprise. Onboarding is contact-sales / partner agreement; no self-serve sign-up, no free tier, no trial. www.datavant.com/pricing returns 404 and robots.txt disallows /pricing.
+- The REST API is documented publicly but not self-serve: credentials are issued under contract.
+- https://api.datavant.com (distinct from the API base https://api.datavant.io) returns HTTP 403 to anonymous callers on every path; it is the tokenization control plane, not the REST API host.
+- https://portal.datavant.com is the customer portal and 302s every path to /login.
 
-## Notes
+## Agent surface
 
-- This llms.txt was generated by API Evangelist from the public apis.yml catalog record; it summarizes Datavant's public identity and product surface, not a machine-readable API contract (which is partner-gated).
+- No MCP server (mcp.datavant.com and mcp.datavant.io do not resolve).
+- No A2A agent card at `/.well-known/agent-card.json` or `/.well-known/agent.json` on any host.
+- No llms.txt is published by Datavant; this file was generated by API Evangelist from the public apis.yml catalog record and the artifacts harvested into https://github.com/api-evangelist/datavant.

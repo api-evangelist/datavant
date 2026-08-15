@@ -1,0 +1,55 @@
+generated: '2026-08-14'
+method: generated
+source: openapi/datavant-rest-api-openapi.yml
+note: >-
+  Packaged Agent Skills for the Datavant REST API, generated from the OpenAPI 3.1.0
+  document served at https://developer.datavant.com/openapi.json. Every operationId cited
+  in every skill was verified verbatim against that specification. Datavant publishes no
+  AGENTS.md, no skill files and no agent guidance of its own; these are API Evangelist
+  authored operating instructions, not provider-published ones. They deliberately carry
+  the safety context this API needs - it moves identified patient medical records, the
+  submit/dispatch path is not idempotent, and there are no scopes and no rate-limit
+  signal.
+skill_count: 3
+skills:
+  - file: datavant-submit-retrieval-order.md
+    name: Submit a Datavant medical record retrieval order
+    api: openapi/datavant-rest-api-openapi.yml
+    category: retrieval
+    operations:
+      - get_configuration_configuration__get
+      - create_project_projects__post
+      - create_order_orders__post
+      - add_query_to_order_orders__order_id__queries_post
+      - create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post
+      - get_order_validation_results_orders__order_id__validation_stats_get
+      - get_order_errors_and_warnings_orders__order_uuid__error_and_warning_counts_get
+      - submit_order_orders__order_id__submit_post
+      - dispatch_order_orders__order_id__dispatch_post
+  - file: datavant-track-and-collect-documents.md
+    name: Track a Datavant order and collect the retrieved documents
+    api: openapi/datavant-rest-api-openapi.yml
+    category: retrieval
+    operations:
+      - list_orders_orders__get
+      - get_order_orders__order_id__get
+      - get_order_retrievals_reporting_data_orders__order_id__reporting_retrievals_get
+      - get_query_visits_projects__project_id__queries__query_id__visits_get
+      - get_visit_details_projects__project_id__queries__query_id__visits__visit_uuid__get
+      - list_documents_documents_get
+      - download_document_documents__document_uuid__get
+  - file: datavant-prematch-and-configuration.md
+    name: Size a Datavant retrieval with prematch, and manage tenant configuration
+    api: openapi/datavant-rest-api-openapi.yml
+    category: setup
+    operations:
+      - create_prematch_order_orders_prematch_post
+      - list_prematch_orders_orders_prematch_all_get
+      - get_prematch_result_counts_orders_prematch__order_id__counts_get
+      - delete_prematch_orders_prematch__order_uuid__delete
+      - get_configuration_configuration__get
+      - put_configuration_configuration__put
+      - get_letter_of_representation_configuration_supporting_documents_letter_of_representation_get
+      - update_letter_of_representation_configuration_supporting_documents_letter_of_representation_put
+      - get_health_plan_letter_configuration_supporting_documents_health_plan_letter_get
+      - update_health_plan_letter_configuration_supporting_documents_health_plan_letter_put
