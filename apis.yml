@@ -48,7 +48,7 @@ tags:
 - Health Information Exchange
 created: '2026-07-24'
 modified: '2026-08-14'
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 apis:
 - name: Datavant REST API
   description: 'Datavant''s REST API for identified patient medical record retrieval - the programmable
