@@ -44,6 +44,23 @@ tags:
 - Medical Records
 - Release of Information
 - Privacy
+- Authentication
+- Health Information Exchange
+tags_raw:
+- Healthcare
+- United States
+- Interoperability
+- Health Data
+- De-Identification
+- Tokenization
+- Real-World Data
+- Record Retrieval
+- Data Connectivity
+- Life Sciences
+- HIPAA
+- Medical Records
+- Release of Information
+- Privacy
 - OAuth 2.0
 - Health Information Exchange
 created: '2026-07-24'
@@ -63,6 +80,19 @@ apis:
   humanURL: https://developer.datavant.com/docs
   baseURL: https://api.datavant.io/v2
   tags:
+  - Healthcare
+  - Medical Records
+  - Record Retrieval
+  - Release of Information
+  - Health Data
+  - Order
+  - Documents
+  - Authentication
+  - United States
+  - HIPAA
+  - Life Sciences
+  - Payers
+  tags_raw:
   - healthcare
   - medical-records
   - record-retrieval
