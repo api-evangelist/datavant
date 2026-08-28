@@ -14,6 +14,18 @@ description: 'Datavant is a United States health-data logistics company, formed 
   even though that host''s root returns HTTP 404. Access is still enterprise and contract-gated -
   there is no self-serve sign-up, no published pricing beyond a single AWS Marketplace listing, no
   published scopes or rate limits, and no FHIR CapabilityStatement. Home market is the United States.'
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: enterprise
   onboarding: contact-sales
