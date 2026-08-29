@@ -19,19 +19,19 @@ edges:
   capability_id_l1: BC-2900
   capability_name: Release of Information
   confidence: 0.85
-  evidence: POST /orders/{order_id}/queries 'Add a query to an order'; 'Create Patient Authorization';
-    schemas Patient, Encounter, Facility, ServiceDates, ChartPackage, Insurance
-  reason: Each query is a per-patient request for medical records, with patient-authorization documents
-    attached — receipt, validation and fulfilment of requests for protected health information, i.e. Release
-    of Information within provider-side Health Information Management.
+  evidence: POST /orders/{order_id}/queries/{query_id}/supporting-documents/patient-authorizations 'Create
+    Patient Authorization'; schemas Patient, Encounter, Facility, ChartPackage, ServiceDates
+  reason: Queries specify the patient, encounter, facility and date range for a medical-record request
+    and carry the patient authorisation documents — squarely the receipt and validation of requests for
+    protected health information.
 - tag: Orders
   spec_file: datavant-orders-api-openapi.yml
   capability_id: BC-2900.30
   capability_id_l1: BC-2900
   capability_name: Release of Information
-  confidence: 0.8
-  evidence: POST /orders/ 'Create an order'; 'Get reporting for order retrievals'; schemas RetrievalSources,
-    ChartPackage, RequesterType
-  reason: 'Orders are medical-record retrieval requests submitted, validated, tracked and cancelled against
-    provider sources — the request-fulfilment workflow for disclosure of protected health information.
-    Not a generic commerce order: schemas are chart packages and retrieval sources.'
+  confidence: 0.85
+  evidence: POST /orders/ create_order 'Create an order'; 'Get reporting for order retrievals'; RetrievalSources,
+    AllDeliveryConfig
+  reason: Orders are the request objects for Datavant's identified medical record retrieval, with validation,
+    retrieval reporting and delivery configuration — the request-to-fulfilment workflow of release of
+    information.
