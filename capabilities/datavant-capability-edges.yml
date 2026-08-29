@@ -1,0 +1,37 @@
+slug: datavant
+provider: Datavant
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Healthcare Providers
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 2
+edges:
+- tag: Order Queries
+  spec_file: datavant-order-queries-api-openapi.yml
+  capability_id: BC-2900.30
+  capability_id_l1: BC-2900
+  capability_name: Release of Information
+  confidence: 0.85
+  evidence: POST /orders/{order_id}/queries 'Add a query to an order'; 'Create Patient Authorization';
+    schemas Patient, Encounter, Facility, ServiceDates, ChartPackage, Insurance
+  reason: Each query is a per-patient request for medical records, with patient-authorization documents
+    attached — receipt, validation and fulfilment of requests for protected health information, i.e. Release
+    of Information within provider-side Health Information Management.
+- tag: Orders
+  spec_file: datavant-orders-api-openapi.yml
+  capability_id: BC-2900.30
+  capability_id_l1: BC-2900
+  capability_name: Release of Information
+  confidence: 0.8
+  evidence: POST /orders/ 'Create an order'; 'Get reporting for order retrievals'; schemas RetrievalSources,
+    ChartPackage, RequesterType
+  reason: 'Orders are medical-record retrieval requests submitted, validated, tracked and cancelled against
+    provider sources — the request-fulfilment workflow for disclosure of protected health information.
+    Not a generic commerce order: schemas are chart packages and retrieval sources.'

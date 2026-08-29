@@ -370,6 +370,9 @@ apis:
   - type: Support
     url: mailto:support@datavant.com
 common:
+- type: CapabilityMap
+  url: capabilities/datavant-capability-edges.yml
+  name: Datavant Business Capability Map
 - type: AgenticAccess
   url: agentic-access/datavant-agentic-access.yml
 - type: OAuthScopes
