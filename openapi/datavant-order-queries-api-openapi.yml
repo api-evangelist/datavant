@@ -1,0 +1,1287 @@
+openapi: 3.2.0
+info:
+  title: Datavant REST Order Queries API
+  description: '
+
+    Datavant''s REST API is a full-featured API built to facilitate programmatic access to our
+
+    identified patient medical record retrieval capabilities. We provide predictable resource-oriented,
+
+    JSON-encoded APIS protected by industry-standard OAuth2 ClientCredential authentication.
+
+    '
+  version: '2023-04-01'
+servers:
+- url: https://api.datavant.io/v2
+security:
+- oauth2: []
+tags:
+- name: Order Queries
+  description: '
+
+    An order query is a request for medical records for a specific patient, but the exact encounter criteria are unknown and/or are flexible.
+
+    It''s possible, depending on the encounter criteria, that one or more patient searches and/or chases will result from an order query.
+
+    '
+paths:
+  /orders/{order_id}/queries:
+    get:
+      tags:
+      - Order Queries
+      summary: List all queries for an order
+      description: Get a paginated list of all the queries associated with the specified order.
+      operationId: list_queries_orders__order_id__queries_get
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Order Id
+        name: order_id
+        in: path
+      - required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          title: Limit
+          default: 50
+        name: limit
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+          title: Offset
+          default: 0
+        name: offset
+        in: query
+      - description: Version of the Orders API to use with this call
+        required: false
+        schema:
+          type: string
+          title: Version-Datavant
+          description: Version of the Orders API to use with this call
+          default: '2023-04-01'
+        name: version-datavant
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiPage_OrderQueryResponse_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+    post:
+      tags:
+      - Order Queries
+      summary: Add a query to an order
+      description: Add a query to an existing order that has not yet been submitted.
+      operationId: add_query_to_order_orders__order_id__queries_post
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Order Id
+        name: order_id
+        in: path
+      - description: Version of the Orders API to use with this call
+        required: false
+        schema:
+          type: string
+          title: Version-Datavant
+          description: Version of the Orders API to use with this call
+          default: '2023-04-01'
+        name: version-datavant
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderQueryRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderQueryResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '422':
+          description: Order is not in 'draft' status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '404':
+          description: Order does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+  /orders/{order_id}/queries/{query_id}:
+    get:
+      tags:
+      - Order Queries
+      summary: Get a query from an order
+      description: Fetch the details of the specified query.
+      operationId: get_query_in_order_orders__order_id__queries__query_id__get
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Order Id
+        name: order_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Query Id
+        name: query_id
+        in: path
+      - description: Version of the Orders API to use with this call
+        required: false
+        schema:
+          type: string
+          title: Version-Datavant
+          description: Version of the Orders API to use with this call
+          default: '2023-04-01'
+        name: version-datavant
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderQueryResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+    put:
+      tags:
+      - Order Queries
+      summary: Update a query from an order
+      description: Update an existing query that is part of an order that has yet to be submitted.
+      operationId: update_query_in_order_orders__order_id__queries__query_id__put
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Order Id
+        name: order_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Query Id
+        name: query_id
+        in: path
+      - description: Version of the Orders API to use with this call
+        required: false
+        schema:
+          type: string
+          title: Version-Datavant
+          description: Version of the Orders API to use with this call
+          default: '2023-04-01'
+        name: version-datavant
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderQueryRequest'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '422':
+          description: Order is not in 'draft' status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '404':
+          description: Query does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+    delete:
+      tags:
+      - Order Queries
+      summary: Delete a query from an order
+      description: Remove a query from an order that has yet to be submitted.
+      operationId: delete_query_orders__order_id__queries__query_id__delete
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Order Id
+        name: order_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Query Id
+        name: query_id
+        in: path
+      - description: Version of the Orders API to use with this call
+        required: false
+        schema:
+          type: string
+          title: Version-Datavant
+          description: Version of the Orders API to use with this call
+          default: '2023-04-01'
+        name: version-datavant
+        in: header
+      responses:
+        '204':
+          description: Successful Response
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '422':
+          description: Order is not in 'draft' status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '404':
+          description: Query does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+  /orders/{order_id}/queries/{query_id}/supporting-documents/patient-authorizations:
+    get:
+      tags:
+      - Order Queries
+      summary: List all Patient Authorizations.
+      description: List the filenames of all Patient Authorizations for this query.
+      operationId: list_patient_authorization_filenames_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_get
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Order Id
+        name: order_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Query Id
+        name: query_id
+        in: path
+      - required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          title: Limit
+          default: 50
+        name: limit
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+          title: Offset
+          default: 0
+        name: offset
+        in: query
+      - description: Version of the Orders API to use with this call
+        required: false
+        schema:
+          type: string
+          title: Version-Datavant
+          description: Version of the Orders API to use with this call
+          default: '2023-04-01'
+        name: version-datavant
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiPage_FilenameResponse_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+    post:
+      tags:
+      - Order Queries
+      summary: Create Patient Authorization
+      description: Associate a Patient Authorization for this query.
+      operationId: create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Order Id
+        name: order_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Query Id
+        name: query_id
+        in: path
+      - description: Version of the Orders API to use with this call
+        required: false
+        schema:
+          type: string
+          title: Version-Datavant
+          description: Version of the Orders API to use with this call
+          default: '2023-04-01'
+        name: version-datavant
+        in: header
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '422':
+          description: Order is not in 'draft' status, or no filename given with the attached Patient Authorization form.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '404':
+          description: Query does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '409':
+          description: Patient Authorization form with the given filename already exists for this query.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+    delete:
+      tags:
+      - Order Queries
+      summary: Delete All Patient Authorizations
+      description: Remove all Patient Authorizations from this query.
+      operationId: delete_all_patient_authorizations_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_delete
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Order Id
+        name: order_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Query Id
+        name: query_id
+        in: path
+      - description: Version of the Orders API to use with this call
+        required: false
+        schema:
+          type: string
+          title: Version-Datavant
+          description: Version of the Orders API to use with this call
+          default: '2023-04-01'
+        name: version-datavant
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '422':
+          description: Order is not in 'draft' status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '404':
+          description: Query does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+  /orders/{order_id}/queries/{query_id}/supporting-documents/patient-authorizations/{filename}:
+    get:
+      tags:
+      - Order Queries
+      summary: Get Patient Authorization
+      description: Download the Patient Authorization with the given filename for this query.
+      operationId: get_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations__filename__get
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Order Id
+        name: order_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Query Id
+        name: query_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Filename
+        name: filename
+        in: path
+      - description: Version of the Orders API to use with this call
+        required: false
+        schema:
+          type: string
+          title: Version-Datavant
+          description: Version of the Orders API to use with this call
+          default: '2023-04-01'
+        name: version-datavant
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '404':
+          description: Patient authorization does not exist with the given filename.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+    delete:
+      tags:
+      - Order Queries
+      summary: Delete Patient Authorization
+      description: Remove the Patient Authorization with the given filename from this query.
+      operationId: delete_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations__filename__delete
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Order Id
+        name: order_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Query Id
+        name: query_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Filename
+        name: filename
+        in: path
+      - description: Version of the Orders API to use with this call
+        required: false
+        schema:
+          type: string
+          title: Version-Datavant
+          description: Version of the Orders API to use with this call
+          default: '2023-04-01'
+        name: version-datavant
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '422':
+          description: Order is not in 'draft' status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '404':
+          description: Query does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+components:
+  schemas:
+    ChartPackage:
+      enum:
+      - Default
+      title: ChartPackage
+      description: Packages referring to pre-configured bundles of chart components.
+    FilenameResponse:
+      properties:
+        filename:
+          type: string
+          title: Filename
+          description: The filename associated with a document.
+      type: object
+      required:
+      - filename
+      title: FilenameResponse
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    BirthDate:
+      properties:
+        year:
+          type: string
+          title: Year
+          description: The 4-digit year of the individual's date of birth
+        month:
+          type: string
+          title: Month
+          description: The month of the individual's date of birth
+        day:
+          type: string
+          title: Day
+          description: The day of the individual's date of birth
+      type: object
+      required:
+      - year
+      - month
+      - day
+      title: BirthDate
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    Body_create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post:
+      properties:
+        file:
+          type: string
+          format: binary
+          title: File
+      type: object
+      required:
+      - file
+      title: Body_create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post
+    Links:
+      properties:
+        first:
+          type: string
+          title: First
+          example: /api/v1/users?limit=1&offset1
+        last:
+          type: string
+          title: Last
+          example: /api/v1/users?limit=1&offset1
+        self:
+          type: string
+          title: Self
+          example: /api/v1/users?limit=1&offset1
+        next:
+          type: string
+          title: Next
+          example: /api/v1/users?limit=1&offset1
+        prev:
+          type: string
+          title: Prev
+          example: /api/v1/users?limit=1&offset1
+      type: object
+      title: Links
+    Patient:
+      properties:
+        phone_number:
+          type: string
+          title: Phone Number
+          description: Phone number
+        full_name:
+          type: string
+          title: Full Name
+          description: If entity is an organization or individual with only full name available include full_name
+        first_name:
+          type: string
+          title: First Name
+          description: If entity is an individual include first_name
+        alternate_first_name:
+          type: string
+          title: Alternate First Name
+          description: If entity is an individual and uses an alias or nickname include alternate_first_name
+        middle_name:
+          type: string
+          title: Middle Name
+          description: If entity is an individual include middle_name if applicable
+        last_name:
+          type: string
+          title: Last Name
+          description: If entity is an individual include last_name
+        prefix:
+          type: string
+          title: Prefix
+          description: If entity is an individual include name prefix if applicable
+        suffix:
+          type: string
+          title: Suffix
+          description: If entity is an individual include name suffix if applicable
+        address:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          title: Address
+          description: The patient's address
+        email:
+          type: string
+          format: email
+          title: Email
+          description: The patient's email address
+        date_of_birth:
+          allOf:
+          - $ref: '#/components/schemas/BirthDate'
+          title: Date Of Birth
+          description: The patient's date of birth
+        gender:
+          allOf:
+          - $ref: '#/components/schemas/Gender'
+          description: The patient's gender
+        ssn:
+          type: string
+          title: Ssn
+          description: The patient's social security number
+        insurance:
+          allOf:
+          - $ref: '#/components/schemas/Insurance'
+          title: Insurance
+          description: The patient's insurance information
+        user_defined_text:
+          allOf:
+          - $ref: '#/components/schemas/UserDefinedText'
+          title: User Defined Text
+          description: Misc values that the user wants associated with the patient for later reporting.
+        customer_member_id:
+          type: string
+          title: Customer Member Id
+          description: An identifier for this member in the customer's system
+        member_id:
+          type: string
+          title: Member Id
+          description: An identifier for this member in the Ciox system
+      type: object
+      required:
+      - date_of_birth
+      title: Patient
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    JsonApiPage_OrderQueryResponse_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/OrderQueryResponse'
+          type: array
+          title: Data
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        limit:
+          type: integer
+          minimum: 1.0
+          title: Limit
+        offset:
+          type: integer
+          minimum: 0.0
+          title: Offset
+        links:
+          $ref: '#/components/schemas/Links'
+        unfiltered_total:
+          type: integer
+          title: Unfiltered Total
+      type: object
+      required:
+      - data
+      - total
+      - links
+      title: JsonApiPage[OrderQueryResponse]
+      description: JSON:API 1.0 specification says that result key should be a `data`.
+    Encounter:
+      properties:
+        practitioner:
+          allOf:
+          - $ref: '#/components/schemas/Practitioner'
+          title: Practitioner
+          description: The practitioner information for this encounter search criteria
+        facility:
+          allOf:
+          - $ref: '#/components/schemas/Facility'
+          title: Facility
+          description: The facility information for this encounter search criteria
+        additional_information:
+          type: object
+          title: Additional Information
+          description: Any other additional information for this encounter search criteria (eg. provider instructions)
+        service_date_range:
+          anyOf:
+          - $ref: '#/components/schemas/ServiceDates'
+          - items:
+              $ref: '#/components/schemas/ServiceDates'
+            type: array
+          title: Service Date Range
+          description: The service date range(s) for this encounter search criteria
+        chart_components:
+          items:
+            $ref: '#/components/schemas/ChartComponent'
+          type: array
+          description: The individual components of a chart that should be retrieved for this encounter search criteria
+          default:
+          - Abstract
+        chart_packages:
+          items:
+            $ref: '#/components/schemas/ChartPackage'
+          type: array
+          description: A pre-configured package of chart components that should be retrieved for this encounter search criteria
+          default: []
+      type: object
+      required:
+      - service_date_range
+      title: Encounter
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    ChartComponent:
+      enum:
+      - Entire Record
+      - Abstract
+      title: ChartComponent
+      description: Individual components of a chart.
+    Gender:
+      type: string
+      enum:
+      - M
+      - F
+      - O
+      - U
+      title: Gender
+      description: An enumeration.
+    Facility:
+      properties:
+        fax_number:
+          type: string
+          title: Fax Number
+          description: Fax number
+        phone_number:
+          type: string
+          title: Phone Number
+          description: Phone number
+        name:
+          type: string
+          title: Name
+          description: The facility name
+        address:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          title: Address
+          description: The facility address
+        identifier:
+          type: object
+          title: Identifier
+          description: The facility identifiers (eg. NPI, TIN, etc.)
+        roi_site_id:
+          type: string
+          title: Roi Site Id
+          description: A 5 digit number referencing a Ciox-embedded site.
+        group:
+          type: string
+          title: Group
+          description: The facility's medical group name
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FacilityType'
+          description: Represents the type of facility, only valid values are Inpatient or Outpatient
+      type: object
+      title: Facility
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    OrderQueryResponse:
+      properties:
+        uuid:
+          type: string
+          format: uuid4
+          title: UUID4
+          description: Unique identifier for the object.
+        id:
+          type: string
+          maxLength: 100
+          minLength: 1
+          pattern: ^[\sa-zA-Z0-9_.-]+$
+          title: ID
+          description: 'User-provided identifier for the object.
+
+
+            * Must be between 4 and 32 characters
+
+            * Must contain only upper or lower-case alphanumeric characters, numbers, hyphens and/or underscores.
+
+            '
+        patient:
+          allOf:
+          - $ref: '#/components/schemas/Patient'
+          title: Patient
+          description: 'Information about the patient for which you are requesting records.
+
+
+            You are required to submit the full name of the patient. You can do so by specifying `full_name`,
+
+            of you can specify both `first_name` and `last_name`.
+
+            '
+        encounters:
+          items:
+            $ref: '#/components/schemas/Encounter'
+          type: array
+          title: Encounter Search Criteria
+          description: 'List of search criteria to use to target specific encounters
+
+            '
+        created_at:
+          type: string
+          format: date-time
+          title: Date Created
+          description: The ISO8601 formatted timestamp for when the object was created.
+        updated_at:
+          type: string
+          format: date-time
+          title: Date Last Updated
+          description: The ISO8601 formatted timestamp for when the object was last updated.
+      type: object
+      required:
+      - uuid
+      - id
+      - patient
+      - encounters
+      - created_at
+      title: OrderQueryResponse
+      description: The representation of an OrderQuery as it is returned to an external customer.
+    Error:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Error code specifiying type of error
+        message:
+          type: string
+          title: Message
+          description: Human readable message describing error
+        params:
+          items: {}
+          type: array
+          title: Params
+          description: The parameters involved in the error
+      type: object
+      required:
+      - code
+      - message
+      title: Error
+    UserDefinedText:
+      properties:
+        text1:
+          type: string
+          title: Text1
+        text2:
+          type: string
+          title: Text2
+        text3:
+          type: string
+          title: Text3
+        text4:
+          type: string
+          title: Text4
+      type: object
+      title: UserDefinedText
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    FacilityType:
+      type: string
+      enum:
+      - INPATIENT
+      - OUTPATIENT
+      title: FacilityType
+      description: An enumeration.
+    ServiceDates:
+      properties:
+        start:
+          type: string
+          format: date-time
+          title: Start
+          description: The start of the service date range
+        end:
+          type: string
+          format: date-time
+          title: End
+          description: The end of the service date range
+      type: object
+      required:
+      - start
+      title: ServiceDates
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    Insurance:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: The name of the insurance provider
+        plan:
+          type: string
+          title: Plan
+          description: The name of the plan with the insurer
+        group_id:
+          type: string
+          title: Group Id
+          description: The member's insurance group ID
+        member_id:
+          type: string
+          title: Member Id
+          description: The member's individual ID
+      type: object
+      title: Insurance
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    JsonApiPage_FilenameResponse_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/FilenameResponse'
+          type: array
+          title: Data
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        limit:
+          type: integer
+          minimum: 1.0
+          title: Limit
+        offset:
+          type: integer
+          minimum: 0.0
+          title: Offset
+        links:
+          $ref: '#/components/schemas/Links'
+        unfiltered_total:
+          type: integer
+          title: Unfiltered Total
+      type: object
+      required:
+      - data
+      - total
+      - links
+      title: JsonApiPage[FilenameResponse]
+      description: JSON:API 1.0 specification says that result key should be a `data`.
+    ErrorHTTPResponse:
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/Error'
+          type: array
+          title: Errors
+          description: List of all errors
+      type: object
+      required:
+      - errors
+      title: ErrorHTTPResponse
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    Address:
+      properties:
+        normalizations:
+          items: {}
+          type: array
+          title: Normalizations
+          default: []
+        line1:
+          type: string
+          title: Line1
+          description: Street address
+        line2:
+          type: string
+          title: Line2
+          description: Building, Suite#, Unit#, etc..
+        city:
+          type: string
+          title: City
+          description: City
+        country:
+          type: string
+          title: Country
+          description: Country Code, ISO 3166-1 alpha-2 code
+          default: US
+        state:
+          type: string
+          title: State
+          description: State/Province Abbreviation Code, 2 characters
+        postal_code:
+          type: string
+          title: Postal Code
+          description: Postal Code, US - 5 digits or 5+4, Other - Alphanumeric
+      type: object
+      title: Address
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    UpdateOrderQueryRequest:
+      properties:
+        patient:
+          allOf:
+          - $ref: '#/components/schemas/Patient'
+          title: Patient
+          description: 'Information about the patient for which you are requesting records.
+
+
+            You are required to submit the full name of the patient. You can do so by specifying `full_name`,
+
+            of you can specify both `first_name` and `last_name`.
+
+            '
+        encounters:
+          items:
+            $ref: '#/components/schemas/Encounter'
+          type: array
+          title: Encounter Search Criteria
+          description: 'List of search criteria to use to target specific encounters
+
+            '
+      type: object
+      required:
+      - patient
+      - encounters
+      title: UpdateOrderQueryRequest
+      description: The field required to update an existing order query.
+    Practitioner:
+      properties:
+        fax_number:
+          type: string
+          title: Fax Number
+          description: Fax number
+        phone_number:
+          type: string
+          title: Phone Number
+          description: Phone number
+        full_name:
+          type: string
+          title: Full Name
+          description: The practitioner's name
+        first_name:
+          type: string
+          title: First Name
+          description: The practitioner's first name
+        last_name:
+          type: string
+          title: Last Name
+          description: The practitioner's last name
+        contact:
+          type: string
+          title: Contact
+          description: The practitioner's contact
+        identifier:
+          type: object
+          title: Identifier
+          description: The practitioner's identifiers (eg. NPI, TIN, etc.)
+      type: object
+      title: Practitioner
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    CreateOrderQueryRequest:
+      properties:
+        id:
+          type: string
+          maxLength: 100
+          minLength: 1
+          pattern: ^[\sa-zA-Z0-9_.-]+$
+          title: ID
+          description: 'User-provided identifier for the object.
+
+
+            * Must be between 4 and 32 characters
+
+            * Must contain only upper or lower-case alphanumeric characters, numbers, hyphens and/or underscores.
+
+            '
+        patient:
+          allOf:
+          - $ref: '#/components/schemas/Patient'
+          title: Patient
+          description: 'Information about the patient for which you are requesting records.
+
+
+            You are required to submit the full name of the patient. You can do so by specifying `full_name`,
+
+            of you can specify both `first_name` and `last_name`.
+
+            '
+        encounters:
+          items:
+            $ref: '#/components/schemas/Encounter'
+          type: array
+          title: Encounter Search Criteria
+          description: 'List of search criteria to use to target specific encounters
+
+            '
+      type: object
+      required:
+      - id
+      - patient
+      - encounters
+      title: CreateOrderQueryRequest
+      description: The fields that a customer must specify to define an OrderQuery.
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.datavant.io/v2/oauth2/token
+          refreshUrl: https://api.datavant.io/v2/oauth2/token
+          scopes: {}

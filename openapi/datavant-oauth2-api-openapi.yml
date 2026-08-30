@@ -1,0 +1,59 @@
+openapi: 3.2.0
+info:
+  title: Datavant REST Oauth2 API
+  description: '
+
+    Datavant''s REST API is a full-featured API built to facilitate programmatic access to our
+
+    identified patient medical record retrieval capabilities. We provide predictable resource-oriented,
+
+    JSON-encoded APIS protected by industry-standard OAuth2 ClientCredential authentication.
+
+    '
+  version: '2023-04-01'
+servers:
+- url: https://api.datavant.io/v2
+security:
+- oauth2: []
+tags:
+- name: Oauth2
+paths:
+  /oauth2/token:
+    post:
+      summary: Authenticate
+      description: Authenticate with Orders API using Client Credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  example: client_credentials
+                client_id:
+                  type: string
+                  example: client_id
+                client_secret:
+                  type: string
+                  example: client_secret
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              example:
+                access_token: kHGjo09bB2vafqabCUeqF1MCeFOmMqY5
+                token_type: bearer
+                expires_in: 7200
+      tags:
+      - Oauth2
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.datavant.io/v2/oauth2/token
+          refreshUrl: https://api.datavant.io/v2/oauth2/token
+          scopes: {}

@@ -1,0 +1,829 @@
+openapi: 3.2.0
+info:
+  title: Datavant REST Visits API
+  description: '
+
+    Datavant''s REST API is a full-featured API built to facilitate programmatic access to our
+
+    identified patient medical record retrieval capabilities. We provide predictable resource-oriented,
+
+    JSON-encoded APIS protected by industry-standard OAuth2 ClientCredential authentication.
+
+    '
+  version: '2023-04-01'
+servers:
+- url: https://api.datavant.io/v2
+security:
+- oauth2: []
+tags:
+- name: Visits
+  description: '
+
+    A visit is a record of the actions performed by Datavant to obtain charts from a specific clinic within the specified date ranges for a specific patient.
+
+    '
+paths:
+  /projects/{project_id}/queries/{query_id}/visits/{visit_uuid}:
+    get:
+      tags:
+      - Visits
+      summary: Get details about a specific visit under the given project and query.
+      operationId: get_visit_details_projects__project_id__queries__query_id__visits__visit_uuid__get
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Project Id
+        name: project_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Query Id
+        name: query_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Visit Uuid
+        name: visit_uuid
+        in: path
+      - description: Version of the Orders API to use with this call
+        required: false
+        schema:
+          type: string
+          title: Version-Datavant
+          description: Version of the Orders API to use with this call
+          default: '2023-04-01'
+        name: version-datavant
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visit'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+  /projects/{project_id}/queries/{query_id}/visits:
+    get:
+      tags:
+      - Visits
+      summary: Get all visits for a particular patient (identified by query.id) across all orders in the given project.
+      operationId: get_query_visits_projects__project_id__queries__query_id__visits_get
+      parameters:
+      - required: true
+        schema:
+          type: string
+          title: Project Id
+        name: project_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          title: Query Id
+        name: query_id
+        in: path
+      - required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          title: Limit
+          default: 50
+        name: limit
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+          title: Offset
+          default: 0
+        name: offset
+        in: query
+      - description: Version of the Orders API to use with this call
+        required: false
+        schema:
+          type: string
+          title: Version-Datavant
+          description: Version of the Orders API to use with this call
+          default: '2023-04-01'
+        name: version-datavant
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonApiPage_Visit_'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorHTTPResponse'
+components:
+  schemas:
+    ChartPackage:
+      enum:
+      - Default
+      title: ChartPackage
+      description: Packages referring to pre-configured bundles of chart components.
+    BirthDate:
+      properties:
+        year:
+          type: string
+          title: Year
+          description: The 4-digit year of the individual's date of birth
+        month:
+          type: string
+          title: Month
+          description: The month of the individual's date of birth
+        day:
+          type: string
+          title: Day
+          description: The day of the individual's date of birth
+      type: object
+      required:
+      - year
+      - month
+      - day
+      title: BirthDate
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    JsonApiPage_Visit_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Visit'
+          type: array
+          title: Data
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        limit:
+          type: integer
+          minimum: 1.0
+          title: Limit
+        offset:
+          type: integer
+          minimum: 0.0
+          title: Offset
+        links:
+          $ref: '#/components/schemas/Links'
+        unfiltered_total:
+          type: integer
+          title: Unfiltered Total
+      type: object
+      required:
+      - data
+      - total
+      - links
+      title: JsonApiPage[Visit]
+      description: JSON:API 1.0 specification says that result key should be a `data`.
+    Links:
+      properties:
+        first:
+          type: string
+          title: First
+          example: /api/v1/users?limit=1&offset1
+        last:
+          type: string
+          title: Last
+          example: /api/v1/users?limit=1&offset1
+        self:
+          type: string
+          title: Self
+          example: /api/v1/users?limit=1&offset1
+        next:
+          type: string
+          title: Next
+          example: /api/v1/users?limit=1&offset1
+        prev:
+          type: string
+          title: Prev
+          example: /api/v1/users?limit=1&offset1
+      type: object
+      title: Links
+    Visit:
+      properties:
+        uuid:
+          type: string
+          title: Uuid
+          description: Unique identifier for the visit.
+        date_range:
+          allOf:
+          - $ref: '#/components/schemas/DateRange'
+          title: Date Range
+          description: Date range for the visit.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/VisitStatus'
+          description: Current status of the visit.
+        status_details:
+          items:
+            $ref: '#/components/schemas/VisitStatusDetail'
+          type: array
+          description: Further details about the current visit status.
+        documents:
+          allOf:
+          - $ref: '#/components/schemas/VisitDocuments'
+          title: Documents
+          description: Documents attached to the visit.
+        history:
+          items:
+            $ref: '#/components/schemas/VisitHistoryEntry'
+          type: array
+          title: History
+          description: History of the visit.
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+          description: Date and time when the visit was last updated.
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Date and time when the visit was created.
+        patient:
+          allOf:
+          - $ref: '#/components/schemas/Patient'
+          title: Patient
+          description: Patient for the visit.
+        encounter:
+          allOf:
+          - $ref: '#/components/schemas/Encounter'
+          title: Encounter
+          description: Encounter for the visit.
+        retrieval_details:
+          allOf:
+          - $ref: '#/components/schemas/VisitRetrievalDetails'
+          title: Retrieval Details
+          description: Retrieval details for the visit, including type and retrieval id.
+        order_id:
+          type: string
+          title: Order Id
+          description: Customer-facing identifier for the order.
+      type: object
+      required:
+      - uuid
+      - date_range
+      - status
+      - status_details
+      - documents
+      - history
+      - updated_at
+      - created_at
+      - patient
+      - encounter
+      - retrieval_details
+      - order_id
+      title: Visit
+      description: An effort to obtain charts from a patient's visit to a specific clinic within the specified date ranges.
+    VisitRetrievalDetails:
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/VisitType'
+          description: Type of visit retrieval.
+        retrieval_id:
+          type: string
+          title: Retrieval Id
+          description: Unique identifier for the visit retrieval, whether in/out of network
+      type: object
+      required:
+      - type
+      title: VisitRetrievalDetails
+      description: Details about the retrieval of a visit.
+    Patient:
+      properties:
+        phone_number:
+          type: string
+          title: Phone Number
+          description: Phone number
+        full_name:
+          type: string
+          title: Full Name
+          description: If entity is an organization or individual with only full name available include full_name
+        first_name:
+          type: string
+          title: First Name
+          description: If entity is an individual include first_name
+        alternate_first_name:
+          type: string
+          title: Alternate First Name
+          description: If entity is an individual and uses an alias or nickname include alternate_first_name
+        middle_name:
+          type: string
+          title: Middle Name
+          description: If entity is an individual include middle_name if applicable
+        last_name:
+          type: string
+          title: Last Name
+          description: If entity is an individual include last_name
+        prefix:
+          type: string
+          title: Prefix
+          description: If entity is an individual include name prefix if applicable
+        suffix:
+          type: string
+          title: Suffix
+          description: If entity is an individual include name suffix if applicable
+        address:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          title: Address
+          description: The patient's address
+        email:
+          type: string
+          format: email
+          title: Email
+          description: The patient's email address
+        date_of_birth:
+          allOf:
+          - $ref: '#/components/schemas/BirthDate'
+          title: Date Of Birth
+          description: The patient's date of birth
+        gender:
+          allOf:
+          - $ref: '#/components/schemas/Gender'
+          description: The patient's gender
+        ssn:
+          type: string
+          title: Ssn
+          description: The patient's social security number
+        insurance:
+          allOf:
+          - $ref: '#/components/schemas/Insurance'
+          title: Insurance
+          description: The patient's insurance information
+        user_defined_text:
+          allOf:
+          - $ref: '#/components/schemas/UserDefinedText'
+          title: User Defined Text
+          description: Misc values that the user wants associated with the patient for later reporting.
+        customer_member_id:
+          type: string
+          title: Customer Member Id
+          description: An identifier for this member in the customer's system
+        member_id:
+          type: string
+          title: Member Id
+          description: An identifier for this member in the Ciox system
+      type: object
+      required:
+      - date_of_birth
+      title: Patient
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    VisitStatusDetail:
+      enum: []
+      title: VisitStatusDetail
+      description: Enum for visit status tags.
+    Encounter:
+      properties:
+        practitioner:
+          allOf:
+          - $ref: '#/components/schemas/Practitioner'
+          title: Practitioner
+          description: The practitioner information for this encounter search criteria
+        facility:
+          allOf:
+          - $ref: '#/components/schemas/Facility'
+          title: Facility
+          description: The facility information for this encounter search criteria
+        additional_information:
+          type: object
+          title: Additional Information
+          description: Any other additional information for this encounter search criteria (eg. provider instructions)
+        service_date_range:
+          anyOf:
+          - $ref: '#/components/schemas/ServiceDates'
+          - items:
+              $ref: '#/components/schemas/ServiceDates'
+            type: array
+          title: Service Date Range
+          description: The service date range(s) for this encounter search criteria
+        chart_components:
+          items:
+            $ref: '#/components/schemas/ChartComponent'
+          type: array
+          description: The individual components of a chart that should be retrieved for this encounter search criteria
+          default:
+          - Abstract
+        chart_packages:
+          items:
+            $ref: '#/components/schemas/ChartPackage'
+          type: array
+          description: A pre-configured package of chart components that should be retrieved for this encounter search criteria
+          default: []
+      type: object
+      required:
+      - service_date_range
+      title: Encounter
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    ChartComponent:
+      enum:
+      - Entire Record
+      - Abstract
+      title: ChartComponent
+      description: Individual components of a chart.
+    Gender:
+      type: string
+      enum:
+      - M
+      - F
+      - O
+      - U
+      title: Gender
+      description: An enumeration.
+    Facility:
+      properties:
+        fax_number:
+          type: string
+          title: Fax Number
+          description: Fax number
+        phone_number:
+          type: string
+          title: Phone Number
+          description: Phone number
+        name:
+          type: string
+          title: Name
+          description: The facility name
+        address:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          title: Address
+          description: The facility address
+        identifier:
+          type: object
+          title: Identifier
+          description: The facility identifiers (eg. NPI, TIN, etc.)
+        roi_site_id:
+          type: string
+          title: Roi Site Id
+          description: A 5 digit number referencing a Ciox-embedded site.
+        group:
+          type: string
+          title: Group
+          description: The facility's medical group name
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FacilityType'
+          description: Represents the type of facility, only valid values are Inpatient or Outpatient
+      type: object
+      title: Facility
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    Error:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Error code specifiying type of error
+        message:
+          type: string
+          title: Message
+          description: Human readable message describing error
+        params:
+          items: {}
+          type: array
+          title: Params
+          description: The parameters involved in the error
+      type: object
+      required:
+      - code
+      - message
+      title: Error
+    UserDefinedText:
+      properties:
+        text1:
+          type: string
+          title: Text1
+        text2:
+          type: string
+          title: Text2
+        text3:
+          type: string
+          title: Text3
+        text4:
+          type: string
+          title: Text4
+      type: object
+      title: UserDefinedText
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    FacilityType:
+      type: string
+      enum:
+      - INPATIENT
+      - OUTPATIENT
+      title: FacilityType
+      description: An enumeration.
+    ServiceDates:
+      properties:
+        start:
+          type: string
+          format: date-time
+          title: Start
+          description: The start of the service date range
+        end:
+          type: string
+          format: date-time
+          title: End
+          description: The end of the service date range
+      type: object
+      required:
+      - start
+      title: ServiceDates
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    DateRange:
+      properties:
+        start:
+          type: string
+          format: date
+          title: Start
+          description: Start of the date range.
+        end:
+          type: string
+          format: date
+          title: End
+          description: End of the date range. If not available, defaults to the day the order was submitted.
+      type: object
+      required:
+      - start
+      title: DateRange
+      description: A date range for a visit.
+    VisitHistoryEntry:
+      properties:
+        status:
+          allOf:
+          - $ref: '#/components/schemas/VisitStatus'
+          description: Status of the visit at the time of the entry.
+        status_details:
+          items:
+            $ref: '#/components/schemas/VisitStatusDetail'
+          type: array
+          description: Further details about the visit status at the time of the entry.
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Date and time when the entry was created.
+      type: object
+      required:
+      - status
+      - status_details
+      - created_at
+      title: VisitHistoryEntry
+      description: The ledger of updates made to a visit.
+    Insurance:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: The name of the insurance provider
+        plan:
+          type: string
+          title: Plan
+          description: The name of the plan with the insurer
+        group_id:
+          type: string
+          title: Group Id
+          description: The member's insurance group ID
+        member_id:
+          type: string
+          title: Member Id
+          description: The member's individual ID
+      type: object
+      title: Insurance
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    VisitType:
+      enum:
+      - in_network
+      - out_of_network
+      title: VisitType
+      description: Enum for visit types.
+    ErrorHTTPResponse:
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/Error'
+          type: array
+          title: Errors
+          description: List of all errors
+      type: object
+      required:
+      - errors
+      title: ErrorHTTPResponse
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    VisitDocuments:
+      properties:
+        provider_packet:
+          type: string
+          title: Provider Packet
+          description: Document UUID of the provider packet for the visit.
+        medical_record:
+          type: string
+          title: Medical Record
+          description: Document UUID of the medical record retrieved for the visit.
+        patient_authorization:
+          type: string
+          title: Patient Authorization
+          description: Document UUID of the HIPAA compliant patient authorization for the visit.
+        letter_of_representation:
+          type: string
+          title: Letter Of Representation
+          description: Document UUID of the letter of representation for the visit.
+        request_letter:
+          type: string
+          title: Request Letter
+          description: Document UUID of the request letter for the visit.
+      type: object
+      title: VisitDocuments
+      description: Documents attached to a visit.
+    Address:
+      properties:
+        normalizations:
+          items: {}
+          type: array
+          title: Normalizations
+          default: []
+        line1:
+          type: string
+          title: Line1
+          description: Street address
+        line2:
+          type: string
+          title: Line2
+          description: Building, Suite#, Unit#, etc..
+        city:
+          type: string
+          title: City
+          description: City
+        country:
+          type: string
+          title: Country
+          description: Country Code, ISO 3166-1 alpha-2 code
+          default: US
+        state:
+          type: string
+          title: State
+          description: State/Province Abbreviation Code, 2 characters
+        postal_code:
+          type: string
+          title: Postal Code
+          description: Postal Code, US - 5 digits or 5+4, Other - Alphanumeric
+      type: object
+      title: Address
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    VisitStatus:
+      enum:
+      - pending
+      - processing
+      - under_investigation
+      - records_ready
+      - action_needed
+      - cancelled
+      title: VisitStatus
+      description: Enum for visit statuses.
+    Practitioner:
+      properties:
+        fax_number:
+          type: string
+          title: Fax Number
+          description: Fax number
+        phone_number:
+          type: string
+          title: Phone Number
+          description: Phone number
+        full_name:
+          type: string
+          title: Full Name
+          description: The practitioner's name
+        first_name:
+          type: string
+          title: First Name
+          description: The practitioner's first name
+        last_name:
+          type: string
+          title: Last Name
+          description: The practitioner's last name
+        contact:
+          type: string
+          title: Contact
+          description: The practitioner's contact
+        identifier:
+          type: object
+          title: Identifier
+          description: The practitioner's identifiers (eg. NPI, TIN, etc.)
+      type: object
+      title: Practitioner
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.datavant.io/v2/oauth2/token
+          refreshUrl: https://api.datavant.io/v2/oauth2/token
+          scopes: {}
