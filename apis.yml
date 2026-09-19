@@ -347,6 +347,8 @@ apis:
   humanURL: https://developer.datavant.com/docs
   baseURL: https://api.datavant.io/v2
   tags:
+  - Authentication
+  tags_raw:
   - Oauth2
   properties:
   - type: OpenAPI
