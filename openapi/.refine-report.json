@@ -1,0 +1,45 @@
+{
+  "provider": "datavant",
+  "sources": [
+    "_original/datavant-openapi.json"
+  ],
+  "outputs": [
+    "datavant-configuration-api-openapi.yml",
+    "datavant-documents-api-openapi.yml",
+    "datavant-oauth2-api-openapi.yml",
+    "datavant-order-queries-api-openapi.yml",
+    "datavant-orders-api-openapi.yml",
+    "datavant-prematch-api-openapi.yml",
+    "datavant-projects-api-openapi.yml",
+    "datavant-visits-api-openapi.yml"
+  ],
+  "archived": [
+    "deleted 1 superseded output(s) from the previous generation"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "datavant-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "datavant-openapi.json: tagged paths GET /orders/order -> Orders",
+    "datavant-openapi.json: tagged paths GET /orders/order/validation/stats -> Orders",
+    "datavant-openapi.json: tagged paths GET /orders/{order_id}/reporting/retrievals -> Orders",
+    "datavant-openapi.json: tagged paths POST /oauth2/token -> Oauth2",
+    "datavant-openapi.json: declared missing tag: Oauth2",
+    "datavant-openapi.json: declared missing tag: Prematch",
+    "superseded outputs removed: datavant-o-auth2-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 8 total)"
+  ],
+  "skipped": [
+    "_original/datavant-rest-api-openapi.yml: archived document superseded by a larger archived document",
+    "datavant-configuration-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "datavant-documents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "datavant-o-auth2-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "datavant-order-queries-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "datavant-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "datavant-prematch-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "datavant-projects-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "datavant-visits-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}
