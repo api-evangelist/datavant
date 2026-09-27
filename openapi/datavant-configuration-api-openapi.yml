@@ -338,14 +338,55 @@ paths:
                 $ref: '#/components/schemas/ErrorHTTPResponse'
 components:
   schemas:
-    RetrievalAllowBlockConfiguration:
+    WeeklyDeliveryOptions:
       properties:
-        allow:
-          $ref: '#/components/schemas/AllowBlockGroup'
-        block:
-          $ref: '#/components/schemas/AllowBlockGroup'
+        delivery_frequency_sub_option:
+          items:
+            $ref: '#/components/schemas/DeliveryFrequencyDay'
+          type: array
+        delivery_frequency:
+          type: string
+          enum:
+          - weekly
+          title: Delivery Frequency
       type: object
-      title: RetrievalAllowBlockConfiguration
+      required:
+      - delivery_frequency_sub_option
+      - delivery_frequency
+      title: WeeklyDeliveryOptions
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    Body_update_letter_of_representation_configuration_supporting_documents_letter_of_representation_put:
+      properties:
+        file:
+          type: string
+          format: binary
+          title: File
+      type: object
+      required:
+      - file
+      title: Body_update_letter_of_representation_configuration_supporting_documents_letter_of_representation_put
+    EachDocumentDeliveryOptions:
+      properties:
+        delivery_frequency_sub_option:
+          type: 'null'
+          title: Delivery Frequency Sub Option
+        delivery_frequency:
+          type: string
+          enum:
+          - each_document
+          title: Delivery Frequency
+      type: object
+      required:
+      - delivery_frequency_sub_option
+      - delivery_frequency
+      title: EachDocumentDeliveryOptions
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -585,32 +626,25 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    CodingConfiguration:
-      properties:
-        deliver_records:
-          type: boolean
-          title: Deliver Records
-          description: Whether to deliver records to the customer in addition to the coding output.
-        deliver_only_codeable_records:
-          type: boolean
-          title: Deliver Only Codeable Records
-          description: Whether to deliver only codeable records to the customer.
-        deliver_records_before_coding:
-          type: boolean
-          title: Deliver Records Before Coding
-          description: Whether to deliver records to the customer before the coding project is finished.
-      type: object
-      required:
-      - deliver_records
-      title: CodingConfiguration
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
+    DeliveryFormat:
+      type: string
+      enum:
+      - individual
+      - zipped
+      title: DeliveryFormat
+      description: An enumeration.
+    DeliveryFrequency:
+      type: string
+      enum:
+      - continuous
+      - daily
+      - weekly
+      - biweekly
+      - monthly
+      - order_due_date
+      - each_document
+      title: DeliveryFrequency
+      description: An enumeration.
     SecondaryReason:
       type: string
       enum:
@@ -687,20 +721,21 @@ components:
       - whole_person_understanding
       title: SecondaryReason
       description: An enumeration.
-    Sftp:
+    DailyDeliveryOptions:
       properties:
-        method:
+        delivery_frequency_sub_option:
+          type: 'null'
+          title: Delivery Frequency Sub Option
+        delivery_frequency:
           type: string
           enum:
-          - sftp
-          title: Method
-        entity:
-          $ref: '#/components/schemas/LegalEntity'
+          - daily
+          title: Delivery Frequency
       type: object
       required:
-      - method
-      - entity
-      title: Sftp
+      - delivery_frequency_sub_option
+      - delivery_frequency
+      title: DailyDeliveryOptions
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -709,72 +744,6 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    DeliveryFormat:
-      type: string
-      enum:
-      - individual
-      - zipped
-      title: DeliveryFormat
-      description: An enumeration.
-    ErrorHTTPResponse:
-      properties:
-        errors:
-          items:
-            $ref: '#/components/schemas/Error'
-          type: array
-          title: Errors
-          description: List of all errors
-      type: object
-      required:
-      - errors
-      title: ErrorHTTPResponse
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    RequesterType:
-      type: string
-      enum:
-      - attorney
-      - datavant
-      - disability
-      - continuing_care
-      - copya
-      - copyi
-      - facility
-      - government
-      - insurance
-      - patient
-      - payd
-      - payi
-      - pro
-      - fac
-      title: RequesterType
-      description: An enumeration.
-    DeliveryLocation:
-      type: string
-      enum:
-      - api
-      - sftp
-      - s3
-      title: DeliveryLocation
-      description: Additional delivery locations for documents (besides API)
-    DeliveryFrequency:
-      type: string
-      enum:
-      - continuous
-      - daily
-      - weekly
-      - biweekly
-      - monthly
-      - order_due_date
-      - each_document
-      title: DeliveryFrequency
-      description: An enumeration.
     OrderMetadata:
       properties:
         hs_requester_id:
@@ -801,29 +770,6 @@ components:
         customer level. To do that, we''d just want to introduce some merge functionality so that we can
 
         prioritize the individual metadata key/value pairs the same way we prioritize the higher-level fields.'
-    EachDocumentDeliveryOptions:
-      properties:
-        delivery_frequency_sub_option:
-          type: 'null'
-          title: Delivery Frequency Sub Option
-        delivery_frequency:
-          type: string
-          enum:
-          - each_document
-          title: Delivery Frequency
-      type: object
-      required:
-      - delivery_frequency_sub_option
-      - delivery_frequency
-      title: EachDocumentDeliveryOptions
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
     OrderOptions:
       properties:
         type:
@@ -1013,113 +959,21 @@ components:
           description: The ID of the QA workflow associated with the Project/Order
       type: object
       title: OrderOptions
-    ChartFinderConfiguration:
-      properties:
-        coding:
-          type: boolean
-          title: Coding
-          description: Does this client use Datavant for coding?
-        audit_type:
-          type: integer
-          title: Audit Type
-          description: Audit type for this project.
-        review_type:
-          anyOf:
-          - type: string
-          - type: integer
-          title: Audit Type
-          description: Audit type for this project.
-        idsb_handling_qa:
-          type: integer
-          enum:
-          - 0
-          - 1
-          title: IDSB Handling QA
-          description: IDSB Handling QA for this project.
-        idsb_retrieving:
-          type: integer
-          enum:
-          - 0
-          - 1
-          title: IDSB Retrieving
-          description: IDSB directly using some retrieval methods without CF for this project.
-        idsb_retrieving_embedded:
-          type: integer
-          enum:
-          - 0
-          - 1
-          title: IDSB Retrieving Embedded
-          description: IDSB directly retrieving for embedded retrieval methods for this project.
-        account_manager_id:
-          type: integer
-          title: Account Manager ID
-          description: Account Manager ID for this project.
-      type: object
-      title: ChartFinderConfiguration
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    ConfigurationResponse:
-      properties:
-        config_options:
-          allOf:
-          - $ref: '#/components/schemas/ConfigOptions'
-          title: Config Options
-          description: 'The customer-level configuration options.
-
-
-            WARNING: Not all configurations are available to all customers. Which configuration options are
-
-            available to you, as well as what values you are allowed to choose, will be determined by your
-
-            customer profile. Please work with your sales or customer success representative to understand
-
-            what options will be available to you.
-
-            '
-        created_at:
-          type: string
-          format: date-time
-          title: Date Created
-          description: The ISO8601 formatted timestamp for when the object was created.
-        updated_at:
-          type: string
-          format: date-time
-          title: Date Last Updated
-          description: The ISO8601 formatted timestamp for when the object was last updated.
-      type: object
-      required:
-      - config_options
-      title: ConfigurationResponse
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    WeeklyDeliveryOptions:
+    MonthlyDeliveryOptions:
       properties:
         delivery_frequency_sub_option:
-          items:
-            $ref: '#/components/schemas/DeliveryFrequencyDay'
-          type: array
+          type: integer
+          title: Delivery Frequency Sub Option
         delivery_frequency:
           type: string
           enum:
-          - weekly
+          - monthly
           title: Delivery Frequency
       type: object
       required:
       - delivery_frequency_sub_option
       - delivery_frequency
-      title: WeeklyDeliveryOptions
+      title: MonthlyDeliveryOptions
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -1128,34 +982,58 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    ConfigurationRequest:
+    Error:
       properties:
-        config_options:
-          allOf:
-          - $ref: '#/components/schemas/OrderOptions'
-          title: Config Options
-          description: 'The customer-level configuration options.
-
-
-            WARNING: Not all configurations are available to all customers. Which configuration options are
-
-            available to you, as well as what values you are allowed to choose, will be determined by your
-
-            customer profile. Please work with your sales or customer success representative to understand
-
-            what options will be available to you.
-
-            '
+        code:
+          type: string
+          title: Code
+          description: Error code specifiying type of error
+        message:
+          type: string
+          title: Message
+          description: Human readable message describing error
+        params:
+          items: {}
+          type: array
+          title: Params
+          description: The parameters involved in the error
       type: object
-      title: ConfigurationRequest
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
+      required:
+      - code
+      - message
+      title: Error
+    DeliveryLocation:
+      type: string
+      enum:
+      - api
+      - sftp
+      - s3
+      title: DeliveryLocation
+      description: Additional delivery locations for documents (besides API)
+    RetrievalSources:
+      type: string
+      enum:
+      - api
+      - embedded_manual
+      - nonembedded_manual
+      - athena
+      - healthjump
+      - mock_retrieval
+      - moxe
+      - office_ally
+      - particle
+      - ses
+      - share_arkansas
+      - sidus
+      - veradigm
+      - vim
+      - iatric
+      - c3hie
+      - ghhc
+      - healow
+      - mdland
+      title: RetrievalSources
+      description: An enumeration.
     PrimaryReason:
       type: string
       enum:
@@ -1219,42 +1097,60 @@ components:
       - unknown
       title: PrimaryReason
       description: An enumeration.
-    AlternateDelivery:
+    LegalEntity:
       properties:
-        alternate:
-          oneOf:
-          - $ref: '#/components/schemas/Mail'
-          - $ref: '#/components/schemas/Sftp'
-          title: Alternate
-          description: The alternate entity to deliver to.
-          discriminator:
-            propertyName: method
-            mapping:
-              mail: '#/components/schemas/Mail'
-              sftp: '#/components/schemas/Sftp'
-        use_only_alternate:
-          type: boolean
-          title: Use Only Alternate
-          description: Whether to deliver only to the alternate entity.
-          default: false
-      type: object
-      title: AlternateDelivery
-      description: Delivery to an alternate entity separate from the primary requester.
-    DailyDeliveryOptions:
-      properties:
-        delivery_frequency_sub_option:
-          type: 'null'
-          title: Delivery Frequency Sub Option
-        delivery_frequency:
+        phone_number:
           type: string
-          enum:
-          - daily
-          title: Delivery Frequency
+          title: Phone Number
+          description: Phone number
+        full_name:
+          type: string
+          title: Full Name
+          description: If entity is an organization or individual with only full name available include full_name
+        first_name:
+          type: string
+          title: First Name
+          description: If entity is an individual include first_name
+        alternate_first_name:
+          type: string
+          title: Alternate First Name
+          description: If entity is an individual and uses an alias or nickname include alternate_first_name
+        middle_name:
+          type: string
+          title: Middle Name
+          description: If entity is an individual include middle_name if applicable
+        last_name:
+          type: string
+          title: Last Name
+          description: If entity is an individual include last_name
+        prefix:
+          type: string
+          title: Prefix
+          description: If entity is an individual include name prefix if applicable
+        suffix:
+          type: string
+          title: Suffix
+          description: If entity is an individual include name suffix if applicable
+        id:
+          type: string
+          title: Id
+          description: An identifier that the Customer has assigned to this legal entity
+        order_id:
+          type: string
+          title: Order Id
+          description: An identifier that this legal entity has assigned to this order
+        address:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          title: Address
+          description: The name associated with the order
+        health_plan:
+          type: string
+          title: The health plan that the customer is associated with
       type: object
       required:
-      - delivery_frequency_sub_option
-      - delivery_frequency
-      title: DailyDeliveryOptions
+      - id
+      title: LegalEntity
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -1263,42 +1159,28 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    DeliveryFrequencyDay:
-      type: integer
-      enum:
-      - 0
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      title: DeliveryFrequencyDay
-      description: An enumeration.
-    RetrievalSources:
-      type: string
-      enum:
-      - api
-      - embedded_manual
-      - nonembedded_manual
-      - athena
-      - healthjump
-      - mock_retrieval
-      - moxe
-      - office_ally
-      - particle
-      - ses
-      - share_arkansas
-      - sidus
-      - veradigm
-      - vim
-      - iatric
-      - c3hie
-      - ghhc
-      - healow
-      - mdland
-      title: RetrievalSources
-      description: An enumeration.
+    Mail:
+      properties:
+        method:
+          type: string
+          enum:
+          - mail
+          title: Method
+        entity:
+          $ref: '#/components/schemas/LegalEntity'
+      type: object
+      required:
+      - method
+      - entity
+      title: Mail
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
     StructuredDataExtractionReportConfiguration:
       properties:
         delivery_schedule:
@@ -1364,6 +1246,32 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
+    CodingConfiguration:
+      properties:
+        deliver_records:
+          type: boolean
+          title: Deliver Records
+          description: Whether to deliver records to the customer in addition to the coding output.
+        deliver_only_codeable_records:
+          type: boolean
+          title: Deliver Only Codeable Records
+          description: Whether to deliver only codeable records to the customer.
+        deliver_records_before_coding:
+          type: boolean
+          title: Deliver Records Before Coding
+          description: Whether to deliver records to the customer before the coding project is finished.
+      type: object
+      required:
+      - deliver_records
+      title: CodingConfiguration
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
     DeliveryType:
       type: string
       enum:
@@ -1372,83 +1280,49 @@ components:
       - json
       title: DeliveryType
       description: An enumeration.
-    LegalEntity:
+    ChartFinderConfiguration:
       properties:
-        phone_number:
-          type: string
-          title: Phone Number
-          description: Phone number
-        full_name:
-          type: string
-          title: Full Name
-          description: If entity is an organization or individual with only full name available include full_name
-        first_name:
-          type: string
-          title: First Name
-          description: If entity is an individual include first_name
-        alternate_first_name:
-          type: string
-          title: Alternate First Name
-          description: If entity is an individual and uses an alias or nickname include alternate_first_name
-        middle_name:
-          type: string
-          title: Middle Name
-          description: If entity is an individual include middle_name if applicable
-        last_name:
-          type: string
-          title: Last Name
-          description: If entity is an individual include last_name
-        prefix:
-          type: string
-          title: Prefix
-          description: If entity is an individual include name prefix if applicable
-        suffix:
-          type: string
-          title: Suffix
-          description: If entity is an individual include name suffix if applicable
-        id:
-          type: string
-          title: Id
-          description: An identifier that the Customer has assigned to this legal entity
-        order_id:
-          type: string
-          title: Order Id
-          description: An identifier that this legal entity has assigned to this order
-        address:
-          allOf:
-          - $ref: '#/components/schemas/Address'
-          title: Address
-          description: The name associated with the order
-        health_plan:
-          type: string
-          title: The health plan that the customer is associated with
-      type: object
-      required:
-      - id
-      title: LegalEntity
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    MonthlyDeliveryOptions:
-      properties:
-        delivery_frequency_sub_option:
+        coding:
+          type: boolean
+          title: Coding
+          description: Does this client use Datavant for coding?
+        audit_type:
           type: integer
-          title: Delivery Frequency Sub Option
-        delivery_frequency:
-          type: string
+          title: Audit Type
+          description: Audit type for this project.
+        review_type:
+          anyOf:
+          - type: string
+          - type: integer
+          title: Audit Type
+          description: Audit type for this project.
+        idsb_handling_qa:
+          type: integer
           enum:
-          - monthly
-          title: Delivery Frequency
+          - 0
+          - 1
+          title: IDSB Handling QA
+          description: IDSB Handling QA for this project.
+        idsb_retrieving:
+          type: integer
+          enum:
+          - 0
+          - 1
+          title: IDSB Retrieving
+          description: IDSB directly using some retrieval methods without CF for this project.
+        idsb_retrieving_embedded:
+          type: integer
+          enum:
+          - 0
+          - 1
+          title: IDSB Retrieving Embedded
+          description: IDSB directly retrieving for embedded retrieval methods for this project.
+        account_manager_id:
+          type: integer
+          title: Account Manager ID
+          description: Account Manager ID for this project.
       type: object
-      required:
-      - delivery_frequency_sub_option
-      - delivery_frequency
-      title: MonthlyDeliveryOptions
+      title: ChartFinderConfiguration
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -1457,12 +1331,33 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    Mail:
+    AlternateDelivery:
+      properties:
+        alternate:
+          oneOf:
+          - $ref: '#/components/schemas/Mail'
+          - $ref: '#/components/schemas/Sftp'
+          title: Alternate
+          description: The alternate entity to deliver to.
+          discriminator:
+            propertyName: method
+            mapping:
+              mail: '#/components/schemas/Mail'
+              sftp: '#/components/schemas/Sftp'
+        use_only_alternate:
+          type: boolean
+          title: Use Only Alternate
+          description: Whether to deliver only to the alternate entity.
+          default: false
+      type: object
+      title: AlternateDelivery
+      description: Delivery to an alternate entity separate from the primary requester.
+    Sftp:
       properties:
         method:
           type: string
           enum:
-          - mail
+          - sftp
           title: Method
         entity:
           $ref: '#/components/schemas/LegalEntity'
@@ -1470,7 +1365,7 @@ components:
       required:
       - method
       - entity
-      title: Mail
+      title: Sftp
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -1479,26 +1374,62 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    Error:
+    RetrievalAllowBlockConfiguration:
       properties:
-        code:
+        allow:
+          $ref: '#/components/schemas/AllowBlockGroup'
+        block:
+          $ref: '#/components/schemas/AllowBlockGroup'
+      type: object
+      title: RetrievalAllowBlockConfiguration
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    ConfigurationResponse:
+      properties:
+        config_options:
+          allOf:
+          - $ref: '#/components/schemas/ConfigOptions'
+          title: Config Options
+          description: 'The customer-level configuration options.
+
+
+            WARNING: Not all configurations are available to all customers. Which configuration options are
+
+            available to you, as well as what values you are allowed to choose, will be determined by your
+
+            customer profile. Please work with your sales or customer success representative to understand
+
+            what options will be available to you.
+
+            '
+        created_at:
           type: string
-          title: Code
-          description: Error code specifiying type of error
-        message:
+          format: date-time
+          title: Date Created
+          description: The ISO8601 formatted timestamp for when the object was created.
+        updated_at:
           type: string
-          title: Message
-          description: Human readable message describing error
-        params:
-          items: {}
-          type: array
-          title: Params
-          description: The parameters involved in the error
+          format: date-time
+          title: Date Last Updated
+          description: The ISO8601 formatted timestamp for when the object was last updated.
       type: object
       required:
-      - code
-      - message
-      title: Error
+      - config_options
+      title: ConfigurationResponse
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
     DueDateDeliveryOptions:
       properties:
         delivery_frequency_sub_option:
@@ -1522,31 +1453,7 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    BiweeklyDeliveryOptions:
-      properties:
-        delivery_frequency_sub_option:
-          items:
-            $ref: '#/components/schemas/DeliveryFrequencyDay'
-          type: array
-        delivery_frequency:
-          type: string
-          enum:
-          - biweekly
-          title: Delivery Frequency
-      type: object
-      required:
-      - delivery_frequency_sub_option
-      - delivery_frequency
-      title: BiweeklyDeliveryOptions
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    Body_update_letter_of_representation_configuration_supporting_documents_letter_of_representation_put:
+    Body_update_health_plan_letter_configuration_supporting_documents_health_plan_letter_put:
       properties:
         file:
           type: string
@@ -1555,7 +1462,38 @@ components:
       type: object
       required:
       - file
-      title: Body_update_letter_of_representation_configuration_supporting_documents_letter_of_representation_put
+      title: Body_update_health_plan_letter_configuration_supporting_documents_health_plan_letter_put
+    RequesterType:
+      type: string
+      enum:
+      - attorney
+      - datavant
+      - disability
+      - continuing_care
+      - copya
+      - copyi
+      - facility
+      - government
+      - insurance
+      - patient
+      - payd
+      - payi
+      - pro
+      - fac
+      title: RequesterType
+      description: An enumeration.
+    DeliveryFrequencyDay:
+      type: integer
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      title: DeliveryFrequencyDay
+      description: An enumeration.
     Address:
       properties:
         normalizations:
@@ -1598,16 +1536,54 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    Body_update_health_plan_letter_configuration_supporting_documents_health_plan_letter_put:
+    ConfigurationRequest:
       properties:
-        file:
-          type: string
-          format: binary
-          title: File
+        config_options:
+          allOf:
+          - $ref: '#/components/schemas/OrderOptions'
+          title: Config Options
+          description: 'The customer-level configuration options.
+
+
+            WARNING: Not all configurations are available to all customers. Which configuration options are
+
+            available to you, as well as what values you are allowed to choose, will be determined by your
+
+            customer profile. Please work with your sales or customer success representative to understand
+
+            what options will be available to you.
+
+            '
+      type: object
+      title: ConfigurationRequest
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    ErrorHTTPResponse:
+      properties:
+        errors:
+          items:
+            $ref: '#/components/schemas/Error'
+          type: array
+          title: Errors
+          description: List of all errors
       type: object
       required:
-      - file
-      title: Body_update_health_plan_letter_configuration_supporting_documents_health_plan_letter_put
+      - errors
+      title: ErrorHTTPResponse
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
     AllowBlockGroup:
       properties:
         data_foundation_health_system_ids:
@@ -1618,6 +1594,30 @@ components:
           description: The set of Data Foundation health system IDs that are allowed or blocked.
       type: object
       title: AllowBlockGroup
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    BiweeklyDeliveryOptions:
+      properties:
+        delivery_frequency_sub_option:
+          items:
+            $ref: '#/components/schemas/DeliveryFrequencyDay'
+          type: array
+        delivery_frequency:
+          type: string
+          enum:
+          - biweekly
+          title: Delivery Frequency
+      type: object
+      required:
+      - delivery_frequency_sub_option
+      - delivery_frequency
+      title: BiweeklyDeliveryOptions
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.

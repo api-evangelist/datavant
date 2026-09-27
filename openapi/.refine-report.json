@@ -13,9 +13,7 @@
     "datavant-projects-api-openapi.yml",
     "datavant-visits-api-openapi.yml"
   ],
-  "archived": [
-    "deleted 1 superseded output(s) from the previous generation"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
@@ -28,14 +26,13 @@
     "datavant-openapi.json: tagged paths POST /oauth2/token -> Oauth2",
     "datavant-openapi.json: declared missing tag: Oauth2",
     "datavant-openapi.json: declared missing tag: Prematch",
-    "superseded outputs removed: datavant-o-auth2-api-openapi.yml",
-    "apis.yml register: written (+1 apis, 8 total)"
+    "apis.yml register: already-registered"
   ],
   "skipped": [
     "_original/datavant-rest-api-openapi.yml: archived document superseded by a larger archived document",
     "datavant-configuration-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "datavant-documents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "datavant-o-auth2-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "datavant-oauth2-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "datavant-order-queries-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "datavant-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "datavant-prematch-api-openapi.yml: previously refined output, superseded by openapi/_original/",

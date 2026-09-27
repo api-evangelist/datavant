@@ -590,65 +590,119 @@ paths:
                 $ref: '#/components/schemas/ErrorHTTPResponse'
 components:
   schemas:
-    CreateOrderQueryRequest:
+    Facility:
       properties:
-        id:
+        fax_number:
           type: string
-          maxLength: 100
-          minLength: 1
-          pattern: ^[\sa-zA-Z0-9_.-]+$
-          title: ID
-          description: 'User-provided identifier for the object.
-
-
-            * Must be between 4 and 32 characters
-
-            * Must contain only upper or lower-case alphanumeric characters, numbers, hyphens and/or underscores.
-
-            '
-        patient:
+          title: Fax Number
+          description: Fax number
+        phone_number:
+          type: string
+          title: Phone Number
+          description: Phone number
+        name:
+          type: string
+          title: Name
+          description: The facility name
+        address:
           allOf:
-          - $ref: '#/components/schemas/Patient'
-          title: Patient
-          description: 'Information about the patient for which you are requesting records.
-
-
-            You are required to submit the full name of the patient. You can do so by specifying `full_name`,
-
-            of you can specify both `first_name` and `last_name`.
-
-            '
-        encounters:
-          items:
-            $ref: '#/components/schemas/Encounter'
-          type: array
-          title: Encounter Search Criteria
-          description: 'List of search criteria to use to target specific encounters
-
-            '
+          - $ref: '#/components/schemas/Address'
+          title: Address
+          description: The facility address
+        identifier:
+          type: object
+          title: Identifier
+          description: The facility identifiers (eg. NPI, TIN, etc.)
+        roi_site_id:
+          type: string
+          title: Roi Site Id
+          description: A 5 digit number referencing a Ciox-embedded site.
+        group:
+          type: string
+          title: Group
+          description: The facility's medical group name
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FacilityType'
+          description: Represents the type of facility, only valid values are Inpatient or Outpatient
       type: object
-      required:
-      - id
-      - patient
-      - encounters
-      title: CreateOrderQueryRequest
-      description: The fields that a customer must specify to define an OrderQuery.
-    ServiceDates:
+      title: Facility
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    ChartPackage:
+      enum:
+      - Default
+      title: ChartPackage
+      description: Packages referring to pre-configured bundles of chart components.
+    FacilityType:
+      type: string
+      enum:
+      - INPATIENT
+      - OUTPATIENT
+      title: FacilityType
+      description: An enumeration.
+    FilenameResponse:
       properties:
-        start:
+        filename:
           type: string
-          format: date-time
-          title: Start
-          description: The start of the service date range
-        end:
-          type: string
-          format: date-time
-          title: End
-          description: The end of the service date range
+          title: Filename
+          description: The filename associated with a document.
       type: object
       required:
-      - start
-      title: ServiceDates
+      - filename
+      title: FilenameResponse
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    ChartComponent:
+      enum:
+      - Entire Record
+      - Abstract
+      title: ChartComponent
+      description: Individual components of a chart.
+    Practitioner:
+      properties:
+        fax_number:
+          type: string
+          title: Fax Number
+          description: Fax number
+        phone_number:
+          type: string
+          title: Phone Number
+          description: Phone number
+        full_name:
+          type: string
+          title: Full Name
+          description: The practitioner's name
+        first_name:
+          type: string
+          title: First Name
+          description: The practitioner's first name
+        last_name:
+          type: string
+          title: Last Name
+          description: The practitioner's last name
+        contact:
+          type: string
+          title: Contact
+          description: The practitioner's contact
+        identifier:
+          type: object
+          title: Identifier
+          description: The practitioner's identifiers (eg. NPI, TIN, etc.)
+      type: object
+      title: Practitioner
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -717,212 +771,6 @@ components:
       - created_at
       title: OrderQueryResponse
       description: The representation of an OrderQuery as it is returned to an external customer.
-    ErrorHTTPResponse:
-      properties:
-        errors:
-          items:
-            $ref: '#/components/schemas/Error'
-          type: array
-          title: Errors
-          description: List of all errors
-      type: object
-      required:
-      - errors
-      title: ErrorHTTPResponse
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    Body_create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post:
-      properties:
-        file:
-          type: string
-          format: binary
-          title: File
-      type: object
-      required:
-      - file
-      title: Body_create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post
-    Links:
-      properties:
-        first:
-          type: string
-          title: First
-          example: /api/v1/users?limit=1&offset1
-        last:
-          type: string
-          title: Last
-          example: /api/v1/users?limit=1&offset1
-        self:
-          type: string
-          title: Self
-          example: /api/v1/users?limit=1&offset1
-        next:
-          type: string
-          title: Next
-          example: /api/v1/users?limit=1&offset1
-        prev:
-          type: string
-          title: Prev
-          example: /api/v1/users?limit=1&offset1
-      type: object
-      title: Links
-    Facility:
-      properties:
-        fax_number:
-          type: string
-          title: Fax Number
-          description: Fax number
-        phone_number:
-          type: string
-          title: Phone Number
-          description: Phone number
-        name:
-          type: string
-          title: Name
-          description: The facility name
-        address:
-          allOf:
-          - $ref: '#/components/schemas/Address'
-          title: Address
-          description: The facility address
-        identifier:
-          type: object
-          title: Identifier
-          description: The facility identifiers (eg. NPI, TIN, etc.)
-        roi_site_id:
-          type: string
-          title: Roi Site Id
-          description: A 5 digit number referencing a Ciox-embedded site.
-        group:
-          type: string
-          title: Group
-          description: The facility's medical group name
-        type:
-          allOf:
-          - $ref: '#/components/schemas/FacilityType'
-          description: Represents the type of facility, only valid values are Inpatient or Outpatient
-      type: object
-      title: Facility
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    FacilityType:
-      type: string
-      enum:
-      - INPATIENT
-      - OUTPATIENT
-      title: FacilityType
-      description: An enumeration.
-    BirthDate:
-      properties:
-        year:
-          type: string
-          title: Year
-          description: The 4-digit year of the individual's date of birth
-        month:
-          type: string
-          title: Month
-          description: The month of the individual's date of birth
-        day:
-          type: string
-          title: Day
-          description: The day of the individual's date of birth
-      type: object
-      required:
-      - year
-      - month
-      - day
-      title: BirthDate
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    Encounter:
-      properties:
-        practitioner:
-          allOf:
-          - $ref: '#/components/schemas/Practitioner'
-          title: Practitioner
-          description: The practitioner information for this encounter search criteria
-        facility:
-          allOf:
-          - $ref: '#/components/schemas/Facility'
-          title: Facility
-          description: The facility information for this encounter search criteria
-        additional_information:
-          type: object
-          title: Additional Information
-          description: Any other additional information for this encounter search criteria (eg. provider instructions)
-        service_date_range:
-          anyOf:
-          - $ref: '#/components/schemas/ServiceDates'
-          - items:
-              $ref: '#/components/schemas/ServiceDates'
-            type: array
-          title: Service Date Range
-          description: The service date range(s) for this encounter search criteria
-        chart_components:
-          items:
-            $ref: '#/components/schemas/ChartComponent'
-          type: array
-          description: The individual components of a chart that should be retrieved for this encounter search criteria
-          default:
-          - Abstract
-        chart_packages:
-          items:
-            $ref: '#/components/schemas/ChartPackage'
-          type: array
-          description: A pre-configured package of chart components that should be retrieved for this encounter search criteria
-          default: []
-      type: object
-      required:
-      - service_date_range
-      title: Encounter
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    FilenameResponse:
-      properties:
-        filename:
-          type: string
-          title: Filename
-          description: The filename associated with a document.
-      type: object
-      required:
-      - filename
-      title: FilenameResponse
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    ChartPackage:
-      enum:
-      - Default
-      title: ChartPackage
-      description: Packages referring to pre-configured bundles of chart components.
     Patient:
       properties:
         phone_number:
@@ -1010,6 +858,226 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
+    ServiceDates:
+      properties:
+        start:
+          type: string
+          format: date-time
+          title: Start
+          description: The start of the service date range
+        end:
+          type: string
+          format: date-time
+          title: End
+          description: The end of the service date range
+      type: object
+      required:
+      - start
+      title: ServiceDates
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    Links:
+      properties:
+        first:
+          type: string
+          title: First
+          example: /api/v1/users?limit=1&offset1
+        last:
+          type: string
+          title: Last
+          example: /api/v1/users?limit=1&offset1
+        self:
+          type: string
+          title: Self
+          example: /api/v1/users?limit=1&offset1
+        next:
+          type: string
+          title: Next
+          example: /api/v1/users?limit=1&offset1
+        prev:
+          type: string
+          title: Prev
+          example: /api/v1/users?limit=1&offset1
+      type: object
+      title: Links
+    Error:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Error code specifiying type of error
+        message:
+          type: string
+          title: Message
+          description: Human readable message describing error
+        params:
+          items: {}
+          type: array
+          title: Params
+          description: The parameters involved in the error
+      type: object
+      required:
+      - code
+      - message
+      title: Error
+    BirthDate:
+      properties:
+        year:
+          type: string
+          title: Year
+          description: The 4-digit year of the individual's date of birth
+        month:
+          type: string
+          title: Month
+          description: The month of the individual's date of birth
+        day:
+          type: string
+          title: Day
+          description: The day of the individual's date of birth
+      type: object
+      required:
+      - year
+      - month
+      - day
+      title: BirthDate
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    Encounter:
+      properties:
+        practitioner:
+          allOf:
+          - $ref: '#/components/schemas/Practitioner'
+          title: Practitioner
+          description: The practitioner information for this encounter search criteria
+        facility:
+          allOf:
+          - $ref: '#/components/schemas/Facility'
+          title: Facility
+          description: The facility information for this encounter search criteria
+        additional_information:
+          type: object
+          title: Additional Information
+          description: Any other additional information for this encounter search criteria (eg. provider instructions)
+        service_date_range:
+          anyOf:
+          - $ref: '#/components/schemas/ServiceDates'
+          - items:
+              $ref: '#/components/schemas/ServiceDates'
+            type: array
+          title: Service Date Range
+          description: The service date range(s) for this encounter search criteria
+        chart_components:
+          items:
+            $ref: '#/components/schemas/ChartComponent'
+          type: array
+          description: The individual components of a chart that should be retrieved for this encounter search criteria
+          default:
+          - Abstract
+        chart_packages:
+          items:
+            $ref: '#/components/schemas/ChartPackage'
+          type: array
+          description: A pre-configured package of chart components that should be retrieved for this encounter search criteria
+          default: []
+      type: object
+      required:
+      - service_date_range
+      title: Encounter
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    Body_create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post:
+      properties:
+        file:
+          type: string
+          format: binary
+          title: File
+      type: object
+      required:
+      - file
+      title: Body_create_patient_authorization_orders__order_id__queries__query_id__supporting_documents_patient_authorizations_post
+    Insurance:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: The name of the insurance provider
+        plan:
+          type: string
+          title: Plan
+          description: The name of the plan with the insurer
+        group_id:
+          type: string
+          title: Group Id
+          description: The member's insurance group ID
+        member_id:
+          type: string
+          title: Member Id
+          description: The member's individual ID
+      type: object
+      title: Insurance
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    UpdateOrderQueryRequest:
+      properties:
+        patient:
+          allOf:
+          - $ref: '#/components/schemas/Patient'
+          title: Patient
+          description: 'Information about the patient for which you are requesting records.
+
+
+            You are required to submit the full name of the patient. You can do so by specifying `full_name`,
+
+            of you can specify both `first_name` and `last_name`.
+
+            '
+        encounters:
+          items:
+            $ref: '#/components/schemas/Encounter'
+          type: array
+          title: Encounter Search Criteria
+          description: 'List of search criteria to use to target specific encounters
+
+            '
+      type: object
+      required:
+      - patient
+      - encounters
+      title: UpdateOrderQueryRequest
+      description: The field required to update an existing order query.
+    Gender:
+      type: string
+      enum:
+      - M
+      - F
+      - O
+      - U
+      title: Gender
+      description: An enumeration.
     JsonApiPage_FilenameResponse_:
       properties:
         data:
@@ -1041,132 +1109,22 @@ components:
       - links
       title: JsonApiPage[FilenameResponse]
       description: JSON:API 1.0 specification says that result key should be a `data`.
-    Gender:
-      type: string
-      enum:
-      - M
-      - F
-      - O
-      - U
-      title: Gender
-      description: An enumeration.
-    ChartComponent:
-      enum:
-      - Entire Record
-      - Abstract
-      title: ChartComponent
-      description: Individual components of a chart.
-    Practitioner:
+    UserDefinedText:
       properties:
-        fax_number:
+        text1:
           type: string
-          title: Fax Number
-          description: Fax number
-        phone_number:
+          title: Text1
+        text2:
           type: string
-          title: Phone Number
-          description: Phone number
-        full_name:
+          title: Text2
+        text3:
           type: string
-          title: Full Name
-          description: The practitioner's name
-        first_name:
+          title: Text3
+        text4:
           type: string
-          title: First Name
-          description: The practitioner's first name
-        last_name:
-          type: string
-          title: Last Name
-          description: The practitioner's last name
-        contact:
-          type: string
-          title: Contact
-          description: The practitioner's contact
-        identifier:
-          type: object
-          title: Identifier
-          description: The practitioner's identifiers (eg. NPI, TIN, etc.)
+          title: Text4
       type: object
-      title: Practitioner
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    JsonApiPage_OrderQueryResponse_:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/OrderQueryResponse'
-          type: array
-          title: Data
-        total:
-          type: integer
-          minimum: 0.0
-          title: Total
-        limit:
-          type: integer
-          minimum: 1.0
-          title: Limit
-        offset:
-          type: integer
-          minimum: 0.0
-          title: Offset
-        links:
-          $ref: '#/components/schemas/Links'
-        unfiltered_total:
-          type: integer
-          title: Unfiltered Total
-      type: object
-      required:
-      - data
-      - total
-      - links
-      title: JsonApiPage[OrderQueryResponse]
-      description: JSON:API 1.0 specification says that result key should be a `data`.
-    Error:
-      properties:
-        code:
-          type: string
-          title: Code
-          description: Error code specifiying type of error
-        message:
-          type: string
-          title: Message
-          description: Human readable message describing error
-        params:
-          items: {}
-          type: array
-          title: Params
-          description: The parameters involved in the error
-      type: object
-      required:
-      - code
-      - message
-      title: Error
-    Insurance:
-      properties:
-        name:
-          type: string
-          title: Name
-          description: The name of the insurance provider
-        plan:
-          type: string
-          title: Plan
-          description: The name of the plan with the insurer
-        group_id:
-          type: string
-          title: Group Id
-          description: The member's insurance group ID
-        member_id:
-          type: string
-          title: Member Id
-          description: The member's individual ID
-      type: object
-      title: Insurance
+      title: UserDefinedText
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -1217,22 +1175,18 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    UserDefinedText:
+    ErrorHTTPResponse:
       properties:
-        text1:
-          type: string
-          title: Text1
-        text2:
-          type: string
-          title: Text2
-        text3:
-          type: string
-          title: Text3
-        text4:
-          type: string
-          title: Text4
+        errors:
+          items:
+            $ref: '#/components/schemas/Error'
+          type: array
+          title: Errors
+          description: List of all errors
       type: object
-      title: UserDefinedText
+      required:
+      - errors
+      title: ErrorHTTPResponse
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -1241,8 +1195,53 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    UpdateOrderQueryRequest:
+    JsonApiPage_OrderQueryResponse_:
       properties:
+        data:
+          items:
+            $ref: '#/components/schemas/OrderQueryResponse'
+          type: array
+          title: Data
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        limit:
+          type: integer
+          minimum: 1.0
+          title: Limit
+        offset:
+          type: integer
+          minimum: 0.0
+          title: Offset
+        links:
+          $ref: '#/components/schemas/Links'
+        unfiltered_total:
+          type: integer
+          title: Unfiltered Total
+      type: object
+      required:
+      - data
+      - total
+      - links
+      title: JsonApiPage[OrderQueryResponse]
+      description: JSON:API 1.0 specification says that result key should be a `data`.
+    CreateOrderQueryRequest:
+      properties:
+        id:
+          type: string
+          maxLength: 100
+          minLength: 1
+          pattern: ^[\sa-zA-Z0-9_.-]+$
+          title: ID
+          description: 'User-provided identifier for the object.
+
+
+            * Must be between 4 and 32 characters
+
+            * Must contain only upper or lower-case alphanumeric characters, numbers, hyphens and/or underscores.
+
+            '
         patient:
           allOf:
           - $ref: '#/components/schemas/Patient'
@@ -1265,10 +1264,11 @@ components:
             '
       type: object
       required:
+      - id
       - patient
       - encounters
-      title: UpdateOrderQueryRequest
-      description: The field required to update an existing order query.
+      title: CreateOrderQueryRequest
+      description: The fields that a customer must specify to define an OrderQuery.
   securitySchemes:
     oauth2:
       type: oauth2

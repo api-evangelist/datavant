@@ -161,81 +161,19 @@ paths:
                 $ref: '#/components/schemas/ErrorHTTPResponse'
 components:
   schemas:
-    ErrorHTTPResponse:
+    DocumentLinks:
       properties:
-        errors:
-          items:
-            $ref: '#/components/schemas/Error'
-          type: array
-          title: Errors
-          description: List of all errors
+        download:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          title: Download
       type: object
       required:
-      - errors
-      title: ErrorHTTPResponse
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    JsonApiPage_DocumentResponse_:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/DocumentResponse'
-          type: array
-          title: Data
-        total:
-          type: integer
-          minimum: 0.0
-          title: Total
-        limit:
-          type: integer
-          minimum: 1.0
-          title: Limit
-        offset:
-          type: integer
-          minimum: 0.0
-          title: Offset
-        links:
-          $ref: '#/components/schemas/Links'
-        unfiltered_total:
-          type: integer
-          title: Unfiltered Total
-      type: object
-      required:
-      - data
-      - total
-      - links
-      title: JsonApiPage[DocumentResponse]
-      description: JSON:API 1.0 specification says that result key should be a `data`.
-    Links:
-      properties:
-        first:
-          type: string
-          title: First
-          example: /api/v1/users?limit=1&offset1
-        last:
-          type: string
-          title: Last
-          example: /api/v1/users?limit=1&offset1
-        self:
-          type: string
-          title: Self
-          example: /api/v1/users?limit=1&offset1
-        next:
-          type: string
-          title: Next
-          example: /api/v1/users?limit=1&offset1
-        prev:
-          type: string
-          title: Prev
-          example: /api/v1/users?limit=1&offset1
-      type: object
-      title: Links
+      - download
+      title: DocumentLinks
+      description: Link to download the document.
     DocumentResponse:
       properties:
         uuid:
@@ -292,19 +230,81 @@ components:
       - provider_packet_additional_document
       title: DocumentType
       description: The type of document.
-    DocumentLinks:
+    ErrorHTTPResponse:
       properties:
-        download:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
-          title: Download
+        errors:
+          items:
+            $ref: '#/components/schemas/Error'
+          type: array
+          title: Errors
+          description: List of all errors
       type: object
       required:
-      - download
-      title: DocumentLinks
-      description: Link to download the document.
+      - errors
+      title: ErrorHTTPResponse
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    Links:
+      properties:
+        first:
+          type: string
+          title: First
+          example: /api/v1/users?limit=1&offset1
+        last:
+          type: string
+          title: Last
+          example: /api/v1/users?limit=1&offset1
+        self:
+          type: string
+          title: Self
+          example: /api/v1/users?limit=1&offset1
+        next:
+          type: string
+          title: Next
+          example: /api/v1/users?limit=1&offset1
+        prev:
+          type: string
+          title: Prev
+          example: /api/v1/users?limit=1&offset1
+      type: object
+      title: Links
+    JsonApiPage_DocumentResponse_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/DocumentResponse'
+          type: array
+          title: Data
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        limit:
+          type: integer
+          minimum: 1.0
+          title: Limit
+        offset:
+          type: integer
+          minimum: 0.0
+          title: Offset
+        links:
+          $ref: '#/components/schemas/Links'
+        unfiltered_total:
+          type: integer
+          title: Unfiltered Total
+      type: object
+      required:
+      - data
+      - total
+      - links
+      title: JsonApiPage[DocumentResponse]
+      description: JSON:API 1.0 specification says that result key should be a `data`.
     Error:
       properties:
         code:
