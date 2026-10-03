@@ -186,6 +186,75 @@ paths:
                 $ref: '#/components/schemas/ErrorHTTPResponse'
 components:
   schemas:
+    DeliveryFrequencyDay:
+      type: integer
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      title: DeliveryFrequencyDay
+      description: An enumeration.
+    DeliveryType:
+      type: string
+      enum:
+      - pdf
+      - xml
+      - json
+      title: DeliveryType
+      description: An enumeration.
+    ChartDetailExtractConfiguration:
+      properties:
+        delivery_schedule:
+          items:
+            type: string
+          type: array
+          title: Delivery Schedule
+          description: List of datetimes (in ISO format) for when deliveries should happen
+          default: []
+        deliver_automatically:
+          type: boolean
+          title: Deliver Automatically
+          description: Whether to deliver the report automatically
+          default: false
+        delivery_schedule_options:
+          oneOf:
+          - $ref: '#/components/schemas/DailyDeliveryOptions'
+          - $ref: '#/components/schemas/WeeklyDeliveryOptions'
+          - $ref: '#/components/schemas/BiweeklyDeliveryOptions'
+          - $ref: '#/components/schemas/MonthlyDeliveryOptions'
+          - $ref: '#/components/schemas/DueDateDeliveryOptions'
+          - $ref: '#/components/schemas/EachDocumentDeliveryOptions'
+          title: Delivery Schedule Options
+          description: Options for scheduling the delivery of the structured data extraction report.
+          discriminator:
+            propertyName: delivery_frequency
+            mapping:
+              daily: '#/components/schemas/DailyDeliveryOptions'
+              weekly: '#/components/schemas/WeeklyDeliveryOptions'
+              biweekly: '#/components/schemas/BiweeklyDeliveryOptions'
+              monthly: '#/components/schemas/MonthlyDeliveryOptions'
+              order_due_date: '#/components/schemas/DueDateDeliveryOptions'
+              each_document: '#/components/schemas/EachDocumentDeliveryOptions'
+        filename_template:
+          type: string
+          title: Filename Template
+          description: The template for the CDE report filename.
+      type: object
+      required:
+      - filename_template
+      title: ChartDetailExtractConfiguration
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
     OrderResponse:
       properties:
         delivery_type:
@@ -490,34 +559,18 @@ components:
       - status
       title: OrderResponse
       description: Represents an Order object returned through the API.
-    ChartDetailExtractDeliveryConfig:
+    ErrorHTTPResponse:
       properties:
-        filename_template:
-          type: string
-          title: Filename Template
-        schedule:
+        errors:
           items:
-            type: string
+            $ref: '#/components/schemas/Error'
           type: array
-          title: Schedule
-        manifest:
-          $ref: '#/components/schemas/ManifestDeliveryConfig'
-        email_recipients:
-          items:
-            type: string
-          type: array
-          title: Email Recipients
-          default: []
-        file_transfer_config:
-          $ref: '#/components/schemas/S3FileTransferConfig'
-        deliver_automatically:
-          type: boolean
-          title: Deliver Automatically
-          default: false
+          title: Errors
+          description: List of all errors
       type: object
       required:
-      - schedule
-      title: ChartDetailExtractDeliveryConfig
+      - errors
+      title: ErrorHTTPResponse
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -526,31 +579,39 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    WeeklyDeliveryOptions:
-      properties:
-        delivery_frequency_sub_option:
-          items:
-            $ref: '#/components/schemas/DeliveryFrequencyDay'
-          type: array
-        delivery_frequency:
-          type: string
-          enum:
-          - weekly
-          title: Delivery Frequency
-      type: object
-      required:
-      - delivery_frequency_sub_option
-      - delivery_frequency
-      title: WeeklyDeliveryOptions
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    EachDocumentDeliveryOptions:
+    DeliveryLocation:
+      type: string
+      enum:
+      - api
+      - sftp
+      - s3
+      title: DeliveryLocation
+      description: Additional delivery locations for documents (besides API)
+    RetrievalSources:
+      type: string
+      enum:
+      - api
+      - embedded_manual
+      - nonembedded_manual
+      - athena
+      - healthjump
+      - mock_retrieval
+      - moxe
+      - office_ally
+      - particle
+      - ses
+      - share_arkansas
+      - sidus
+      - veradigm
+      - vim
+      - iatric
+      - c3hie
+      - ghhc
+      - healow
+      - mdland
+      title: RetrievalSources
+      description: An enumeration.
+    DailyDeliveryOptions:
       properties:
         delivery_frequency_sub_option:
           type: 'null'
@@ -558,13 +619,13 @@ components:
         delivery_frequency:
           type: string
           enum:
-          - each_document
+          - daily
           title: Delivery Frequency
       type: object
       required:
       - delivery_frequency_sub_option
       - delivery_frequency
-      title: EachDocumentDeliveryOptions
+      title: DailyDeliveryOptions
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -573,34 +634,119 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    DeliveryFormat:
-      type: string
-      enum:
-      - individual
-      - zipped
-      title: DeliveryFormat
-      description: An enumeration.
-    SubmissionSource:
-      type: string
-      enum:
-      - api
-      - switchboard
-      - sftp
-      - legacy
-      title: SubmissionSource
-      description: An enumeration.
-    DeliveryFrequency:
+    ImportReviewStatus:
+      properties:
+        provider_package_approved:
+          type: boolean
+          title: Provider Package Approved
+      type: object
+      title: ImportReviewStatus
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    AllDeliveryConfig:
+      properties:
+        pdf:
+          $ref: '#/components/schemas/PdfDeliveryConfig'
+        cda:
+          $ref: '#/components/schemas/BaseDeliveryConfig'
+        fhir:
+          $ref: '#/components/schemas/BaseDeliveryConfig'
+        structured_extraction:
+          $ref: '#/components/schemas/StructuredExtractionDeliveryConfig'
+        chart_detail_extract:
+          $ref: '#/components/schemas/ChartDetailExtractDeliveryConfig'
+      type: object
+      title: AllDeliveryConfig
+      description: Model for the delivery configuration.
+    ManifestDeliveryConfig:
+      properties:
+        filename_template:
+          type: string
+          title: Filename Template
+        file_extension:
+          type: string
+          enum:
+          - .csv
+          - .txt
+          - .dat
+          title: File Extension
+          default: .csv
+        delimiter:
+          type: string
+          enum:
+          - ','
+          - '|'
+          - "\t"
+          - '~'
+          title: Delimiter
+          default: ','
+        header_configuration:
+          items:
+            type: object
+          type: array
+          title: Header Configuration
+        template_name:
+          type: string
+          enum:
+          - ml_standard
+          - provider
+          - ml_merge
+          - arbcbs_pdf_custom
+          - arbcbs_cda_custom
+          - centene_custom
+          - clover_pdf_custom
+          - optum_ioa_custom
+          - bcbsmi_custom
+          title: Template Name
+      type: object
+      required:
+      - template_name
+      title: ManifestDeliveryConfig
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    DeliveryTiming:
       type: string
       enum:
       - continuous
-      - daily
-      - weekly
-      - biweekly
-      - monthly
-      - order_due_date
-      - each_document
-      title: DeliveryFrequency
+      - scheduled
+      title: DeliveryTiming
       description: An enumeration.
+    ZipDeliveryConfig:
+      properties:
+        filename_template:
+          type: string
+          title: Filename Template
+        include_manifest:
+          type: boolean
+          title: Include Manifest
+          default: false
+        password:
+          type: string
+          format: password
+          title: Password
+          writeOnly: true
+      type: object
+      title: ZipDeliveryConfig
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
     SecondaryReason:
       type: string
       enum:
@@ -677,490 +823,49 @@ components:
       - whole_person_understanding
       title: SecondaryReason
       description: An enumeration.
-    PdfDeliveryConfig:
+    SubmissionSource:
+      type: string
+      enum:
+      - api
+      - switchboard
+      - sftp
+      - legacy
+      title: SubmissionSource
+      description: An enumeration.
+    Address:
       properties:
-        filename_template:
-          type: string
-          title: Filename Template
-        schedule:
-          items:
-            type: string
-          type: array
-          title: Schedule
-        manifest:
-          $ref: '#/components/schemas/ManifestDeliveryConfig'
-        email_recipients:
-          items:
-            type: string
-          type: array
-          title: Email Recipients
-          default: []
-        file_transfer_config:
-          $ref: '#/components/schemas/S3FileTransferConfig'
-        zip:
-          $ref: '#/components/schemas/ZipDeliveryConfig'
-        is_continuous:
-          type: boolean
-          title: Is Continuous
-          default: false
-        merge:
-          type: boolean
-          title: Merge
-          default: false
-      type: object
-      required:
-      - schedule
-      title: PdfDeliveryConfig
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    DailyDeliveryOptions:
-      properties:
-        delivery_frequency_sub_option:
-          type: 'null'
-          title: Delivery Frequency Sub Option
-        delivery_frequency:
-          type: string
-          enum:
-          - daily
-          title: Delivery Frequency
-      type: object
-      required:
-      - delivery_frequency_sub_option
-      - delivery_frequency
-      title: DailyDeliveryOptions
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    OrderValidationResponse:
-      properties:
-        valid:
-          type: integer
-          title: Valid
-          description: Number of validated rows.
-        failed:
-          type: integer
-          title: Failed
-          description: Number of failed rows.
-        copied:
-          type: integer
-          title: Copied
-          description: Number of copied rows.
-        in_progress:
-          type: integer
-          title: In Progress
-          description: Number of in progress rows. -1 if not calculated yet.
-        validation_failures_threshold:
-          type: integer
-          title: Validation Failures Threshold
-          description: Max failure percent to dispatch with validation errors by default.
-        tenant_name:
-          type: string
-          title: Tenant Name
-          description: Tenant name.
-      type: object
-      required:
-      - valid
-      - failed
-      - copied
-      - in_progress
-      title: OrderValidationResponse
-      description: Order validation results.
-    MonthlyDeliveryOptions:
-      properties:
-        delivery_frequency_sub_option:
-          type: integer
-          title: Delivery Frequency Sub Option
-        delivery_frequency:
-          type: string
-          enum:
-          - monthly
-          title: Delivery Frequency
-      type: object
-      required:
-      - delivery_frequency_sub_option
-      - delivery_frequency
-      title: MonthlyDeliveryOptions
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    Error:
-      properties:
-        code:
-          type: string
-          title: Code
-          description: Error code specifiying type of error
-        message:
-          type: string
-          title: Message
-          description: Human readable message describing error
-        params:
+        normalizations:
           items: {}
           type: array
-          title: Params
-          description: The parameters involved in the error
-      type: object
-      required:
-      - code
-      - message
-      title: Error
-    PrimaryReason:
-      type: string
-      enum:
-      - attorney
-      - hospital_lien
-      - patient_directive
-      - personal_injury
-      - social_security_disability
-      - subpoena
-      - workers_comp
-      - illinois_industrial_commission_subpoena
-      - florida_statute
-      - veterans_disability
-      - ssa_appeal_representative_form_1696
-      - patient_social_security_appeal
-      - life_sciences
-      - audit_of_claims
-      - clinical_research
-      - disability
-      - insurance
-      - medicare_medicaid
-      - rac
-      - revenue_cycle_management
-      - business_office_copy_risk_management
-      - special_project
-      - drg_payment_integrity
-      - hedis_audit
-      - hix
-      - radv
-      - standard_insurance_claim_payment
-      - utilization_review
-      - disability_gov_benefits
-      - forms_completion_by_provider
-      - patient_personal
-      - patient_transfer
-      - second_request_not_work_comp
-      - agency
-      - government_audit
-      - medicaid_dds
-      - non_profit
-      - state_dds
-      - workers_comp_board
-      - continuity_of_care
-      - ciox_audit
-      - mra
-      - ciox_real_world_data_team_request
-      - aca_hix
-      - drg
-      - underwriting
-      - claim
-      - general_attorney
-      - general_attorney_subpoena
-      - workers_comp_subpoena
-      - ssa_appeal
-      - pro_medicaid
-      - standard_pro
-      - value_based_care
-      - payd
-      - payer
-      - attestation
-      - unknown
-      title: PrimaryReason
-      description: An enumeration.
-    RetrievalSources:
-      type: string
-      enum:
-      - api
-      - embedded_manual
-      - nonembedded_manual
-      - athena
-      - healthjump
-      - mock_retrieval
-      - moxe
-      - office_ally
-      - particle
-      - ses
-      - share_arkansas
-      - sidus
-      - veradigm
-      - vim
-      - iatric
-      - c3hie
-      - ghhc
-      - healow
-      - mdland
-      title: RetrievalSources
-      description: An enumeration.
-    DeliveryLocation:
-      type: string
-      enum:
-      - api
-      - sftp
-      - s3
-      title: DeliveryLocation
-      description: Additional delivery locations for documents (besides API)
-    LegalEntity:
-      properties:
-        phone_number:
-          type: string
-          title: Phone Number
-          description: Phone number
-        full_name:
-          type: string
-          title: Full Name
-          description: If entity is an organization or individual with only full name available include full_name
-        first_name:
-          type: string
-          title: First Name
-          description: If entity is an individual include first_name
-        alternate_first_name:
-          type: string
-          title: Alternate First Name
-          description: If entity is an individual and uses an alias or nickname include alternate_first_name
-        middle_name:
-          type: string
-          title: Middle Name
-          description: If entity is an individual include middle_name if applicable
-        last_name:
-          type: string
-          title: Last Name
-          description: If entity is an individual include last_name
-        prefix:
-          type: string
-          title: Prefix
-          description: If entity is an individual include name prefix if applicable
-        suffix:
-          type: string
-          title: Suffix
-          description: If entity is an individual include name suffix if applicable
-        id:
-          type: string
-          title: Id
-          description: An identifier that the Customer has assigned to this legal entity
-        order_id:
-          type: string
-          title: Order Id
-          description: An identifier that this legal entity has assigned to this order
-        address:
-          allOf:
-          - $ref: '#/components/schemas/Address'
-          title: Address
-          description: The name associated with the order
-        health_plan:
-          type: string
-          title: The health plan that the customer is associated with
-      type: object
-      required:
-      - id
-      title: LegalEntity
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    ExtractionDeliveryConfig:
-      properties:
-        include_npi:
-          type: boolean
-          title: Include Npi
-        include_diagnosis:
-          type: boolean
-          title: Include Diagnosis
-        filter_encounters_by_requested_dos:
-          type: boolean
-          title: Filter Encounters By Requested Dos
-          default: false
-        write_empty_encounters:
-          type: boolean
-          title: Write Empty Encounters
-          default: false
-      type: object
-      required:
-      - include_npi
-      - include_diagnosis
-      title: ExtractionDeliveryConfig
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    StructuredExtractionDeliveryConfig:
-      properties:
-        filename_template:
-          type: string
-          title: Filename Template
-        schedule:
-          items:
-            type: string
-          type: array
-          title: Schedule
-        manifest:
-          $ref: '#/components/schemas/ManifestDeliveryConfig'
-        email_recipients:
-          items:
-            type: string
-          type: array
-          title: Email Recipients
+          title: Normalizations
           default: []
-        file_transfer_config:
-          $ref: '#/components/schemas/S3FileTransferConfig'
-        deliver_automatically:
-          type: boolean
-          title: Deliver Automatically
-          default: false
-        report:
-          $ref: '#/components/schemas/ExtractionDeliveryConfig'
+        line1:
+          type: string
+          title: Line1
+          description: Street address
+        line2:
+          type: string
+          title: Line2
+          description: Building, Suite#, Unit#, etc..
+        city:
+          type: string
+          title: City
+          description: City
+        country:
+          type: string
+          title: Country
+          description: Country Code, ISO 3166-1 alpha-2 code
+          default: US
+        state:
+          type: string
+          title: State
+          description: State/Province Abbreviation Code, 2 characters
+        postal_code:
+          type: string
+          title: Postal Code
+          description: Postal Code, US - 5 digits or 5+4, Other - Alphanumeric
       type: object
-      required:
-      - schedule
-      - report
-      title: StructuredExtractionDeliveryConfig
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    Body_create_prematch_order_orders_prematch_post:
-      properties:
-        file:
-          type: string
-          format: binary
-          title: File
-        is_traditional:
-          type: string
-          title: Is Traditional
-        columns_map:
-          type: string
-          title: Columns Map
-        retrieval_sources:
-          type: string
-          title: Retrieval Sources
-        client_name:
-          type: string
-          title: Client Name
-      type: object
-      required:
-      - file
-      - is_traditional
-      - columns_map
-      title: Body_create_prematch_order_orders_prematch_post
-    ChartDetailExtractConfiguration:
-      properties:
-        delivery_schedule:
-          items:
-            type: string
-          type: array
-          title: Delivery Schedule
-          description: List of datetimes (in ISO format) for when deliveries should happen
-          default: []
-        deliver_automatically:
-          type: boolean
-          title: Deliver Automatically
-          description: Whether to deliver the report automatically
-          default: false
-        delivery_schedule_options:
-          oneOf:
-          - $ref: '#/components/schemas/DailyDeliveryOptions'
-          - $ref: '#/components/schemas/WeeklyDeliveryOptions'
-          - $ref: '#/components/schemas/BiweeklyDeliveryOptions'
-          - $ref: '#/components/schemas/MonthlyDeliveryOptions'
-          - $ref: '#/components/schemas/DueDateDeliveryOptions'
-          - $ref: '#/components/schemas/EachDocumentDeliveryOptions'
-          title: Delivery Schedule Options
-          description: Options for scheduling the delivery of the structured data extraction report.
-          discriminator:
-            propertyName: delivery_frequency
-            mapping:
-              daily: '#/components/schemas/DailyDeliveryOptions'
-              weekly: '#/components/schemas/WeeklyDeliveryOptions'
-              biweekly: '#/components/schemas/BiweeklyDeliveryOptions'
-              monthly: '#/components/schemas/MonthlyDeliveryOptions'
-              order_due_date: '#/components/schemas/DueDateDeliveryOptions'
-              each_document: '#/components/schemas/EachDocumentDeliveryOptions'
-        filename_template:
-          type: string
-          title: Filename Template
-          description: The template for the CDE report filename.
-      type: object
-      required:
-      - filename_template
-      title: ChartDetailExtractConfiguration
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    ManifestDeliveryConfig:
-      properties:
-        filename_template:
-          type: string
-          title: Filename Template
-        file_extension:
-          type: string
-          enum:
-          - .csv
-          - .txt
-          - .dat
-          title: File Extension
-          default: .csv
-        delimiter:
-          type: string
-          enum:
-          - ','
-          - '|'
-          - "\t"
-          - '~'
-          title: Delimiter
-          default: ','
-        header_configuration:
-          items:
-            type: object
-          type: array
-          title: Header Configuration
-        template_name:
-          type: string
-          enum:
-          - ml_standard
-          - provider
-          - ml_merge
-          - arbcbs_pdf_custom
-          - arbcbs_cda_custom
-          - centene_custom
-          - clover_pdf_custom
-          - optum_ioa_custom
-          - bcbsmi_custom
-          title: Template Name
-      type: object
-      required:
-      - template_name
-      title: ManifestDeliveryConfig
+      title: Address
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -1234,29 +939,165 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    DeliveryType:
-      type: string
-      enum:
-      - pdf
-      - xml
-      - json
-      title: DeliveryType
-      description: An enumeration.
-    S3FileTransferConfig:
+    WeeklyDeliveryOptions:
       properties:
-        target_type:
+        delivery_frequency_sub_option:
+          items:
+            $ref: '#/components/schemas/DeliveryFrequencyDay'
+          type: array
+        delivery_frequency:
           type: string
           enum:
-          - s3
-          title: Target Type
+          - weekly
+          title: Delivery Frequency
+      type: object
+      required:
+      - delivery_frequency_sub_option
+      - delivery_frequency
+      title: WeeklyDeliveryOptions
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    LegalEntity:
+      properties:
+        phone_number:
+          type: string
+          title: Phone Number
+          description: Phone number
+        full_name:
+          type: string
+          title: Full Name
+          description: If entity is an organization or individual with only full name available include full_name
+        first_name:
+          type: string
+          title: First Name
+          description: If entity is an individual include first_name
+        alternate_first_name:
+          type: string
+          title: Alternate First Name
+          description: If entity is an individual and uses an alias or nickname include alternate_first_name
+        middle_name:
+          type: string
+          title: Middle Name
+          description: If entity is an individual include middle_name if applicable
+        last_name:
+          type: string
+          title: Last Name
+          description: If entity is an individual include last_name
         prefix:
           type: string
           title: Prefix
+          description: If entity is an individual include name prefix if applicable
+        suffix:
+          type: string
+          title: Suffix
+          description: If entity is an individual include name suffix if applicable
+        id:
+          type: string
+          title: Id
+          description: An identifier that the Customer has assigned to this legal entity
+        order_id:
+          type: string
+          title: Order Id
+          description: An identifier that this legal entity has assigned to this order
+        address:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          title: Address
+          description: The name associated with the order
+        health_plan:
+          type: string
+          title: The health plan that the customer is associated with
       type: object
       required:
-      - target_type
-      - prefix
-      title: S3FileTransferConfig
+      - id
+      title: LegalEntity
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    BiweeklyDeliveryOptions:
+      properties:
+        delivery_frequency_sub_option:
+          items:
+            $ref: '#/components/schemas/DeliveryFrequencyDay'
+          type: array
+        delivery_frequency:
+          type: string
+          enum:
+          - biweekly
+          title: Delivery Frequency
+      type: object
+      required:
+      - delivery_frequency_sub_option
+      - delivery_frequency
+      title: BiweeklyDeliveryOptions
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    StructuredExtractionDeliveryConfig:
+      properties:
+        filename_template:
+          type: string
+          title: Filename Template
+        schedule:
+          items:
+            type: string
+          type: array
+          title: Schedule
+        manifest:
+          $ref: '#/components/schemas/ManifestDeliveryConfig'
+        email_recipients:
+          items:
+            type: string
+          type: array
+          title: Email Recipients
+          default: []
+        file_transfer_config:
+          $ref: '#/components/schemas/S3FileTransferConfig'
+        deliver_automatically:
+          type: boolean
+          title: Deliver Automatically
+          default: false
+        report:
+          $ref: '#/components/schemas/ExtractionDeliveryConfig'
+      type: object
+      required:
+      - schedule
+      - report
+      title: StructuredExtractionDeliveryConfig
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    AllowBlockGroup:
+      properties:
+        data_foundation_health_system_ids:
+          items:
+            type: string
+          type: array
+          title: Data Foundation Health System Ids
+          description: The set of Data Foundation health system IDs that are allowed or blocked.
+      type: object
+      title: AllowBlockGroup
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -1316,6 +1157,29 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
+    S3FileTransferConfig:
+      properties:
+        target_type:
+          type: string
+          enum:
+          - s3
+          title: Target Type
+        prefix:
+          type: string
+          title: Prefix
+      type: object
+      required:
+      - target_type
+      - prefix
+      title: S3FileTransferConfig
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
     RetrievalAllowBlockConfiguration:
       properties:
         allow:
@@ -1332,6 +1196,208 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
+    ChartDetailExtractDeliveryConfig:
+      properties:
+        filename_template:
+          type: string
+          title: Filename Template
+        schedule:
+          items:
+            type: string
+          type: array
+          title: Schedule
+        manifest:
+          $ref: '#/components/schemas/ManifestDeliveryConfig'
+        email_recipients:
+          items:
+            type: string
+          type: array
+          title: Email Recipients
+          default: []
+        file_transfer_config:
+          $ref: '#/components/schemas/S3FileTransferConfig'
+        deliver_automatically:
+          type: boolean
+          title: Deliver Automatically
+          default: false
+      type: object
+      required:
+      - schedule
+      title: ChartDetailExtractDeliveryConfig
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    OrderValidationResponse:
+      properties:
+        valid:
+          type: integer
+          title: Valid
+          description: Number of validated rows.
+        failed:
+          type: integer
+          title: Failed
+          description: Number of failed rows.
+        copied:
+          type: integer
+          title: Copied
+          description: Number of copied rows.
+        in_progress:
+          type: integer
+          title: In Progress
+          description: Number of in progress rows. -1 if not calculated yet.
+        validation_failures_threshold:
+          type: integer
+          title: Validation Failures Threshold
+          description: Max failure percent to dispatch with validation errors by default.
+        tenant_name:
+          type: string
+          title: Tenant Name
+          description: Tenant name.
+      type: object
+      required:
+      - valid
+      - failed
+      - copied
+      - in_progress
+      title: OrderValidationResponse
+      description: Order validation results.
+    BaseDeliveryConfig:
+      properties:
+        filename_template:
+          type: string
+          title: Filename Template
+        schedule:
+          items:
+            type: string
+          type: array
+          title: Schedule
+        manifest:
+          $ref: '#/components/schemas/ManifestDeliveryConfig'
+        email_recipients:
+          items:
+            type: string
+          type: array
+          title: Email Recipients
+          default: []
+        file_transfer_config:
+          $ref: '#/components/schemas/S3FileTransferConfig'
+      type: object
+      required:
+      - schedule
+      title: BaseDeliveryConfig
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    Error:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Error code specifiying type of error
+        message:
+          type: string
+          title: Message
+          description: Human readable message describing error
+        params:
+          items: {}
+          type: array
+          title: Params
+          description: The parameters involved in the error
+      type: object
+      required:
+      - code
+      - message
+      title: Error
+    OrderStatus:
+      type: string
+      enum:
+      - draft
+      - accepted
+      - rejected
+      - processing
+      - failed
+      - dispatched
+      - canceled
+      - complete
+      - pending_close
+      - close_in_progress
+      - intake_review_required
+      - intake_review_completed
+      title: OrderStatus
+      description: "OrderStatus is an enumeration representing the different stages in an order's lifecycle.\n\nDefinitions:\n    draft: An initial state for orders that are created but not yet submitted for processing.\n        - Used for orders created manually through the IDSB UI, requiring explicit action to proceed to dispatch.\n\n    accepted: A ready-for-processing state for newly received orders.\n        - Used for orders submitted via the CF orders API, indicating they are queued for dispatch without requiring further manual intervention.\n\n    intake_review_required: An action required state to complete steps prior to dispatching instructions.\n        - Used for orders that require action items to be completed as part of the import review process.\n\n    intake_review_completed: A state indicating that the import review process has been completed.\n        - Used for orders that have completed the import review process and are ready for dispatch.\n\n    rejected: A terminal state indicating the order was declined.\n        - Used for prematch when an order fails input file validation\n\n    processing: A temporary state while initial processing actions are performed on the order.\n        - Used after submission but before any external requests are dispatched, including internal steps like intake database updates, routing,\n          and merging charts (for semi-auto/ML sweep).\n\n    failed: A terminal state indicating the order failed to process.\n        - Used for prematch orders to indicate order failed to process.\n\n    dispatched: A state indicating that external chart or patient searches have been initiated.\n        - Set once the first external request related to the order is sent out.\n\n    canceled: A terminal state indicating the order was withdrawn and processing has ceased.\n\n    complete: A terminal state signifying that the order has been fully processed and closed.\n        - Currently set manually after all retrievals and chart deliveries are finalized.\n\n    pending_close: A terminal state indicating that further processing should halt.\n        - This state mirrors CF updates instructing IDSB to stop any remaining work on the order.\n\n    close_in_progress: A temporary state during which the order is being closed.\n        - Set when a close request is initiated. Closing actions are underway, and status will transition to 'complete' once finalized.\n\n    Order status lifecycle for IDSB fully automated projects:\n        - draft -> processing -> dispatched -> close_in_progress -> complete\n\n    Order status lifecycle for IDSB semi-automated projects:\n        -  accepted -> dispatched -> complete\n\n    Order status lifecycle for IDSB traditional projects:\n        - draft -> accepted -> processing -> intake_review_required -> intake_review_completed -> dispatched -> complete"
+    PrimaryReason:
+      type: string
+      enum:
+      - attorney
+      - hospital_lien
+      - patient_directive
+      - personal_injury
+      - social_security_disability
+      - subpoena
+      - workers_comp
+      - illinois_industrial_commission_subpoena
+      - florida_statute
+      - veterans_disability
+      - ssa_appeal_representative_form_1696
+      - patient_social_security_appeal
+      - life_sciences
+      - audit_of_claims
+      - clinical_research
+      - disability
+      - insurance
+      - medicare_medicaid
+      - rac
+      - revenue_cycle_management
+      - business_office_copy_risk_management
+      - special_project
+      - drg_payment_integrity
+      - hedis_audit
+      - hix
+      - radv
+      - standard_insurance_claim_payment
+      - utilization_review
+      - disability_gov_benefits
+      - forms_completion_by_provider
+      - patient_personal
+      - patient_transfer
+      - second_request_not_work_comp
+      - agency
+      - government_audit
+      - medicaid_dds
+      - non_profit
+      - state_dds
+      - workers_comp_board
+      - continuity_of_care
+      - ciox_audit
+      - mra
+      - ciox_real_world_data_team_request
+      - aca_hix
+      - drg
+      - underwriting
+      - claim
+      - general_attorney
+      - general_attorney_subpoena
+      - workers_comp_subpoena
+      - ssa_appeal
+      - pro_medicaid
+      - standard_pro
+      - value_based_care
+      - payd
+      - payer
+      - attestation
+      - unknown
+      title: PrimaryReason
+      description: An enumeration.
     PrematchOrderResponse:
       properties:
         uuid:
@@ -1416,7 +1482,31 @@ components:
       - total_queries
       title: PrematchOrderResponse
       description: Represents a Prematch Order object returned through the API.
-    DueDateDeliveryOptions:
+    Body_create_prematch_order_orders_prematch_post:
+      properties:
+        file:
+          type: string
+          format: binary
+          title: File
+        is_traditional:
+          type: string
+          title: Is Traditional
+        columns_map:
+          type: string
+          title: Columns Map
+        retrieval_sources:
+          type: string
+          title: Retrieval Sources
+        client_name:
+          type: string
+          title: Client Name
+      type: object
+      required:
+      - file
+      - is_traditional
+      - columns_map
+      title: Body_create_prematch_order_orders_prematch_post
+    EachDocumentDeliveryOptions:
       properties:
         delivery_frequency_sub_option:
           type: 'null'
@@ -1424,13 +1514,13 @@ components:
         delivery_frequency:
           type: string
           enum:
-          - order_due_date
+          - each_document
           title: Delivery Frequency
       type: object
       required:
       - delivery_frequency_sub_option
       - delivery_frequency
-      title: DueDateDeliveryOptions
+      title: EachDocumentDeliveryOptions
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -1439,70 +1529,6 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    OrderStatus:
-      type: string
-      enum:
-      - draft
-      - accepted
-      - rejected
-      - processing
-      - failed
-      - dispatched
-      - canceled
-      - complete
-      - pending_close
-      - close_in_progress
-      - intake_review_required
-      - intake_review_completed
-      title: OrderStatus
-      description: "OrderStatus is an enumeration representing the different stages in an order's lifecycle.\n\nDefinitions:\n    draft: An initial state for orders that are created but not yet submitted for processing.\n        - Used for orders created manually through the IDSB UI, requiring explicit action to proceed to dispatch.\n\n    accepted: A ready-for-processing state for newly received orders.\n        - Used for orders submitted via the CF orders API, indicating they are queued for dispatch without requiring further manual intervention.\n\n    intake_review_required: An action required state to complete steps prior to dispatching instructions.\n        - Used for orders that require action items to be completed as part of the import review process.\n\n    intake_review_completed: A state indicating that the import review process has been completed.\n        - Used for orders that have completed the import review process and are ready for dispatch.\n\n    rejected: A terminal state indicating the order was declined.\n        - Used for prematch when an order fails input file validation\n\n    processing: A temporary state while initial processing actions are performed on the order.\n        - Used after submission but before any external requests are dispatched, including internal steps like intake database updates, routing,\n          and merging charts (for semi-auto/ML sweep).\n\n    failed: A terminal state indicating the order failed to process.\n        - Used for prematch orders to indicate order failed to process.\n\n    dispatched: A state indicating that external chart or patient searches have been initiated.\n        - Set once the first external request related to the order is sent out.\n\n    canceled: A terminal state indicating the order was withdrawn and processing has ceased.\n\n    complete: A terminal state signifying that the order has been fully processed and closed.\n        - Currently set manually after all retrievals and chart deliveries are finalized.\n\n    pending_close: A terminal state indicating that further processing should halt.\n        - This state mirrors CF updates instructing IDSB to stop any remaining work on the order.\n\n    close_in_progress: A temporary state during which the order is being closed.\n        - Set when a close request is initiated. Closing actions are underway, and status will transition to 'complete' once finalized.\n\n    Order status lifecycle for IDSB fully automated projects:\n        - draft -> processing -> dispatched -> close_in_progress -> complete\n\n    Order status lifecycle for IDSB semi-automated projects:\n        -  accepted -> dispatched -> complete\n\n    Order status lifecycle for IDSB traditional projects:\n        - draft -> accepted -> processing -> intake_review_required -> intake_review_completed -> dispatched -> complete"
-    BaseDeliveryConfig:
-      properties:
-        filename_template:
-          type: string
-          title: Filename Template
-        schedule:
-          items:
-            type: string
-          type: array
-          title: Schedule
-        manifest:
-          $ref: '#/components/schemas/ManifestDeliveryConfig'
-        email_recipients:
-          items:
-            type: string
-          type: array
-          title: Email Recipients
-          default: []
-        file_transfer_config:
-          $ref: '#/components/schemas/S3FileTransferConfig'
-      type: object
-      required:
-      - schedule
-      title: BaseDeliveryConfig
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    AllDeliveryConfig:
-      properties:
-        pdf:
-          $ref: '#/components/schemas/PdfDeliveryConfig'
-        cda:
-          $ref: '#/components/schemas/BaseDeliveryConfig'
-        fhir:
-          $ref: '#/components/schemas/BaseDeliveryConfig'
-        structured_extraction:
-          $ref: '#/components/schemas/StructuredExtractionDeliveryConfig'
-        chart_detail_extract:
-          $ref: '#/components/schemas/ChartDetailExtractDeliveryConfig'
-      type: object
-      title: AllDeliveryConfig
-      description: Model for the delivery configuration.
     RequesterType:
       type: string
       enum:
@@ -1522,145 +1548,21 @@ components:
       - fac
       title: RequesterType
       description: An enumeration.
-    DeliveryTiming:
-      type: string
-      enum:
-      - continuous
-      - scheduled
-      title: DeliveryTiming
-      description: An enumeration.
-    Address:
-      properties:
-        normalizations:
-          items: {}
-          type: array
-          title: Normalizations
-          default: []
-        line1:
-          type: string
-          title: Line1
-          description: Street address
-        line2:
-          type: string
-          title: Line2
-          description: Building, Suite#, Unit#, etc..
-        city:
-          type: string
-          title: City
-          description: City
-        country:
-          type: string
-          title: Country
-          description: Country Code, ISO 3166-1 alpha-2 code
-          default: US
-        state:
-          type: string
-          title: State
-          description: State/Province Abbreviation Code, 2 characters
-        postal_code:
-          type: string
-          title: Postal Code
-          description: Postal Code, US - 5 digits or 5+4, Other - Alphanumeric
-      type: object
-      title: Address
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    DeliveryFrequencyDay:
-      type: integer
-      enum:
-      - 0
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      title: DeliveryFrequencyDay
-      description: An enumeration.
-    ZipDeliveryConfig:
-      properties:
-        filename_template:
-          type: string
-          title: Filename Template
-        include_manifest:
-          type: boolean
-          title: Include Manifest
-          default: false
-        password:
-          type: string
-          format: password
-          title: Password
-          writeOnly: true
-      type: object
-      title: ZipDeliveryConfig
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    ErrorHTTPResponse:
-      properties:
-        errors:
-          items:
-            $ref: '#/components/schemas/Error'
-          type: array
-          title: Errors
-          description: List of all errors
-      type: object
-      required:
-      - errors
-      title: ErrorHTTPResponse
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    AllowBlockGroup:
-      properties:
-        data_foundation_health_system_ids:
-          items:
-            type: string
-          type: array
-          title: Data Foundation Health System Ids
-          description: The set of Data Foundation health system IDs that are allowed or blocked.
-      type: object
-      title: AllowBlockGroup
-      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
-
-        of enums rather than the raw enum.
-
-
-        For now this is set to False (default setting) and we only set enum values to true within the
-
-        models that have enums we know we need to use the values for.'
-    BiweeklyDeliveryOptions:
+    DueDateDeliveryOptions:
       properties:
         delivery_frequency_sub_option:
-          items:
-            $ref: '#/components/schemas/DeliveryFrequencyDay'
-          type: array
+          type: 'null'
+          title: Delivery Frequency Sub Option
         delivery_frequency:
           type: string
           enum:
-          - biweekly
+          - order_due_date
           title: Delivery Frequency
       type: object
       required:
       - delivery_frequency_sub_option
       - delivery_frequency
-      title: BiweeklyDeliveryOptions
+      title: DueDateDeliveryOptions
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -1691,13 +1593,21 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    ImportReviewStatus:
+    MonthlyDeliveryOptions:
       properties:
-        provider_package_approved:
-          type: boolean
-          title: Provider Package Approved
+        delivery_frequency_sub_option:
+          type: integer
+          title: Delivery Frequency Sub Option
+        delivery_frequency:
+          type: string
+          enum:
+          - monthly
+          title: Delivery Frequency
       type: object
-      title: ImportReviewStatus
+      required:
+      - delivery_frequency_sub_option
+      - delivery_frequency
+      title: MonthlyDeliveryOptions
       description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
 
         of enums rather than the raw enum.
@@ -1706,6 +1616,96 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
+    PdfDeliveryConfig:
+      properties:
+        filename_template:
+          type: string
+          title: Filename Template
+        schedule:
+          items:
+            type: string
+          type: array
+          title: Schedule
+        manifest:
+          $ref: '#/components/schemas/ManifestDeliveryConfig'
+        email_recipients:
+          items:
+            type: string
+          type: array
+          title: Email Recipients
+          default: []
+        file_transfer_config:
+          $ref: '#/components/schemas/S3FileTransferConfig'
+        zip:
+          $ref: '#/components/schemas/ZipDeliveryConfig'
+        is_continuous:
+          type: boolean
+          title: Is Continuous
+          default: false
+        merge:
+          type: boolean
+          title: Merge
+          default: false
+      type: object
+      required:
+      - schedule
+      title: PdfDeliveryConfig
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    DeliveryFrequency:
+      type: string
+      enum:
+      - continuous
+      - daily
+      - weekly
+      - biweekly
+      - monthly
+      - order_due_date
+      - each_document
+      title: DeliveryFrequency
+      description: An enumeration.
+    ExtractionDeliveryConfig:
+      properties:
+        include_npi:
+          type: boolean
+          title: Include Npi
+        include_diagnosis:
+          type: boolean
+          title: Include Diagnosis
+        filter_encounters_by_requested_dos:
+          type: boolean
+          title: Filter Encounters By Requested Dos
+          default: false
+        write_empty_encounters:
+          type: boolean
+          title: Write Empty Encounters
+          default: false
+      type: object
+      required:
+      - include_npi
+      - include_diagnosis
+      title: ExtractionDeliveryConfig
+      description: 'A custom BaseModel with the eventual goal of populating inheriting models with the value property
+
+        of enums rather than the raw enum.
+
+
+        For now this is set to False (default setting) and we only set enum values to true within the
+
+        models that have enums we know we need to use the values for.'
+    DeliveryFormat:
+      type: string
+      enum:
+      - individual
+      - zipped
+      title: DeliveryFormat
+      description: An enumeration.
   securitySchemes:
     oauth2:
       type: oauth2
