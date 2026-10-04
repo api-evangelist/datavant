@@ -161,6 +161,30 @@ paths:
                 $ref: '#/components/schemas/ErrorHTTPResponse'
 components:
   schemas:
+    Links:
+      properties:
+        first:
+          type: string
+          title: First
+          example: /api/v1/users?limit=1&offset1
+        last:
+          type: string
+          title: Last
+          example: /api/v1/users?limit=1&offset1
+        self:
+          type: string
+          title: Self
+          example: /api/v1/users?limit=1&offset1
+        next:
+          type: string
+          title: Next
+          example: /api/v1/users?limit=1&offset1
+        prev:
+          type: string
+          title: Prev
+          example: /api/v1/users?limit=1&offset1
+      type: object
+      title: Links
     DocumentResponse:
       properties:
         uuid:
@@ -222,45 +246,6 @@ components:
         For now this is set to False (default setting) and we only set enum values to true within the
 
         models that have enums we know we need to use the values for.'
-    Links:
-      properties:
-        first:
-          type: string
-          title: First
-          example: /api/v1/users?limit=1&offset1
-        last:
-          type: string
-          title: Last
-          example: /api/v1/users?limit=1&offset1
-        self:
-          type: string
-          title: Self
-          example: /api/v1/users?limit=1&offset1
-        next:
-          type: string
-          title: Next
-          example: /api/v1/users?limit=1&offset1
-        prev:
-          type: string
-          title: Prev
-          example: /api/v1/users?limit=1&offset1
-      type: object
-      title: Links
-    DocumentType:
-      enum:
-      - chart
-      - provider_packet
-      - health_plan_letter
-      - request_letter
-      - letter_of_representation
-      - patient_authorization
-      - request_file
-      - supplemental_data
-      - merge_report
-      - quality_review_guide
-      - provider_packet_additional_document
-      title: DocumentType
-      description: The type of document.
     DocumentLinks:
       properties:
         download:
@@ -274,26 +259,6 @@ components:
       - download
       title: DocumentLinks
       description: Link to download the document.
-    Error:
-      properties:
-        code:
-          type: string
-          title: Code
-          description: Error code specifiying type of error
-        message:
-          type: string
-          title: Message
-          description: Human readable message describing error
-        params:
-          items: {}
-          type: array
-          title: Params
-          description: The parameters involved in the error
-      type: object
-      required:
-      - code
-      - message
-      title: Error
     JsonApiPage_DocumentResponse_:
       properties:
         data:
@@ -325,6 +290,41 @@ components:
       - links
       title: JsonApiPage[DocumentResponse]
       description: JSON:API 1.0 specification says that result key should be a `data`.
+    DocumentType:
+      enum:
+      - chart
+      - provider_packet
+      - health_plan_letter
+      - request_letter
+      - letter_of_representation
+      - patient_authorization
+      - request_file
+      - supplemental_data
+      - merge_report
+      - quality_review_guide
+      - provider_packet_additional_document
+      title: DocumentType
+      description: The type of document.
+    Error:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Error code specifiying type of error
+        message:
+          type: string
+          title: Message
+          description: Human readable message describing error
+        params:
+          items: {}
+          type: array
+          title: Params
+          description: The parameters involved in the error
+      type: object
+      required:
+      - code
+      - message
+      title: Error
   securitySchemes:
     oauth2:
       type: oauth2
