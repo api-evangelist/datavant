@@ -59,3 +59,16 @@ evidence:
     http_status: 200
     finding: 'Datavant Connect 12-Month License: $300,000.00'
     fetched: '2026-08-14'
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - subscription
+  units: []
+  plans:
+  - name: Datavant Connect 12-Month License
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
