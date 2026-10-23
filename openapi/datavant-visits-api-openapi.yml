@@ -819,3 +819,9 @@ components:
           tokenUrl: https://api.datavant.io/v2/oauth2/token
           refreshUrl: https://api.datavant.io/v2/oauth2/token
           scopes: {}
+x-provenance:
+  method: harvested
+  publisher: Datavant
+  source: https://developer.datavant.com/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
